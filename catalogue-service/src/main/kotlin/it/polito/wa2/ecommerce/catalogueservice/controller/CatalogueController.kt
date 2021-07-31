@@ -87,7 +87,7 @@ class CatalogueController {
     }
 
 
-    // TODO("aggiungere post per aggiungere un commento a un prodotto?")
-    // TODO("separare collection per fare ua get dei commenti di un prodotto? (gne)")
+    // TODO("aggiungere post per aggiungere un commento a un prodotto?")  Sì
+    // TODO("separare collection per fare ua get dei commenti di un prodotto?") Sì
 
 }

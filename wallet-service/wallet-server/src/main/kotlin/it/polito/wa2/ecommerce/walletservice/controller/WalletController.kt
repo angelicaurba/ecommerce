@@ -55,7 +55,7 @@ class WalletController {
 
     @PostMapping("/{walletId}/recharges")
     fun rechargeWallet(@PathVariable("walletId") @Min(1) walletId: Int,
-                       @RequestBody rechargeRequestDTO: RechargeRequestDTO) { //TODO define coherent return type
+                       @RequestBody rechargeRequestDTO: RechargeRequestDTO): TransactionDTO {
         TODO("Implement me")
     }
 }
