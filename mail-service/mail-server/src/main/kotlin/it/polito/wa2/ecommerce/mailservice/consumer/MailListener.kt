@@ -1,6 +1,6 @@
-/*
 package it.polito.wa2.ecommerce.mailservice.consumer
 
+/*
 import it.polito.wa2.ecommerce.mailservice.client.MailDTO
 import it.polito.wa2.ecommerce.mailservice.service.impl.MailServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
