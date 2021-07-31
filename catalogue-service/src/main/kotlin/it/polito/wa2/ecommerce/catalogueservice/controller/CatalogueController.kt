@@ -8,14 +8,22 @@ import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import javax.validation.Valid
+import javax.validation.constraints.Min
 import javax.ws.rs.QueryParam
+
+const val DEFAULT_PAGE_SIZE = "10"
 
 @RestController
 @RequestMapping("/products")
 class CatalogueController {
 
     @GetMapping("/")
-    fun getProductsByCategory(@QueryParam("category") category: String): List<Product> {
+    fun getProductsByCategory(@QueryParam("category") category: String,
+                              @RequestParam("pageIndex", defaultValue = "1") @Min(1) pageIdx: Int,
+                              @RequestParam("pageSize", defaultValue = DEFAULT_PAGE_SIZE) @Min(
+                                  1
+                              ) pageSize: Int
+    ): List<Product> {
         TODO("implement")
     }
 
