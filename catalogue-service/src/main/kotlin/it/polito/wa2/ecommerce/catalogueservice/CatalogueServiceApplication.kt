@@ -9,3 +9,5 @@ class CatalogueServiceApplication
 fun main(args: Array<String>) {
     runApplication<CatalogueServiceApplication>(*args)
 }
+
+// TODO nel gateway fare il proxy della post /orders mappando i prodotti (id e amount) aggiungendo il prezzo
