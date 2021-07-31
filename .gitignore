@@ -28,4 +28,4 @@ hs_err_pid*
 */build/*
 /build/*
 **/build/**
-/mail-service/mail-server/src/main/resources/applications-credentials.properties
+/mail-service/mail-server/src/main/resources/application-credentials.properties
