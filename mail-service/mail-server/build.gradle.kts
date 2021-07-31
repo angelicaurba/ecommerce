@@ -26,6 +26,10 @@ dependencies {
     implementation("org.springframework.kafka:spring-kafka")
     implementation("org.springframework.boot:spring-boot-starter-mail")
 
+    //adding internal modules dependency for dtos
+    implementation (project(":mail-service:mail-client"))
+    implementation(project(":common"))
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.kafka:spring-kafka-test")
 }
