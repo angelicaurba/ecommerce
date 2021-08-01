@@ -13,4 +13,9 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
+    implementation("org.springframework.security:spring-security-core:4.0.4.RELEASE")
+    implementation("javax.validation:validation-api:2.0.0.Final")
+
+    //adding internal modules dependency for dtos
+    implementation(project(":common"))
 }
