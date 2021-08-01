@@ -17,7 +17,7 @@ data class Product(
     val numStars: Long,
     val numRatings: Long,
     val creationDate: Date,
-    val comments: List<Comment>
+//    val comments: List<Comment>
     )
 
 enum class Category{
