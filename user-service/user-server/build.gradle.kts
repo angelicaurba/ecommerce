@@ -26,6 +26,12 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     implementation("org.springframework.kafka:spring-kafka")
 
+//    implementation("org.springframework.data:spring-data-commons:2.5.3")
+    implementation("org.springframework.security:spring-security-core")
+
+    //adding internal modules dependency for dtos
+    implementation (project(":user-service:user-client"))
+    implementation(project(":common"))
 
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
