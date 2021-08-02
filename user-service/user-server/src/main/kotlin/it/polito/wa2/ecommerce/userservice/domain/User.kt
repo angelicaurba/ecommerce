@@ -19,7 +19,7 @@ class User(
     @field:Size(min = 8, message = "password should have a minimum of 8 characters")
     @field:NotNull(message = "password must be present")
     @Column(nullable=false)
-    val password: String,
+    var password: String,
 
     @field:Email(message = "email should be valid")
     @field:NotNull(message = "email must be present")

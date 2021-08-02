@@ -92,8 +92,30 @@ class UserDetailsServiceImpl: UserDetailsService {
         return user.toDTO()
     }
 
+    fun loadUserById(userId: Long): UserDetailsDTO {
+        val user = findUserById(userId)
+        return user.toDTO()
+    }
+
+    fun setPassword(userId: Long, password: String) {
+        val user = findUserById(userId)
+        user.password = passwordEncoder.encode(password)
+        userRepository.save(user)
+    }
+
+    fun verifyPassword(userId: Long, password: String): Boolean{
+        val user = findUserById(userId)
+        return passwordEncoder.matches(password, user.password)
+    }
+
+    fun upgradeToAdmin(userId: Long) {
+        val user = findUserById(userId)
+        user.addRole(Rolename.ADMIN)
+        userRepository.save(user)
+    }
+
     fun setDeliveryAddress(userId: Long, deliveryAddress: String) {
-        val user = userRepository.findByIdOrNull(userId) ?: throw UsernameNotFoundException("User ID not found")
+        val user = findUserById(userId)
         user.deliveryAddress = deliveryAddress
         userRepository.save(user)
     }
@@ -108,6 +130,10 @@ class UserDetailsServiceImpl: UserDetailsService {
 
     private fun findUserByUsername(username: String): User {
         return userRepository.findByUsername(username) ?: throw UsernameNotFoundException("Username not found")
+    }
+
+    private fun findUserById(userId: Long): User {
+        return userRepository.findByIdOrNull(userId) ?: throw UsernameNotFoundException("User ID not found")
     }
 
     fun verifyToken(token: String) {

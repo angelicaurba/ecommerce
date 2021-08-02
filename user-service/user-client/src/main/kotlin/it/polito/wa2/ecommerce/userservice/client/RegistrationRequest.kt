@@ -13,6 +13,7 @@ data class RegistrationRequest(
     val name: String,
     @field:NotNull(message = "surname must be present")
     val surname: String,
+    // TODO should it be nullable?
     val deliveryAddress: String?,
     // TODO should roles be defined in the request object, or with different APIs?
     @field:Size(min = 8, message = "password should have a minimum of 8 characters")
