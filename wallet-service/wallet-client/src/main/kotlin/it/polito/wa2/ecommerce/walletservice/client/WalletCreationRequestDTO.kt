@@ -1,4 +1,17 @@
 package it.polito.wa2.ecommerce.walletservice.client
 
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
+
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "type")
+@JsonSubTypes(
+value =  [
+    JsonSubTypes.Type(value = WarehouseWalletCreationRequestDTO::class,  name="warehouse"),
+    JsonSubTypes.Type(value = CustomerWalletCreationRequestDTO::class, name = "cat")
+        ])
 interface WalletCreationRequestDTO {
-}//TODO implement concrete implementations (with userID or warehouseID) //TODO add validation
+//TODO add validation
+}
