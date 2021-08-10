@@ -1,6 +1,8 @@
 package it.polito.wa2.ecommerce.walletservice.service
 
 import it.polito.wa2.ecommerce.walletservice.client.*
+import it.polito.wa2.ecommerce.walletservice.domain.Transaction
+import it.polito.wa2.ecommerce.walletservice.domain.TransactionType
 import it.polito.wa2.ecommerce.walletservice.domain.Wallet
 import it.polito.wa2.ecommerce.walletservice.domain.WalletType
 import it.polito.wa2.ecommerce.walletservice.repository.TransactionRepository
@@ -9,8 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.util.*
+import javax.transaction.Transactional
 
 @Service
+@Transactional
 class WalletServiceImpl:WalletService {
 
     @Autowired
@@ -32,6 +37,7 @@ class WalletServiceImpl:WalletService {
     }
 
     override fun addWallet(walletCreationRequest: WalletCreationRequestDTO): WalletDTO {
+        //TODO add check if userID == principal.userID  or is admin
         val wallet = walletCreationRequest.toEntity()
 
         return walletRepository.save(wallet).toDTO()
@@ -63,14 +69,45 @@ class WalletServiceImpl:WalletService {
 
     override fun getTransactionsByWalletId(walletId: String, pageIdx: Int, pageSize: Int): List<TransactionDTO>{
         val wallet = getWalletOrThrowException(walletId.parseID())
-
+        //TODO should go in transactionService ?
         val page = getPageable(pageIdx, pageSize)
         return transactionRepository.findByFromWalletOrToWallet(wallet, wallet, page).map { it.toDTO() }
+    }
+
+    override fun getTransactionByWalletIdAndTransactionId(walletId: String, transactionId: String): TransactionDTO {
+        val walletIdLong = walletId.parseID();
+        getWalletOrThrowException(walletIdLong)
+        val transaction = getTransactionOrThrowException(transactionId.parseID())
+        if (transaction.fromWallet?.getId() != walletIdLong && transaction.toWallet.getId() != walletIdLong) {
+//        TODO    throw TransactionNotFound("Cannot find transaction with ID $transactionId for wallet $walletId")
+            throw Exception("Cannot find transaction with ID $transactionId for wallet $walletId")
+        }
+        //TODO should go in transactionService ?
+        return transaction.toDTO()
+    }
+
+    override fun rechargeWallet(walletId: String, rechargeRequestDTO: RechargeRequestDTO): TransactionDTO {
+        //TODO verify admin role
+        //TODO should go in transactionService ?
+        val wallet = getWalletOrThrowException(walletId.parseID())
+        wallet.amount+=rechargeRequestDTO.amount
+        val transaction = Transaction(null, wallet, TransactionType.RECHARGE,
+            System.currentTimeMillis(), rechargeRequestDTO.amount, UUID.randomUUID().toString() )
+
+
+        walletRepository.save(wallet)
+        return transactionRepository.save(transaction).toDTO()
+
     }
 
     private inline fun getWalletOrThrowException(walletId: Long): Wallet {
         return walletRepository.findByIdOrNull(walletId) ?: throw RuntimeException()
 //        TODO throw WalletNotFound(walletId)
+    }
+
+    private inline fun getTransactionOrThrowException(walletId: Long): Transaction {
+        return transactionRepository.findByIdOrNull(walletId) ?: throw RuntimeException()
+//        TODO throw TransactionNotFound(walletId)
     }
 
 
