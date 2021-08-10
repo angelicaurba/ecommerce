@@ -45,6 +45,11 @@ class WalletServiceImpl:WalletService {
         //TODO add check if userID == principal.userID  or is admin
         val wallet = walletCreationRequest.toEntity()
 
+        if(walletCreationRequest is WarehouseWalletCreationRequestDTO &&
+            walletRepository.findByWalletTypeAndOwner(WalletType.WAREHOUSE,walletCreationRequest.warehouseID )!=null)
+            //TODO is it ok that constraint?
+            throw Exception("Warehouses cannot have more than one wallet") //TODO change exception
+
         return walletRepository.save(wallet).toDTO()
     }
 
