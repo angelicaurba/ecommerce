@@ -5,7 +5,8 @@ package it.polito.wa2.ecommerce.walletservice.client.transaction
 
 data class TransactionStatus(
     val orderID: String,
-    val status: Status
+    val status: Status,
+    val errorMessage: String?
 )
 
 enum class Status{
