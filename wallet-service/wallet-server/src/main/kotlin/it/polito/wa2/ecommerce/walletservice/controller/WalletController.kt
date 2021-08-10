@@ -35,8 +35,6 @@ class WalletController {
     ):WalletDTO{
         if(bindingResult.hasErrors())
             throw RuntimeException("validation errors") //TODO change exception type
-
-        //TODO add check if userID == principal.userID  or is admin
         return walletService.addWallet(walletCreationRequest)
     }
 
@@ -64,16 +62,19 @@ class WalletController {
 
     @GetMapping("/{walletId}/transactions/{transactionId}")
     fun getTransactionById(
-        @PathVariable("walletId") @Min(1) walletId: Long,
-        @PathVariable("transactionId") @Min(1) transactionId: Long
+        @PathVariable("walletId") walletId: String,
+        @PathVariable("transactionId") transactionId: String
     )
             : TransactionDTO {
-        TODO("implement me")
+        return walletService.getTransactionByWalletIdAndTransactionId(walletId, transactionId)
     }
 
     @PostMapping("/{walletId}/recharges")
-    fun rechargeWallet(@PathVariable("walletId") @Min(1) walletId: Int,
-                       @RequestBody rechargeRequestDTO: RechargeRequestDTO): TransactionDTO {
-        TODO("Implement me")
+    fun rechargeWallet(@PathVariable("walletId") walletId: String,
+                       @RequestBody @Valid rechargeRequestDTO: RechargeRequestDTO,
+                        bindingResult: BindingResult): TransactionDTO {
+        if(bindingResult.hasErrors())
+            throw Exception() //TODO should be bad request
+        return walletService.rechargeWallet(walletId, rechargeRequestDTO)
     }
 }
