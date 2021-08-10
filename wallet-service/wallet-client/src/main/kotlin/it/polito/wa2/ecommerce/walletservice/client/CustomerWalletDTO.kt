@@ -4,6 +4,6 @@ import java.math.BigDecimal
 
 class CustomerWalletDTO(
     override val walletId: String,
-    val userId:String, //TODO is string?
+    val userId:String,
     override val amount: BigDecimal) :WalletDTO {
 }

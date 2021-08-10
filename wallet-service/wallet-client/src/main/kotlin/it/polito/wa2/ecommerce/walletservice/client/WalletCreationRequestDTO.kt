@@ -12,6 +12,4 @@ value =  [
     JsonSubTypes.Type(value = WarehouseWalletCreationRequestDTO::class,  name="warehouse"),
     JsonSubTypes.Type(value = CustomerWalletCreationRequestDTO::class, name = "cat")
         ])
-interface WalletCreationRequestDTO {
-//TODO add validation
-}
+interface WalletCreationRequestDTO
