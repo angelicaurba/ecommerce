@@ -9,6 +9,12 @@ data class OrderPaymentRequestDTO(
     val userId: String,
     @field:NotNull(message = "OrderID must be present")
     val orderId: String,
-    @field:NotNull(message="List of transactions should be present")
+    @field:NotNull(message = "Type must be present")
+    val requestType: OrderPaymentType,
     val transactionList:List<OrderTransactionRequestDTO>
 )
+
+enum class OrderPaymentType{
+    PAY,
+    REFUND
+}

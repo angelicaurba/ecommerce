@@ -4,8 +4,8 @@ import it.polito.wa2.ecommerce.walletservice.client.transaction.Status
 import it.polito.wa2.ecommerce.walletservice.client.transaction.TransactionDTO
 import it.polito.wa2.ecommerce.walletservice.client.transaction.TransactionStatus
 import it.polito.wa2.ecommerce.walletservice.client.transaction.request.OrderPaymentRequestDTO
-import it.polito.wa2.ecommerce.walletservice.client.transaction.request.OrderTransactionRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.transaction.request.RechargeRequestDTO
+import it.polito.wa2.ecommerce.walletservice.client.transaction.request.OrderPaymentType
 import it.polito.wa2.ecommerce.walletservice.client.wallet.WalletDTO
 import it.polito.wa2.ecommerce.walletservice.client.wallet.request.CustomerWalletCreationRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.wallet.request.WalletCreationRequestDTO
@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import java.math.BigDecimal
 import java.util.*
 import javax.transaction.Transactional
 
@@ -112,9 +111,7 @@ class WalletServiceImpl : WalletService {
             rechargeRequestDTO.amount, UUID.randomUUID().toString()
         )
 
-       return processTransaction(transaction).toDTO()
-
-
+        return processTransaction(transaction).toDTO()
 
 
     }
@@ -129,11 +126,14 @@ class WalletServiceImpl : WalletService {
                     Status.FAILED,
                     "Cannot find required wallet"
                 )
-        for(transactionRequest in orderPaymentRequestDTO.transactionList){
+        for (transactionRequest in orderPaymentRequestDTO.transactionList) {
             val transaction = Transaction(
                 walletFrom,
                 getWalletOrThrowException(transactionRequest.walletTo.parseID()),
-                TransactionType.ORDER_PAYMENT,
+                when (orderPaymentRequestDTO.requestType) {
+                    OrderPaymentType.PAY -> TransactionType.ORDER_PAYMENT
+                    OrderPaymentType.REFUND -> TransactionType.ORDER_REFUND
+                },
                 System.currentTimeMillis(), //TODO should be autocreated?
                 transactionRequest.amount,
                 orderId
@@ -142,13 +142,17 @@ class WalletServiceImpl : WalletService {
 
             processTransaction(transaction)
         }
+
 //        return TransactionStatus(
 //            orderId,
 //            Status.FAILED,
 //            "Not enough money"
 //        )
 
-        return TransactionStatus(orderId, Status.COMPLETED, null)
+        return TransactionStatus(orderId, when (orderPaymentRequestDTO.requestType) {
+            OrderPaymentType.PAY -> Status.COMPLETED
+            OrderPaymentType.REFUND -> Status.REFUNDED
+        }, null)
 
 
     }
@@ -157,13 +161,13 @@ class WalletServiceImpl : WalletService {
         transaction: Transaction,
     ): Transaction {
         val amount = transaction.amount
-        when(transaction.type){
-            TransactionType.ORDER_PAYMENT->{
+        when (transaction.type) {
+            TransactionType.ORDER_PAYMENT -> {
                 if (transaction.fromWallet!!.amount < amount) {
                     //TODO throw OutOfMoney()
                     throw  Exception()
                 }
-                if(transaction.toWallet.walletType!=WalletType.WAREHOUSE){
+                if (transaction.toWallet.walletType != WalletType.WAREHOUSE) {
                     //TODO change exception type
                     throw Exception("Not a warehouse")
                 }
@@ -172,8 +176,8 @@ class WalletServiceImpl : WalletService {
 
 
             }
-            TransactionType.ORDER_REFUND->{
-                if(transaction.fromWallet!!.walletType!=WalletType.WAREHOUSE){
+            TransactionType.ORDER_REFUND -> {
+                if (transaction.fromWallet!!.walletType != WalletType.WAREHOUSE) {
                     //TODO change exception type
                     throw Exception("Not a warehouse")
                 }
@@ -181,15 +185,15 @@ class WalletServiceImpl : WalletService {
                 transaction.toWallet.amount = transaction.toWallet.amount.minus(amount)
 
             }
-            TransactionType.RECHARGE->{
-                if(transaction.fromWallet!=null)
+            TransactionType.RECHARGE -> {
+                if (transaction.fromWallet != null)
                     throw Exception("From wallet should not be present in recharges")//TODO see exception Type
 
                 transaction.toWallet.amount = transaction.toWallet.amount.plus(amount)
 
             }
         }
-        
+
         transaction.fromWallet?.apply {
             walletRepository.save(this)
         }
