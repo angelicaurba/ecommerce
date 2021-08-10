@@ -1,9 +1,9 @@
 package it.polito.wa2.ecommerce.walletservice.service
 
-import it.polito.wa2.ecommerce.walletservice.client.RechargeRequestDTO
-import it.polito.wa2.ecommerce.walletservice.client.TransactionDTO
-import it.polito.wa2.ecommerce.walletservice.client.WalletCreationRequestDTO
-import it.polito.wa2.ecommerce.walletservice.client.WalletDTO
+import it.polito.wa2.ecommerce.walletservice.client.transaction.request.RechargeRequestDTO
+import it.polito.wa2.ecommerce.walletservice.client.transaction.TransactionDTO
+import it.polito.wa2.ecommerce.walletservice.client.wallet.request.WalletCreationRequestDTO
+import it.polito.wa2.ecommerce.walletservice.client.wallet.WalletDTO
 
 interface WalletService {
 

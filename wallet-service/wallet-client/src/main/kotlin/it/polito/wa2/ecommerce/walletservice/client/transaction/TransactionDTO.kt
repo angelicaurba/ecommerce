@@ -1,4 +1,4 @@
-package it.polito.wa2.ecommerce.walletservice.client
+package it.polito.wa2.ecommerce.walletservice.client.transaction
 
 import java.math.BigDecimal
 

@@ -1,12 +1,11 @@
-package it.polito.wa2.ecommerce.walletservice.client
+package it.polito.wa2.ecommerce.walletservice.client.transaction
 
 
 //Message to be delivered once the order processing has been completed
 
 data class TransactionStatus(
     val orderID: String,
-    val operationReference: String,
-    val status:Status
+    val status: Status
 )
 
 enum class Status{

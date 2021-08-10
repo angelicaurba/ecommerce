@@ -1,4 +1,4 @@
-package it.polito.wa2.ecommerce.walletservice.client
+package it.polito.wa2.ecommerce.walletservice.client.transaction.request
 
 import java.math.BigDecimal
 import javax.validation.constraints.DecimalMin

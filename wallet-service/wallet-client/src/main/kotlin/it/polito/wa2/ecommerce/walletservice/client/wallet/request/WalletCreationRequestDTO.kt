@@ -1,4 +1,4 @@
-package it.polito.wa2.ecommerce.walletservice.client
+package it.polito.wa2.ecommerce.walletservice.client.wallet.request
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo

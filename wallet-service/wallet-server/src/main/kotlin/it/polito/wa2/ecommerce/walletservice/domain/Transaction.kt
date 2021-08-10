@@ -1,7 +1,7 @@
 package it.polito.wa2.ecommerce.walletservice.domain
 
 import it.polito.wa2.ecommerce.common.EntityBase
-import it.polito.wa2.ecommerce.walletservice.client.TransactionDTO
+import it.polito.wa2.ecommerce.walletservice.client.transaction.TransactionDTO
 import org.springframework.data.annotation.CreatedDate
 import java.math.BigDecimal
 import javax.persistence.Column

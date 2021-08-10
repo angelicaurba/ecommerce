@@ -1,9 +1,9 @@
 package it.polito.wa2.ecommerce.walletservice.controller
 
-import it.polito.wa2.ecommerce.walletservice.client.RechargeRequestDTO
-import it.polito.wa2.ecommerce.walletservice.client.TransactionDTO
-import it.polito.wa2.ecommerce.walletservice.client.WalletCreationRequestDTO
-import it.polito.wa2.ecommerce.walletservice.client.WalletDTO
+import it.polito.wa2.ecommerce.walletservice.client.transaction.request.RechargeRequestDTO
+import it.polito.wa2.ecommerce.walletservice.client.transaction.TransactionDTO
+import it.polito.wa2.ecommerce.walletservice.client.wallet.request.WalletCreationRequestDTO
+import it.polito.wa2.ecommerce.walletservice.client.wallet.WalletDTO
 import it.polito.wa2.ecommerce.walletservice.service.WalletService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.BindingResult
@@ -30,9 +30,9 @@ class WalletController {
     }
 
     @PostMapping("/")
-    fun createWallet(@RequestBody @Valid walletCreationRequest:WalletCreationRequestDTO,
+    fun createWallet(@RequestBody @Valid walletCreationRequest: WalletCreationRequestDTO,
                      bindingResult: BindingResult
-    ):WalletDTO{
+    ): WalletDTO {
         if(bindingResult.hasErrors())
             throw RuntimeException("validation errors") //TODO change exception type
         return walletService.addWallet(walletCreationRequest)
@@ -72,7 +72,7 @@ class WalletController {
     @PostMapping("/{walletId}/recharges")
     fun rechargeWallet(@PathVariable("walletId") walletId: String,
                        @RequestBody @Valid rechargeRequestDTO: RechargeRequestDTO,
-                        bindingResult: BindingResult): TransactionDTO {
+                       bindingResult: BindingResult): TransactionDTO {
         if(bindingResult.hasErrors())
             throw Exception() //TODO should be bad request
         return walletService.rechargeWallet(walletId, rechargeRequestDTO)

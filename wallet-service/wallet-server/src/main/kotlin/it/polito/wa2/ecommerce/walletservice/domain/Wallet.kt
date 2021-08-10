@@ -1,9 +1,9 @@
 package it.polito.wa2.ecommerce.walletservice.domain
 
 import it.polito.wa2.ecommerce.common.EntityBase
-import it.polito.wa2.ecommerce.walletservice.client.CustomerWalletDTO
-import it.polito.wa2.ecommerce.walletservice.client.WalletDTO
-import it.polito.wa2.ecommerce.walletservice.client.WarehouseWalletDTO
+import it.polito.wa2.ecommerce.walletservice.client.wallet.CustomerWalletDTO
+import it.polito.wa2.ecommerce.walletservice.client.wallet.WalletDTO
+import it.polito.wa2.ecommerce.walletservice.client.wallet.WarehouseWalletDTO
 import java.math.BigDecimal
 import javax.persistence.*
 
