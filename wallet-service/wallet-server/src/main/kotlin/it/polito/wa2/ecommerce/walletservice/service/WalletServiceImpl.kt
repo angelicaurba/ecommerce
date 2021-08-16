@@ -1,11 +1,13 @@
 package it.polito.wa2.ecommerce.walletservice.service
 
-import it.polito.wa2.ecommerce.walletservice.client.transaction.Status
+import it.polito.wa2.ecommerce.walletservice.client.order.OrderStatus
+import it.polito.wa2.ecommerce.walletservice.client.order.Status
+import it.polito.wa2.ecommerce.walletservice.client.order.request.OrderPaymentRequestDTO
+import it.polito.wa2.ecommerce.walletservice.client.order.request.OrderPaymentType
+import it.polito.wa2.ecommerce.walletservice.client.order.request.OrderRequestDTO
+import it.polito.wa2.ecommerce.walletservice.client.order.request.RefundRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.transaction.TransactionDTO
-import it.polito.wa2.ecommerce.walletservice.client.transaction.TransactionStatus
-import it.polito.wa2.ecommerce.walletservice.client.transaction.request.OrderPaymentRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.transaction.request.RechargeRequestDTO
-import it.polito.wa2.ecommerce.walletservice.client.transaction.request.OrderPaymentType
 import it.polito.wa2.ecommerce.walletservice.client.wallet.WalletDTO
 import it.polito.wa2.ecommerce.walletservice.client.wallet.request.CustomerWalletCreationRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.wallet.request.WalletCreationRequestDTO
@@ -116,31 +118,52 @@ class WalletServiceImpl : WalletService {
 
     }
 
-    override fun processOrderPaymentRequest(orderPaymentRequestDTO: OrderPaymentRequestDTO): TransactionStatus {
+    override fun processOrderRequest(orderRequestDTO: OrderRequestDTO): OrderStatus {
         //TODO manage exceptions
-        val orderId = orderPaymentRequestDTO.orderId
+        val orderId = orderRequestDTO.orderId
         val walletFrom =
-            walletRepository.findByIdAndType(orderPaymentRequestDTO.walletFrom.parseID(), WalletType.CUSTOMER)
-                ?: return TransactionStatus(
+            walletRepository.findByIdAndType(orderRequestDTO.walletFrom.parseID(), WalletType.CUSTOMER)
+                ?: return OrderStatus(
                     orderId,
                     Status.FAILED,
                     "Cannot find required wallet"
                 )
-        for (transactionRequest in orderPaymentRequestDTO.transactionList) {
-            val transaction = Transaction(
-                walletFrom,
-                getWalletOrThrowException(transactionRequest.walletTo.parseID()),
-                when (orderPaymentRequestDTO.requestType) {
-                    OrderPaymentType.PAY -> TransactionType.ORDER_PAYMENT
-                    OrderPaymentType.REFUND -> TransactionType.ORDER_REFUND
-                },
-                System.currentTimeMillis(), //TODO should be autocreated?
-                transactionRequest.amount,
-                orderId
 
-            )
+        if (orderRequestDTO is OrderPaymentRequestDTO) {
 
-            processTransaction(transaction)
+
+            for (transactionRequest in orderRequestDTO.transactionList) {
+                val transaction = Transaction(
+                    walletFrom,
+                    getWalletOrThrowException(transactionRequest.walletTo.parseID()),
+                    TransactionType.ORDER_PAYMENT,
+                    System.currentTimeMillis(), //TODO should be autocreated?
+                    transactionRequest.amount,
+                    orderId
+
+                )
+
+                processTransaction(transaction)
+            }
+        } else if (orderRequestDTO is RefundRequestDTO) {
+            //REFUND
+            val previousTransactions =
+                transactionRepository.findByFromWalletAndOperationReferenceAndType(walletFrom, orderId)
+            for (previousTransaction in previousTransactions) {
+
+                val transaction = Transaction(
+                    getWalletOrThrowException(previousTransaction.toWallet.getId()!!),
+                    walletFrom,
+                    TransactionType.ORDER_REFUND,
+                    System.currentTimeMillis(), //TODO should be autocreated?
+                    previousTransaction.amount,
+                    orderId
+
+                )
+
+                processTransaction(transaction)
+
+            }
         }
 
 //        return TransactionStatus(
@@ -149,15 +172,17 @@ class WalletServiceImpl : WalletService {
 //            "Not enough money"
 //        )
 
-        return TransactionStatus(orderId, when (orderPaymentRequestDTO.requestType) {
-            OrderPaymentType.PAY -> Status.COMPLETED
-            OrderPaymentType.REFUND -> Status.REFUNDED
-        }, null)
+        return OrderStatus(
+            orderId, when (orderRequestDTO.requestType) {
+                OrderPaymentType.PAY -> Status.COMPLETED
+                OrderPaymentType.REFUND -> Status.REFUNDED
+            }, null
+        )
 
 
     }
 
-    private fun processTransaction(
+    private inline fun processTransaction(
         transaction: Transaction,
     ): Transaction {
         val amount = transaction.amount
@@ -181,8 +206,8 @@ class WalletServiceImpl : WalletService {
                     //TODO change exception type
                     throw Exception("Not a warehouse")
                 }
-                transaction.fromWallet!!.amount = transaction.fromWallet!!.amount.plus(amount)
-                transaction.toWallet.amount = transaction.toWallet.amount.minus(amount)
+                transaction.fromWallet!!.amount = transaction.fromWallet!!.amount.minus(amount)
+                transaction.toWallet.amount = transaction.toWallet.amount.plus(amount)
 
             }
             TransactionType.RECHARGE -> {
