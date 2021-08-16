@@ -1,5 +1,6 @@
 package it.polito.wa2.ecommerce.catalogueservice.domain
 
+import it.polito.wa2.ecommerce.catalogueservice.dto.ProductDTO
 import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
@@ -9,16 +10,29 @@ import java.util.*
 @Document(collection = "products")
 data class Product(
     @Id val id: String? = null,
-    val name: String,
-    val description: String,
-    val photoId: ObjectId,
-    val category: Category,
-    val price: BigDecimal,
-    val numStars: Long,
-    val numRatings: Long,
+    var name: String,
+    var description: String,
+    var category: Category,
+    var price: BigDecimal,
+    var numStars: Long,
+    var numRatings: Long,
     val creationDate: Date,
-//    val comments: List<Comment>
-    )
+    ){
+    fun toDTO(): ProductDTO{
+        return ProductDTO(
+            id!!,
+            name,
+            description,
+            " /products/$id/picture",
+            category,
+            price,
+            numStars,
+            numRatings,
+            creationDate,
+            "/products/$id/comments"
+        )
+    }
+}
 
 enum class Category{
     HOME, FOOD, TECH, OTHER
