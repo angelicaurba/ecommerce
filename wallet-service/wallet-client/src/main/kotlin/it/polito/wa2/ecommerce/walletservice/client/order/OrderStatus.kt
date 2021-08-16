@@ -1,9 +1,9 @@
-package it.polito.wa2.ecommerce.walletservice.client.transaction
+package it.polito.wa2.ecommerce.walletservice.client.order
 
 
 //Message to be delivered once the order processing has been completed
 
-data class TransactionStatus(
+data class OrderStatus(
     val orderID: String,
     val status: Status,
     val errorMessage: String?
