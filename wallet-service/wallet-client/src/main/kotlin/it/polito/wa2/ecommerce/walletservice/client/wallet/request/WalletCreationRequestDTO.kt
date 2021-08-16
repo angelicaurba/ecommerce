@@ -10,6 +10,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 @JsonSubTypes(
 value =  [
     JsonSubTypes.Type(value = WarehouseWalletCreationRequestDTO::class,  name="warehouse"),
-    JsonSubTypes.Type(value = CustomerWalletCreationRequestDTO::class, name = "cat")
+    JsonSubTypes.Type(value = CustomerWalletCreationRequestDTO::class, name = "customer")
         ])
 interface WalletCreationRequestDTO
