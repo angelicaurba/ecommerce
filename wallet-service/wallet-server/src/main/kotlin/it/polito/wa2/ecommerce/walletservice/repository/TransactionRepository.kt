@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.PagingAndSortingRepository
 import org.springframework.data.repository.query.Param
-import javax.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
 
 interface TransactionRepository : PagingAndSortingRepository<Transaction, Long> {
     @Query("select t from Transaction t " +
