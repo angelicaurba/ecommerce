@@ -1,14 +1,18 @@
 package it.polito.wa2.ecommerce.walletservice.repository;
 
 import it.polito.wa2.ecommerce.walletservice.domain.Transaction
+import it.polito.wa2.ecommerce.walletservice.domain.TransactionType
 import it.polito.wa2.ecommerce.walletservice.domain.Wallet
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.PagingAndSortingRepository
 import org.springframework.data.repository.query.Param
-import javax.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
+
 
 interface TransactionRepository : PagingAndSortingRepository<Transaction, Long> {
+
+
     @Query("select t from Transaction t " +
             "where (t.fromWallet=:wallet or t.toWallet=:wallet) and t.timestamp between :startTime and :endTime"
     )
@@ -22,4 +26,12 @@ interface TransactionRepository : PagingAndSortingRepository<Transaction, Long> 
 
     @Transactional(readOnly = true)
     fun findByFromWalletOrToWallet(walletFrom: Wallet, walletTo: Wallet, page: Pageable): List<Transaction>
+
+
+    @Transactional(readOnly = true)
+    fun findByFromWalletAndOperationReferenceAndType(
+        fromWallet: Wallet,
+        operationReference: String,
+        type: TransactionType = TransactionType.ORDER_PAYMENT
+    ):List<Transaction>
 }
