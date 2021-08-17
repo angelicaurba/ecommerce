@@ -13,4 +13,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
+
+    //adding internal modules dependency for dtos
+    implementation(project(":common"))
 }
