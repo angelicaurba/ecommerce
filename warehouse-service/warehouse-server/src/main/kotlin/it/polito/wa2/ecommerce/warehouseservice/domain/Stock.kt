@@ -13,8 +13,9 @@ class Stock (
     @ManyToOne
     val warehouse: Warehouse,
 
-    @ManyToOne
-    val product: Product,
+//    TODO check here
+//    @ManyToOne
+//    val product: Product,
 
     @field:NotNull
     @Column
@@ -24,8 +25,9 @@ class Stock (
     @Column
     val alarm: Long
 ) : EntityBase<Long>(){
+
     fun toDTO(): StockDTO {
         TODO("implement")
-        return StockDTO(warehouse.getId(), product, quantity, alarm)
+        return StockDTO(warehouse.getId(), "product", quantity, alarm)
     }
 }

@@ -46,8 +46,8 @@ class WarehouseController {
     @PutMapping("/{warehouseId}")
     @ResponseStatus(HttpStatus.OK)
     fun updateWarehouse(@PathVariable("warehouseId") @Min(0) warehouseId: Long,
-                        @RequestBody @NotNull warehouse: WarehouseDTO) : WarehouseDTO{
-        return warehouseService.updateWarehouse(warehouseId, WarehouseDTO)
+                        @RequestBody @NotNull warehouse: WarehouseDTO) : WarehouseDTO {
+        return warehouseService.updateWarehouse(warehouseId, warehouse)
     }
     /*
 
