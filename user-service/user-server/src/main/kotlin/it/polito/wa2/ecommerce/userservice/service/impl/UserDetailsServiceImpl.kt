@@ -5,7 +5,7 @@ import it.polito.wa2.ecommerce.userservice.client.UserDetailsDTO
 import it.polito.wa2.ecommerce.userservice.domain.User
 import it.polito.wa2.ecommerce.userservice.repository.UserRepository
 import it.polito.wa2.ecommerce.userservice.service.NotificationService
-import it.polito.wa2.group6.dto.RegistrationRequest
+import it.polito.wa2.ecommerce.userservice.client.RegistrationRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional
 class UserDetailsServiceImpl: UserDetailsService {
 
     // TODO Connect to mail service
+    // TODO Using Debezium
 //    @Autowired
 //    lateinit var mailService: MailService
     @Autowired
@@ -51,7 +52,6 @@ class UserDetailsServiceImpl: UserDetailsService {
             registrationRequest.username,
             passwordEncoder.encode(registrationRequest.password),
             registrationRequest.email,
-            // TODO should roles be defined in the request object, or with different APIs?
             Rolename.CUSTOMER.toString(),
             registrationRequest.name,
             registrationRequest.surname,
@@ -64,6 +64,7 @@ class UserDetailsServiceImpl: UserDetailsService {
         val token = notificationService.createEmailVerificationToken(savedUser)
 
         // TODO Send email to Mail service
+        // TODO save in outbox table
         println(token.token)
 /*
         mailService.sendMessage(savedUser.email, "Email verification",
@@ -120,8 +121,7 @@ class UserDetailsServiceImpl: UserDetailsService {
         userRepository.save(user)
     }
 
-    // TODO: Authorization only in gateway (?)
-    // @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
+     @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     fun setIsEnabledByUsername(newIsEnabled: Boolean, username: String){
         val user = findUserByUsername(username)
         user.isEnabled = newIsEnabled

@@ -15,19 +15,23 @@ import javax.validation.Valid
 @Validated
 class UserController {
 
+    // TODO asymmetric key
+
     @Autowired
     lateinit var userDetailsService: UserDetailsServiceImpl
 
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    // TODO: check if having a string as a path variable can be a problem when routing
     fun getUser(@PathVariable userId: String): UserDetailsDTO{
         return userDetailsService.loadUserById(userId.toLong()).copy(password = null)
     }
 
+    // TODO Route to get email
+
+    // TODO Route to get roles
+
     @PutMapping("/{userId}/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    // TODO: check if having a string as a path variable can be a problem when routing
     fun changePassword(
         @PathVariable userId: String,
         @RequestBody @Valid request: PasswordChangeRequest, bindingResult: BindingResult,
@@ -44,25 +48,25 @@ class UserController {
             throw Exception()
         }
 
-        // TODO check if oldPassword == password in DB
+        // TODO import extension function to parse userId to long with exception
 
+        // TODO put in service
         if(!userDetailsService.verifyPassword(userId.toLong(), request.oldPassword)){
             // TODO use common exception handlers
-            // TODO choose type of exception (for security reasons)
+            // TODO 401 Unauthorized
             throw Exception()
         }
 
-        // TODO check if userId can update (maybe if it's the same as the JWT token user, or admin?
-        //  But probably an admin can't change the password of a user)
+        // TODO check if userId can update (if it's the same as the JWT token user)
         return userDetailsService.setPassword(userId.toLong(), request.newPassword)
     }
 
     @PatchMapping("/{userId}/roles")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    // TODO: check if having a string as a path variable can be a problem when routing
     fun changeRoles(@PathVariable userId: String){
 
         // TODO check if the requester is admin via JWT token
+        // TODO more general (give list of roles)
         return userDetailsService.upgradeToAdmin(userId.toLong())
     }
 }

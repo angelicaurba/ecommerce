@@ -4,7 +4,7 @@ import it.polito.wa2.ecommerce.userservice.client.LoginRequest
 import it.polito.wa2.ecommerce.userservice.client.UserDetailsDTO
 import it.polito.wa2.ecommerce.userservice.security.JwtUtils
 import it.polito.wa2.ecommerce.userservice.service.impl.UserDetailsServiceImpl
-import it.polito.wa2.group6.dto.RegistrationRequest
+import it.polito.wa2.ecommerce.userservice.client.RegistrationRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
@@ -23,7 +23,7 @@ import javax.validation.Valid
 @Validated
 class AuthController(val userDetailsServiceImpl: UserDetailsServiceImpl) {
 
-    // TODO: To be implemented in gateway (?)
+    // TODO: To be implemented in Common
 //    @Value( "\${application.jwt.jwtHeaderStart}" )
 //    lateinit var prefix: String
 
@@ -72,7 +72,7 @@ class AuthController(val userDetailsServiceImpl: UserDetailsServiceImpl) {
             UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password)
         )
 
-        // TODO Prefix in Common, or only passing the JWT token to the gateway, without creating the header
+        // TODO Prefix and "Authorization" in Common
         val prefix = "Bearer"
         response.setHeader("Authorization", "$prefix ${jwtUtils.generateJwtToken(authentication)}")
 
