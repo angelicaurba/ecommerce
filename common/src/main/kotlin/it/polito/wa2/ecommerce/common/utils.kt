@@ -8,6 +8,6 @@ fun getPageable(pageIdx: Int, pageSize: Int) =
         pageSize
     )
 
-fun String.parseID(): Long {
-    return this.toLongOrNull() ?: throw RuntimeException("Not found") // TODO change exception type
+fun String.parseID(exception:Exception?=null): Long {
+    return this.toLongOrNull() ?: throw exception ?: RuntimeException("Not found") // TODO change exception type
 }
