@@ -17,7 +17,7 @@ class StockServiceImpl: StockService {
         TODO("Not yet implemented")
     }
 
-    override fun addStock(stock: StockDTO): StockDTO {
+    override fun addStock(warehouseId: Long, stock: StockDTO): StockDTO {
         TODO("Not yet implemented")
     }
 }
