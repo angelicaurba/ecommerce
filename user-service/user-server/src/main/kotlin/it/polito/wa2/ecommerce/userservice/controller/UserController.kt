@@ -4,6 +4,7 @@ import it.polito.wa2.ecommerce.common.Rolename
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.common.parseID
+import it.polito.wa2.ecommerce.userservice.client.AddRolesRequest
 import it.polito.wa2.ecommerce.userservice.client.PasswordChangeRequest
 import it.polito.wa2.ecommerce.userservice.client.UserDetailsDTO
 import it.polito.wa2.ecommerce.userservice.service.impl.UserDetailsServiceImpl
@@ -62,9 +63,12 @@ class UserController {
 
     @PatchMapping("/{userId}/roles")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun changeRoles(@PathVariable userId: String){
+    fun addRoles(@PathVariable userId: String,
+        @RequestBody @Valid request: AddRolesRequest, bindingResult: BindingResult,){
+        if (bindingResult.hasErrors()) {
+            throw BadRequestException(bindingResult.fieldErrors.joinToString())
+        }
 
-        // TODO more general (give list of roles)
-        return userDetailsService.upgradeToAdmin(userId.parseID())
+        return userDetailsService.upgradeToAdmin(userId.parseID(), request.roles)
     }
 }

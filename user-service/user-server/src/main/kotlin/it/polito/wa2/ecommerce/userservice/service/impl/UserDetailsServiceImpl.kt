@@ -22,10 +22,10 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class UserDetailsServiceImpl: UserDetailsService {
 
-    // TODO Connect to mail service
-    // TODO Using Debezium
+    // TODO Connect to mail service (using Debezium)
 //    @Autowired
 //    lateinit var mailService: MailService
+
     @Autowired
     lateinit var notificationService: NotificationService
 
@@ -121,9 +121,13 @@ class UserDetailsServiceImpl: UserDetailsService {
     }
 
     @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
-    fun upgradeToAdmin(userId: Long) {
+    fun upgradeToAdmin(userId: Long, newRoles: Set<Rolename>) {
         val user = findUserById(userId)
-        user.addRole(Rolename.ADMIN)
+
+        newRoles.forEach{
+            user.addRole(it)
+        }
+
         userRepository.save(user)
     }
 
