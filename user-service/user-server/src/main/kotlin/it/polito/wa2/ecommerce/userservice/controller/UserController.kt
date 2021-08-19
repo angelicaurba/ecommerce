@@ -56,13 +56,8 @@ class UserController {
             throw BadRequestException("newPassword and confirmNewPassword should be equal")
         }
 
-        // TODO put in service
-        if(!userDetailsService.verifyPassword(userId.parseID(), request.oldPassword)){
-            throw ForbiddenException("User and password provided do not match")
-        }
-
         // TODO check if userId can update (if it's the same as the JWT token user)
-        return userDetailsService.setPassword(userId.parseID(), request.newPassword)
+        return userDetailsService.setPassword(userId.parseID(), request.oldPassword, request.newPassword)
     }
 
     @PatchMapping("/{userId}/roles")

@@ -2,6 +2,8 @@ package it.polito.wa2.ecommerce.userservice.service.impl
 
 import it.polito.wa2.ecommerce.common.Rolename
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
+import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
+import it.polito.wa2.ecommerce.common.parseID
 import it.polito.wa2.ecommerce.userservice.client.UserDetailsDTO
 import it.polito.wa2.ecommerce.userservice.domain.User
 import it.polito.wa2.ecommerce.userservice.repository.UserRepository
@@ -103,9 +105,13 @@ class UserDetailsServiceImpl: UserDetailsService {
         return user.authorities
     }
 
-    fun setPassword(userId: Long, password: String) {
+    fun setPassword(userId: Long, oldPassword: String, newPassword: String) {
+        if(!verifyPassword(userId, oldPassword)){
+            throw ForbiddenException("User and password provided do not match")
+        }
+
         val user = findUserById(userId)
-        user.password = passwordEncoder.encode(password)
+        user.password = passwordEncoder.encode(newPassword)
         userRepository.save(user)
     }
 
