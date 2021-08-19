@@ -1,5 +1,7 @@
 package it.polito.wa2.ecommerce.userservice.controller
 
+import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
+import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.userservice.client.PasswordChangeRequest
 import it.polito.wa2.ecommerce.userservice.client.UserDetailsDTO
 import it.polito.wa2.ecommerce.userservice.service.impl.UserDetailsServiceImpl
@@ -37,24 +39,18 @@ class UserController {
         @RequestBody @Valid request: PasswordChangeRequest, bindingResult: BindingResult,
         ){
         if (bindingResult.hasErrors()) {
-            // TODO use common exception handlers
-//            throw BadRequestException(bindingResult.fieldErrors.joinToString())
-            throw Exception()
+            throw BadRequestException(bindingResult.fieldErrors.joinToString())
         }
 
         if(request.newPassword != request.confirmNewPassword){
-            // TODO use common exception handlers
-//            throw BadRequestException("newPassword and confirmNewPassword should be equal")
-            throw Exception()
+            throw BadRequestException("newPassword and confirmNewPassword should be equal")
         }
 
         // TODO import extension function to parse userId to long with exception
 
         // TODO put in service
         if(!userDetailsService.verifyPassword(userId.toLong(), request.oldPassword)){
-            // TODO use common exception handlers
-            // TODO 401 Unauthorized
-            throw Exception()
+            throw ForbiddenException("User and password provided do not match")
         }
 
         // TODO check if userId can update (if it's the same as the JWT token user)
@@ -65,7 +61,6 @@ class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun changeRoles(@PathVariable userId: String){
 
-        // TODO check if the requester is admin via JWT token
         // TODO more general (give list of roles)
         return userDetailsService.upgradeToAdmin(userId.toLong())
     }

@@ -1,6 +1,7 @@
 package it.polito.wa2.ecommerce.userservice.service.impl
 
 import it.polito.wa2.ecommerce.common.Rolename
+import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.userservice.client.UserDetailsDTO
 import it.polito.wa2.ecommerce.userservice.domain.User
 import it.polito.wa2.ecommerce.userservice.repository.UserRepository
@@ -33,19 +34,13 @@ class UserDetailsServiceImpl: UserDetailsService {
 
     fun createUser(registrationRequest: RegistrationRequest){
         if (userRepository.findByUsername(registrationRequest.username) != null) {
-            // TODO use common exception handlers
-//            throw UsernameAlreadyExists("Username already in use")
-            throw Exception()
+            throw BadRequestException("Username already in use")
         }
         if(userRepository.findByEmail(registrationRequest.email) != null) {
-            // TODO use common exception handlers
-//            throw EmailAlreadyExists("Email already in use")
-            throw Exception()
+            throw BadRequestException("Email already in use")
         }
         if (registrationRequest.password != registrationRequest.confirmPassword) {
-            // TODO use common exception handlers
-//            throw BadRequestException("Passwords do not match")
-            throw Exception()
+            throw BadRequestException("Passwords do not match")
         }
 
         val user = User(
@@ -69,7 +64,7 @@ class UserDetailsServiceImpl: UserDetailsService {
 /*
         mailService.sendMessage(savedUser.email, "Email verification",
             "Hi ${savedUser.name} ${savedUser.surname},\n" +
-                    "thank you for signing in to LARA-FoodDelivery! " +
+                    "thank you for signing in to LARA-ecommerce! " +
                     "please verify your account by clicking on the link " +
                     "http://localhost:8080/auth/registrationConfirm?token=${token.token} \n" +
                     "Pay attention, this link will remain active up to 30 minutes.")
@@ -109,6 +104,7 @@ class UserDetailsServiceImpl: UserDetailsService {
         return passwordEncoder.matches(password, user.password)
     }
 
+    @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     fun upgradeToAdmin(userId: Long) {
         val user = findUserById(userId)
         user.addRole(Rolename.ADMIN)

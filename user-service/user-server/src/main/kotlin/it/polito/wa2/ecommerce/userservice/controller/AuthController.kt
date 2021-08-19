@@ -1,5 +1,6 @@
 package it.polito.wa2.ecommerce.userservice.controller
 
+import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.userservice.client.LoginRequest
 import it.polito.wa2.ecommerce.userservice.client.UserDetailsDTO
 import it.polito.wa2.ecommerce.userservice.security.JwtUtils
@@ -40,9 +41,7 @@ class AuthController(val userDetailsServiceImpl: UserDetailsServiceImpl) {
         bindingResult: BindingResult
     ) {
         if (bindingResult.hasErrors()) {
-            // TODO use common exception handlers
-//            throw BadRequestException(bindingResult.fieldErrors.joinToString())
-            throw Exception()
+            throw BadRequestException(bindingResult.fieldErrors.joinToString())
         }
 
         userDetailsServiceImpl.createUser(registrationRequest)
@@ -51,8 +50,6 @@ class AuthController(val userDetailsServiceImpl: UserDetailsServiceImpl) {
     @GetMapping("/registrationConfirm")
     @ResponseStatus(HttpStatus.OK)
     fun confirmRegistration(@RequestParam("token") token: String) {
-
-        // call verifytoken
         userDetailsServiceImpl.verifyToken(token)
     }
 
@@ -63,9 +60,7 @@ class AuthController(val userDetailsServiceImpl: UserDetailsServiceImpl) {
         response: HttpServletResponse
     ): UserDetails {
         if (bindingResult.hasErrors()) {
-            // TODO use common exception handlers
-//            throw BadRequestException(bindingResult.fieldErrors.joinToString())
-            throw Exception()
+            throw BadRequestException(bindingResult.fieldErrors.joinToString())
         }
         
         val authentication: Authentication = authenticationManager.authenticate(
