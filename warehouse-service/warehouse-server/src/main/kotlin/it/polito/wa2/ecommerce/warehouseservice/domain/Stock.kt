@@ -13,9 +13,9 @@ class Stock (
     @ManyToOne
     val warehouse: Warehouse,
 
-//    TODO check here
-//    @ManyToOne
-//    val product: Product,
+    @field:NotNull
+    @Column(unique=true)
+    val product: String,
 
     @field:NotNull
     @Column
@@ -28,6 +28,6 @@ class Stock (
 
     fun toDTO(): StockDTO {
         TODO("implement")
-        return StockDTO(warehouse.getId(), "product", quantity, alarm)
+        return StockDTO(warehouse.getId(), product, quantity, alarm)
     }
 }
