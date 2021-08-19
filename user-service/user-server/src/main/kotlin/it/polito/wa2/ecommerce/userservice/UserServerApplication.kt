@@ -17,7 +17,7 @@ const val tokenClearPeriod: Long = 3600000
 // 1000 * 60 * 60 * 24 = 86400000 = 1 day
 // 1000 * 60 * 60 * 1 = 3600000 = 1 hour
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = ["it.polito.wa2.ecommerce"])
 @EnableScheduling
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class Group6Application{
@@ -43,6 +43,8 @@ class Group6Application{
         emailVerificationTokenRepository.deleteAllByExpiryDateIsBefore(date)
     }
 }
+
+// TODO import ControllerAdvisor from common
 
 fun main(args: Array<String>) {
     runApplication<Group6Application>(*args)

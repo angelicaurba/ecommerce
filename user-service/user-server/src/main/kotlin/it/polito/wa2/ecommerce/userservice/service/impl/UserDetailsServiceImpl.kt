@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import javax.annotation.security.RolesAllowed
 
 @Transactional
 @Service
@@ -120,7 +121,7 @@ class UserDetailsServiceImpl: UserDetailsService {
         return passwordEncoder.matches(password, user.password)
     }
 
-    @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
+    @RolesAllowed("T(it.polito.wa2.ecommerce.common.Rolename).ADMIN")
     fun upgradeToAdmin(userId: Long, newRoles: Set<Rolename>) {
         val user = findUserById(userId)
 

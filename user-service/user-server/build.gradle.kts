@@ -26,6 +26,7 @@ dependencies {
     // TODO Enable when implementing eureka client functionalities
 //    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     implementation("org.springframework.kafka:spring-kafka")
+    implementation("javax.validation:validation-api:2.0.0.Final")
 
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("io.jsonwebtoken:jjwt-api:0.11.2")
