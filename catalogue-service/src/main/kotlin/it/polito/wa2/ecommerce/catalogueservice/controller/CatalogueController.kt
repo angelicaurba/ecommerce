@@ -4,7 +4,7 @@ import it.polito.wa2.ecommerce.catalogueservice.domain.Category
 import it.polito.wa2.ecommerce.catalogueservice.dto.CommentDTO
 import it.polito.wa2.ecommerce.catalogueservice.dto.ProductDTO
 import it.polito.wa2.ecommerce.catalogueservice.dto.ProductRequestDTO
-import it.polito.wa2.ecommerce.catalogueservice.service.CatalogueService
+import it.polito.wa2.ecommerce.catalogueservice.service.ProductService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -20,7 +20,7 @@ const val DEFAULT_PAGE_SIZE = "10"
 @RequestMapping("/products")
 class CatalogueController {
 
-    @Autowired lateinit var catalogueService: CatalogueService
+    @Autowired lateinit var productService: ProductService
 
     @GetMapping("/")
     @ResponseStatus(HttpStatus.OK)
@@ -31,13 +31,13 @@ class CatalogueController {
                               ) pageSize: Int
     ): List<ProductDTO> {
         isACategoryOrThrowBadRequest(category)
-        return catalogueService.getProductByCategory(Category.valueOf(category), pageIdx, pageSize)
+        return productService.getProductByCategory(Category.valueOf(category), pageIdx, pageSize)
     }
 
     @GetMapping("/{productId}")
     @ResponseStatus(HttpStatus.OK)
     fun getProductById(@PathVariable("productId") productId: String): ProductDTO {
-        return catalogueService.getProductById(productId)
+        return productService.getProductById(productId)
     }
 
     @PostMapping("/")
@@ -45,7 +45,7 @@ class CatalogueController {
     fun addProduct(
         @RequestBody @Valid productRequest: ProductRequestDTO
     ): ProductDTO {
-        return catalogueService.addProduct(productRequest)
+        return productService.addProduct(productRequest)
     }
 
     @PutMapping("/{productId}")
@@ -54,7 +54,7 @@ class CatalogueController {
         @PathVariable("productId") productId: String,
         @RequestBody @Valid  productRequest: ProductRequestDTO
     ): ProductDTO {
-        return catalogueService.updateOrCreateProduct(productId, productRequest)
+        return productService.updateOrCreateProduct(productId, productRequest)
     }
 
     @PatchMapping("/{productId}")
@@ -63,7 +63,9 @@ class CatalogueController {
         @PathVariable("productId") productId: String,
         @RequestBody productRequest: ProductRequestDTO
     ): ProductDTO {
-        return catalogueService.updateProductFields(productId, productRequest)
+        // TODO fare il check a mano che il prezzo sia maggiore di 0
+        //  oppure mettere il @valid e cercare di capire che errore mi ha dato
+        return productService.updateProductFields(productId, productRequest)
     }
 
     @DeleteMapping("/{productId}")
@@ -71,13 +73,13 @@ class CatalogueController {
     fun deleteProduct(
         @PathVariable("productId") productId: String
     ) {
-        catalogueService.deleteProduct(productId)
+        productService.deleteProduct(productId)
     }
 
     @GetMapping("/{productId}/picture")
     @ResponseStatus(HttpStatus.OK)
     fun getPictureByProductId(@PathVariable("productId") productId: String): ResponseEntity<Any> {
-        return catalogueService.getPictureByProductId(productId)
+        return productService.getPictureByProductId(productId)
     }
 
     @PostMapping("/{productId}/picture")
@@ -87,7 +89,7 @@ class CatalogueController {
         @RequestHeader format: String,
         @RequestBody file: MultipartFile
     ) {
-        catalogueService.updatePictureByProductId(productId, format, file)
+        productService.updatePictureByProductId(productId, format, file)
     }
 
     @GetMapping("/{productId}/warehouses")
@@ -101,13 +103,13 @@ class CatalogueController {
     fun addComment(@PathVariable("productId") productId: String,
                    @RequestBody comment: CommentDTO,
                    @RequestBody @Valid  productRequest: ProductRequestDTO): ProductDTO{
-        return catalogueService.addComment(productId, comment)
+        return productService.addComment(productId, comment)
     }
 
     @GetMapping("/{productId}/comments")
     @ResponseStatus(HttpStatus.OK)
     fun getComments(@PathVariable("productId") productId: String): List<CommentDTO>{
-        return catalogueService.getCommentsByProductId(productId)
+        return productService.getCommentsByProductId(productId)
     }
 
     private fun isACategoryOrThrowBadRequest(category: String){

@@ -7,7 +7,7 @@ import it.polito.wa2.ecommerce.catalogueservice.dto.ProductRequestDTO
 import org.springframework.http.ResponseEntity
 import org.springframework.web.multipart.MultipartFile
 
-interface CatalogueService {
+interface ProductService {
 
     fun getProductByCategory(category: Category, pageIdx: Int, pageSize: Int): List<ProductDTO>
     fun getProductById(productId: String): ProductDTO
@@ -15,8 +15,4 @@ interface CatalogueService {
     fun updateOrCreateProduct(productId: String, productRequest: ProductRequestDTO): ProductDTO
     fun updateProductFields(productId: String, productRequest: ProductRequestDTO): ProductDTO
     fun deleteProduct(productId: String)
-    fun getPictureByProductId(productId: String): ResponseEntity<Any>
-    fun updatePictureByProductId(productId: String, format: String, file: MultipartFile)
-    fun addComment(productId: String, comment: CommentDTO): ProductDTO
-    fun getCommentsByProductId(productId: String): List<CommentDTO>
 }
