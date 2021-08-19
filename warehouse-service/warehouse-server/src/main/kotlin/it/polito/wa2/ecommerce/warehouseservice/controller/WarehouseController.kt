@@ -75,25 +75,25 @@ class WarehouseController {
 
     @GetMapping("/{warehouseID}/products")
     @ResponseStatus(HttpStatus.OK)
-    fun getStocksByWarehouseID(@PathVariable("warehouseId") @Min(0) warehouseId: Long): StockDTO{
-        return stockService.getStocksByWarehouseID(warehouseId)
+    fun getStocksByWarehouseID(@PathVariable("warehouseID") @Min(0) warehouseID: Long): StockDTO{
+        return stockService.getStocksByWarehouseID(warehouseID)
     }
 
     @GetMapping("/{warehouseID}/products/{productID}")
     @ResponseStatus(HttpStatus.OK)
-    fun getStockByWarehouseIDandProductID(@PathVariable("warehouseId") @Min(0) warehouseId: Long,
+    fun getStockByWarehouseIDandProductID(@PathVariable("warehouseID") @Min(0) warehouseID: Long,
                             @PathVariable("productID") @Min(0) productID: Long): StockDTO{
-        return stockService.getStockByWarehouseIDandProductID(warehouseId, productID)
+        return stockService.getStockByWarehouseIDandProductID(warehouseID, productID)
     }
 
     @PostMapping("/{warehouseID}/products")
     @ResponseStatus(HttpStatus.CREATED)
     fun addStock(@RequestBody @Valid stock: StockDTO,
-                     bindingResult: BindingResult
+                 bindingResult: BindingResult, @PathVariable warehouseID: Long
     ): StockDTO {
         if (bindingResult.hasErrors())
             throw  Exception("error")//BadRequestException(bindingResult.fieldErrors.joinToString())
-        return stockService.addStock(stock)
+        return stockService.addStock(warehouseID, stock)
     }
 
 
