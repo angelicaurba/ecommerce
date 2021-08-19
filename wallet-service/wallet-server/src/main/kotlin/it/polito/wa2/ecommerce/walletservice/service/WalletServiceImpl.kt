@@ -1,5 +1,6 @@
 package it.polito.wa2.ecommerce.walletservice.service
 
+import it.polito.wa2.ecommerce.common.parseID
 import it.polito.wa2.ecommerce.walletservice.client.order.OrderStatus
 import it.polito.wa2.ecommerce.walletservice.client.order.Status
 import it.polito.wa2.ecommerce.walletservice.client.order.request.OrderPaymentRequestDTO
@@ -35,9 +36,7 @@ class WalletServiceImpl : WalletService {
     @Autowired
     lateinit var transactionRepository: TransactionRepository
 
-    fun String.parseID(): Long {
-        return this.toLongOrNull() ?: throw RuntimeException("Not found") // TODO change exception type
-    }
+
 
     override fun getWalletById(id: String): WalletDTO {
 
