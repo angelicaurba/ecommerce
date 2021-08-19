@@ -16,5 +16,5 @@ data class ProductDTO(
     val numStars: Long,
     val numRatings: Long,
     val creationDate: Date,
-    val commentsUrl: String // TODO ?
+    val commentsUrl: String
 )
