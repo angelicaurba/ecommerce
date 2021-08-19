@@ -1,5 +1,6 @@
 package it.polito.wa2.ecommerce.userservice.controller
 
+import it.polito.wa2.ecommerce.common.Rolename
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.userservice.client.PasswordChangeRequest
@@ -28,9 +29,17 @@ class UserController {
         return userDetailsService.loadUserById(userId.toLong()).copy(password = null)
     }
 
-    // TODO Route to get email
+    @GetMapping("/{userId}/email")
+    @ResponseStatus(HttpStatus.OK)
+    fun getEmail(@PathVariable userId: String): String{
+        return userDetailsService.loadUserEmailById(userId.toLong())
+    }
 
-    // TODO Route to get roles
+    @GetMapping("/{userId}/roles")
+    @ResponseStatus(HttpStatus.OK)
+    fun getRoles(@PathVariable userId: String): Set<Rolename>{
+        return userDetailsService.loadUserRolesById(userId.toLong())
+    }
 
     @PutMapping("/{userId}/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)

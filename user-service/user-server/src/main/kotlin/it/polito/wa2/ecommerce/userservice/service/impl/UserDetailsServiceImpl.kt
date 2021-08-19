@@ -93,6 +93,16 @@ class UserDetailsServiceImpl: UserDetailsService {
         return user.toDTO()
     }
 
+    fun loadUserEmailById(userId: Long): String {
+        val user = findUserById(userId)
+        return user.email
+    }
+
+    fun loadUserRolesById(userId: Long): Set<Rolename> {
+        val user = findUserById(userId).toDTO()
+        return user.authorities
+    }
+
     fun setPassword(userId: Long, password: String) {
         val user = findUserById(userId)
         user.password = passwordEncoder.encode(password)
