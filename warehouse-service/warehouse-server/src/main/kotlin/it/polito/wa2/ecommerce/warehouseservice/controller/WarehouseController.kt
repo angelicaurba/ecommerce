@@ -1,6 +1,8 @@
 package it.polito.wa2.ecommerce.warehouseservice.controller
 
+import it.polito.wa2.ecommerce.warehouseservice.client.StockDTO
 import it.polito.wa2.ecommerce.warehouseservice.client.WarehouseDTO
+import it.polito.wa2.ecommerce.warehouseservice.service.StockService
 import it.polito.wa2.ecommerce.warehouseservice.service.WarehouseService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -18,6 +20,9 @@ class WarehouseController {
 
     @Autowired
     lateinit var warehouseService: WarehouseService
+
+    @Autowired
+    lateinit var stockService: StockService
 
 
     @GetMapping("/")
@@ -38,7 +43,7 @@ class WarehouseController {
                      bindingResult: BindingResult
     ): WarehouseDTO {
         if (bindingResult.hasErrors())
-            throw  Exception("error")//BadRequestException(bindingResult.fieldErrors.joinToString())
+            throw  Exception("error")// TODO handle exceptions BadRequestException(bindingResult.fieldErrors.joinToString())
         return warehouseService.addWarehouse(warehouse)
     }
 
@@ -65,6 +70,33 @@ class WarehouseController {
     fun deleteWarehouseById(@PathVariable("warehouseId") @Min(0) warehouseId: Long): WarehouseDTO{
         return warehouseService.deleteWarehouseById(warehouseId)
     }
+
+    // STOCK
+
+    @GetMapping("/{warehouseID}/products")
+    @ResponseStatus(HttpStatus.OK)
+    fun getStocksByWarehouseID(@PathVariable("warehouseId") @Min(0) warehouseId: Long): StockDTO{
+        return stockService.getStocksByWarehouseID(warehouseId)
+    }
+
+    @GetMapping("/{warehouseID}/products/{productID}")
+    @ResponseStatus(HttpStatus.OK)
+    fun getStockByWarehouseIDandProductID(@PathVariable("warehouseId") @Min(0) warehouseId: Long,
+                            @PathVariable("productID") @Min(0) productID: Long): StockDTO{
+        return stockService.getStockByWarehouseIDandProductID(warehouseId, productID)
+    }
+
+    @PostMapping("/{warehouseID}/products")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun addStock(@RequestBody @Valid stock: StockDTO,
+                     bindingResult: BindingResult
+    ): StockDTO {
+        if (bindingResult.hasErrors())
+            throw  Exception("error")//BadRequestException(bindingResult.fieldErrors.joinToString())
+        return stockService.addStock(stock)
+    }
+
+
 
 
 

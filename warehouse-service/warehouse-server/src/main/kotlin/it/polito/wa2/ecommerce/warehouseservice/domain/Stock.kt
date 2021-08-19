@@ -1,6 +1,6 @@
 package it.polito.wa2.ecommerce.warehouseservice.domain
 
-import it.polito.wa2.ecommerce.catalogueservice.domain.Product
+// import it.polito.wa2.ecommerce.catalogueservice.domain.Product
 import it.polito.wa2.ecommerce.warehouseservice.client.StockDTO
 import it.polito.wa2.ecommerce.common.EntityBase
 import javax.persistence.Column
