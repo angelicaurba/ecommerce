@@ -1,12 +1,12 @@
 package it.polito.wa2.ecommerce.userservice.controller
 
+import it.polito.wa2.ecommerce.common.security.JwtUtils
 import it.polito.wa2.ecommerce.common.Rolename
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
-import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.common.parseID
 import it.polito.wa2.ecommerce.userservice.client.AddRolesRequest
 import it.polito.wa2.ecommerce.userservice.client.PasswordChangeRequest
-import it.polito.wa2.ecommerce.userservice.client.UserDetailsDTO
+import it.polito.wa2.ecommerce.common.security.UserDetailsDTO
 import it.polito.wa2.ecommerce.userservice.service.impl.UserDetailsServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -25,9 +25,12 @@ class UserController {
     @Autowired
     lateinit var userDetailsService: UserDetailsServiceImpl
 
+    @Autowired
+    lateinit var jwtUtils: JwtUtils
+
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    fun getUser(@PathVariable userId: String): UserDetailsDTO{
+    fun getUser(@PathVariable userId: String): UserDetailsDTO {
         return userDetailsService.loadUserById(userId.parseID()).copy(password = null)
     }
 
@@ -48,6 +51,7 @@ class UserController {
     fun changePassword(
         @PathVariable userId: String,
         @RequestBody @Valid request: PasswordChangeRequest, bindingResult: BindingResult,
+        @RequestHeader headers: Map<String, String>
         ){
         if (bindingResult.hasErrors()) {
             throw BadRequestException(bindingResult.fieldErrors.joinToString())
@@ -57,8 +61,14 @@ class UserController {
             throw BadRequestException("newPassword and confirmNewPassword should be equal")
         }
 
-        // TODO check if userId can update (if it's the same as the JWT token user)
-        return userDetailsService.setPassword(userId.parseID(), request.oldPassword, request.newPassword)
+        val jwtCompleteHeader = headers[jwtUtils.jwtHeaderName.lowercase()]!!
+
+        return userDetailsService.setPassword(
+            userId.parseID(),
+            request.oldPassword,
+            request.newPassword,
+            jwtUtils.getJwtTokenFromHeader(jwtCompleteHeader)
+        )
     }
 
     @PatchMapping("/{userId}/roles")

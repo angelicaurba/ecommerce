@@ -44,7 +44,6 @@ class Group6Application{
     }
 }
 
-// TODO import ControllerAdvisor from common
 
 fun main(args: Array<String>) {
     runApplication<Group6Application>(*args)

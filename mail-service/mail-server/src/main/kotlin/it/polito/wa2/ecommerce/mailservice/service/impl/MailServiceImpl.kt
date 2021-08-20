@@ -22,7 +22,7 @@ class MailServiceImpl: MailService{
     override fun sendMail(mail: MailDTO){
         if (mail.userEmail == null){
             // mail.userEmail = call user-service API to retrieve the email from mail.userId
-            // TODO implement it
+            // TODO implement request to user service (eureka)
         }
 
         val mailMessage = SimpleMailMessage()

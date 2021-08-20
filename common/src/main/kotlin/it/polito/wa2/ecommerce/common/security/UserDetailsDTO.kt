@@ -1,4 +1,4 @@
-package it.polito.wa2.ecommerce.userservice.client
+package it.polito.wa2.ecommerce.common.security
 
 import it.polito.wa2.ecommerce.common.Rolename
 import org.springframework.security.core.userdetails.UserDetails

@@ -2,8 +2,8 @@ package it.polito.wa2.ecommerce.userservice.controller
 
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.userservice.client.LoginRequest
-import it.polito.wa2.ecommerce.userservice.client.UserDetailsDTO
-import it.polito.wa2.ecommerce.userservice.security.JwtUtils
+import it.polito.wa2.ecommerce.common.security.UserDetailsDTO
+import it.polito.wa2.ecommerce.common.security.JwtUtils
 import it.polito.wa2.ecommerce.userservice.service.impl.UserDetailsServiceImpl
 import it.polito.wa2.ecommerce.userservice.client.RegistrationRequest
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,10 +23,6 @@ import javax.validation.Valid
 @RequestMapping("/auth")
 @Validated
 class AuthController(val userDetailsServiceImpl: UserDetailsServiceImpl) {
-
-    // TODO: To be implemented in Common
-//    @Value( "\${application.jwt.jwtHeaderStart}" )
-//    lateinit var prefix: String
 
     @Autowired
     lateinit var jwtUtils: JwtUtils
@@ -67,12 +63,14 @@ class AuthController(val userDetailsServiceImpl: UserDetailsServiceImpl) {
             UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password)
         )
 
-        // TODO Prefix and "Authorization" in Common
-        val prefix = "Bearer"
-        response.setHeader("Authorization", "$prefix ${jwtUtils.generateJwtToken(authentication)}")
+        val jwtToken = jwtUtils.generateJwtToken(authentication)
+
+        response.setHeader(
+            jwtUtils.jwtHeaderName,
+            jwtUtils.getHeaderFromJwtToken(jwtToken)
+        )
 
         return (authentication.principal as UserDetailsDTO).copy(password = null)
     }
-
 
 }
