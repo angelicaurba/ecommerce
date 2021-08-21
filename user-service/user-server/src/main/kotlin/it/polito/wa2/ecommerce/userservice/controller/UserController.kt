@@ -20,8 +20,6 @@ import javax.validation.Valid
 @Validated
 class UserController {
 
-    // TODO asymmetric key
-
     @Autowired
     lateinit var userDetailsService: UserDetailsServiceImpl
 

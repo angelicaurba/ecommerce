@@ -7,6 +7,8 @@ import it.polito.wa2.ecommerce.common.security.JwtUtils
 import it.polito.wa2.ecommerce.userservice.service.impl.UserDetailsServiceImpl
 import it.polito.wa2.ecommerce.userservice.client.RegistrationRequest
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.io.Resource
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -29,6 +31,10 @@ class AuthController(val userDetailsServiceImpl: UserDetailsServiceImpl) {
 
     @Autowired
     lateinit var authenticationManager: AuthenticationManager
+
+    @Value("classpath:rsa.key")
+    lateinit var privateKeyFile: Resource
+
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -63,7 +69,7 @@ class AuthController(val userDetailsServiceImpl: UserDetailsServiceImpl) {
             UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password)
         )
 
-        val jwtToken = jwtUtils.generateJwtToken(authentication)
+        val jwtToken = jwtUtils.generateJwtToken(authentication, privateKeyFile.file)
 
         response.setHeader(
             jwtUtils.jwtHeaderName,

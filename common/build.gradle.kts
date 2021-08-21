@@ -32,6 +32,10 @@ dependencies {
     implementation("javax.persistence:javax.persistence-api:2.2")
     implementation("org.springframework.data:spring-data-commons:2.5.3")
     implementation("org.springframework.boot:spring-boot-configuration-processor")
+
+//    implementation("springframework.security.oauth:spring-security-oauth2:2.3.5.RELEASE")
+    implementation("org.springframework.security:spring-security-jwt:1.0.10.RELEASE")
+    implementation("org.springframework.boot:spring-boot-configuration-processor")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {

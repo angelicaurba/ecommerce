@@ -1,26 +1,28 @@
 package it.polito.wa2.ecommerce.common.security
 
-import io.jsonwebtoken.ExpiredJwtException
-import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.MalformedJwtException
-import io.jsonwebtoken.UnsupportedJwtException
-import io.jsonwebtoken.security.Keys
+import io.jsonwebtoken.*
 import it.polito.wa2.ecommerce.common.Rolename
-import it.polito.wa2.ecommerce.common.security.UserDetailsDTO
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.PropertySource
+import org.springframework.core.io.Resource
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
-import java.security.Key
+import java.io.File
+import java.io.IOException
+import java.nio.file.Files
+import java.security.*
+import java.security.spec.InvalidKeySpecException
+import java.security.spec.PKCS8EncodedKeySpec
+import java.security.spec.X509EncodedKeySpec
 import java.util.*
+
 
 // TODO application properties don't work inside common
 const val JWT_EXPIRATION_MS = 1800000
 const val JWT_HEADER_NAME = "Authorization"
 const val JWT_HEADER_START = "Bearer"
 const val JWT_HEADER_SEPARATOR_CHAR = " "
-const val JWT_SECRET = "temporary"
+const val ENCRYPT_ALGORITHM = "RSA"
+
 @Component
 class JwtUtils {
 
@@ -42,14 +44,57 @@ class JwtUtils {
     val jwtHeaderName = JWT_HEADER_NAME
     val jwtHeaderStart = JWT_HEADER_START
     val jwtHeaderSeparatorChar = JWT_HEADER_SEPARATOR_CHAR
-    val jwtSecret = JWT_SECRET
+    val encryptAlgorithm = ENCRYPT_ALGORITHM
 
-    private val key: Key by lazy {
-        Keys.hmacShaKeyFor(jwtSecret.toByteArray())
+
+    @Value("classpath:rsa.pubkey")
+    lateinit var publicKeyFile: Resource
+
+    private val publicKey: PublicKey by lazy {
+        getPublicKey(publicKeyFile.file)
     }
 
-    fun generateJwtToken (authentication: Authentication): String{
+
+    @Throws(IOException::class)
+    private fun getKeyFromFile(file: File): ByteArray {
+        var fileContent = file.readText()
+
+        // Convert key file to string of Base64 characters:
+        // exclusion of "-----BEGIN/END ... KEY-----"
+        // exclusion of newlines
+
+        val re = Regex("-----[^-]*-----")
+        fileContent = re.replace(fileContent, "")
+        fileContent = fileContent.replace("\r", "").replace("\n", "")
+
+        return fileContent.toByteArray()
+    }
+
+    @Throws(NoSuchAlgorithmException::class, InvalidKeySpecException::class)
+    private fun getPublicKey(file: File): PublicKey {
+
+        var bytes: ByteArray = getKeyFromFile(file)
+
+        bytes = Base64.getDecoder().decode(bytes)
+        val spec = X509EncodedKeySpec(bytes)
+        val factory = KeyFactory.getInstance(encryptAlgorithm)
+        return factory.generatePublic(spec)
+    }
+
+    @Throws(NoSuchAlgorithmException::class, InvalidKeySpecException::class)
+    private fun getPrivateKey(file: File): PrivateKey {
+        var bytes: ByteArray = getKeyFromFile(file)
+
+        bytes = Base64.getDecoder().decode(bytes)
+        val spec = PKCS8EncodedKeySpec(bytes)
+        val factory = KeyFactory.getInstance(encryptAlgorithm)
+        return factory.generatePrivate(spec)
+    }
+
+
+    fun generateJwtToken (authentication: Authentication, privateKeyFile: File): String{
         val userPrincipal: UserDetailsDTO = authentication.principal as UserDetailsDTO
+        val privateKey: PrivateKey = getPrivateKey(privateKeyFile)
 
         return Jwts.builder()
             .setId(userPrincipal.id.toString())
@@ -57,13 +102,13 @@ class JwtUtils {
             .setIssuedAt(Date())
             .setExpiration(Date(Date().time + jwtExpirationMs))
             .claim("roles", userPrincipal.authorities.map{it.toString()})
-            .signWith(key)
+            .signWith(SignatureAlgorithm.RS256, privateKey)
             .compact()
     }
 
     fun validateJwtToken (authToken: String): Boolean {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build()
+            Jwts.parserBuilder().setSigningKey(publicKey).build()
                 .parseClaimsJws(authToken)
             return true
         } catch (e: SecurityException) {
@@ -83,8 +128,7 @@ class JwtUtils {
     }
 
     fun getDetailsFromJwtToken(authToken: String): JwtTokenDetails {
-
-        val tokenBody = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(authToken).body
+        val tokenBody = Jwts.parserBuilder().setSigningKey(publicKey).build().parseClaimsJws(authToken).body
 
         return JwtTokenDetails(
             id = tokenBody.id,

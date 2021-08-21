@@ -20,7 +20,7 @@ const val tokenClearPeriod: Long = 3600000
 @SpringBootApplication(scanBasePackages = ["it.polito.wa2.ecommerce"])
 @EnableScheduling
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-class Group6Application{
+class UserServerApplication{
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {
@@ -46,5 +46,5 @@ class Group6Application{
 
 
 fun main(args: Array<String>) {
-    runApplication<Group6Application>(*args)
+    runApplication<UserServerApplication>(*args)
 }
