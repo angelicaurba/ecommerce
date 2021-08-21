@@ -3,6 +3,7 @@ package it.polito.wa2.ecommerce.mailservice
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 import org.springframework.context.annotation.Bean
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.JavaMailSenderImpl
@@ -10,7 +11,8 @@ import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import java.util.*
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = ["it.polito.wa2.ecommerce"])
+@EnableEurekaClient
 @EnableScheduling
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class MailServerApplication{
