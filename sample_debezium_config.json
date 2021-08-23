@@ -1,0 +1,26 @@
+{
+  "name": "test-router",
+  "config": {
+    "connector.class": "io.debezium.connector.mysql.MySqlConnector",
+    "tasks.max": "1",
+    "database.hostname": "mysql",
+    "database.port": "3306",
+    "database.user": "root",
+    "database.password": "admin",
+    "database.server.id": "184054",
+    "database.server.name": "dbserver1",
+    "database.include.list": "test",
+    "table.include.list": "test.outbox",
+    "database.history.kafka.bootstrap.servers": "kafka:9092",
+    "database.history.kafka.topic": "schema-changes.inventory",
+    "tombstones.on.delete" : "false",
+    "transforms" : "outbox",
+    "transforms.outbox.type" : "io.debezium.transforms.outbox.EventRouter",
+    "transforms.outbox.route.by.field" : "destination_topic",
+    "transforms.outbox.table.field.event.id":  "event_id",
+    "transforms.outbox.route.topic.replacement" : "${routedByValue}",
+    "transforms.outbox.table.fields.additional.placement": "type:header:eventType",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter"
+  }
+}
