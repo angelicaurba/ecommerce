@@ -27,9 +27,14 @@ class ProductServiceImpl: ProductService {
 
     @Autowired lateinit var productRepository: ProductRepository
 
-    override fun getProductByCategory(category: Category, pageIdx: Int, pageSize: Int): List<ProductDTO> {
+    override fun getProductsByCategory(category: Category, pageIdx: Int, pageSize: Int): List<ProductDTO> {
         val page = getPageable(pageIdx, pageSize)
         return productRepository.findByCategory(category, page).map { it.toDTO() }
+    }
+
+    override fun getProducts(pageIdx: Int, pageSize: Int): List<ProductDTO> {
+        val page = getPageable(pageIdx, pageSize)
+        return productRepository.findAll(page).toList().map { it.toDTO() }
     }
 
     override fun getProductById(productId: String): ProductDTO {
