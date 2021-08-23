@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository
 interface WalletRepository: PagingAndSortingRepository<Wallet, Long> {
 
     fun findByWalletTypeAndOwner(walletType: WalletType, owner: String): Wallet?
-    fun findByIdAndType(id:Long, walletType: WalletType):Wallet?
+    fun findByIdAndWalletType(id:Long, walletType: WalletType):Wallet?
+
 
 }
