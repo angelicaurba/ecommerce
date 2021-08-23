@@ -1,10 +1,11 @@
 package it.polito.wa2.ecommerce.userservice.service.impl
 
+import it.polito.wa2.ecommerce.common.security.JwtUtils
 import it.polito.wa2.ecommerce.common.Rolename
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.common.parseID
-import it.polito.wa2.ecommerce.userservice.client.UserDetailsDTO
+import it.polito.wa2.ecommerce.common.security.UserDetailsDTO
 import it.polito.wa2.ecommerce.userservice.domain.User
 import it.polito.wa2.ecommerce.userservice.repository.UserRepository
 import it.polito.wa2.ecommerce.userservice.service.NotificationService
@@ -17,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import javax.annotation.security.RolesAllowed
 
 @Transactional
 @Service
@@ -33,6 +35,8 @@ class UserDetailsServiceImpl: UserDetailsService {
     lateinit var userRepository: UserRepository
     @Autowired
     lateinit var passwordEncoder: PasswordEncoder
+    @Autowired
+    lateinit var jwtUtils: JwtUtils
 
     fun createUser(registrationRequest: RegistrationRequest){
         if (userRepository.findByUsername(registrationRequest.username) != null) {
@@ -105,9 +109,15 @@ class UserDetailsServiceImpl: UserDetailsService {
         return user.authorities
     }
 
-    fun setPassword(userId: Long, oldPassword: String, newPassword: String) {
+    fun setPassword(userId: Long, oldPassword: String, newPassword: String, jwtToken: String) {
         if(!verifyPassword(userId, oldPassword)){
             throw ForbiddenException("User and password provided do not match")
+        }
+
+        val userFromJwtToken = jwtUtils.getDetailsFromJwtToken(jwtToken)
+
+        if(userId != userFromJwtToken.id.parseID()){
+            throw ForbiddenException("A user can only change their own password")
         }
 
         val user = findUserById(userId)
@@ -120,7 +130,7 @@ class UserDetailsServiceImpl: UserDetailsService {
         return passwordEncoder.matches(password, user.password)
     }
 
-    @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
+    @RolesAllowed("T(it.polito.wa2.ecommerce.common.Rolename).ADMIN")
     fun upgradeToAdmin(userId: Long, newRoles: Set<Rolename>) {
         val user = findUserById(userId)
 

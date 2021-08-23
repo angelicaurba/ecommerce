@@ -24,10 +24,19 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
     implementation("javax.validation:validation-api")
+    implementation("io.jsonwebtoken:jjwt-api:0.11.2")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-configuration-processor")
+
+//    implementation("springframework.security.oauth:spring-security-oauth2:2.3.5.RELEASE")
+    implementation("org.springframework.security:spring-security-jwt:1.0.10.RELEASE")
+    implementation("org.springframework.boot:spring-boot-configuration-processor")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {

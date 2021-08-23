@@ -4,6 +4,8 @@ import it.polito.wa2.ecommerce.catalogueservice.domain.Category
 import it.polito.wa2.ecommerce.catalogueservice.dto.CommentDTO
 import it.polito.wa2.ecommerce.catalogueservice.dto.ProductDTO
 import it.polito.wa2.ecommerce.catalogueservice.dto.ProductRequestDTO
+import it.polito.wa2.ecommerce.catalogueservice.service.CommentService
+import it.polito.wa2.ecommerce.catalogueservice.service.PhotoService
 import it.polito.wa2.ecommerce.catalogueservice.service.ProductService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -21,17 +23,23 @@ const val DEFAULT_PAGE_SIZE = "10"
 class CatalogueController {
 
     @Autowired lateinit var productService: ProductService
+    @Autowired lateinit var photoService: PhotoService
+    @Autowired lateinit var commentService: CommentService
 
-    @GetMapping("/")
+            @GetMapping("/")
     @ResponseStatus(HttpStatus.OK)
-    fun getProductsByCategory(@RequestParam("category") category: String,
+    fun getProductsByCategory(@RequestParam("category", required = false) category: String?,
                               @RequestParam("pageIndex", defaultValue = "1") @Min(1) pageIdx: Int,
                               @RequestParam("pageSize", defaultValue = DEFAULT_PAGE_SIZE) @Min(
                                   1
                               ) pageSize: Int
     ): List<ProductDTO> {
-        isACategoryOrThrowBadRequest(category)
-        return productService.getProductByCategory(Category.valueOf(category), pageIdx, pageSize)
+        if(category != null){
+            isACategoryOrThrowBadRequest(category)
+            return productService.getProductsByCategory(Category.valueOf(category), pageIdx, pageSize)
+        }else
+            return productService.getProducts(pageIdx, pageSize)
+
     }
 
     @GetMapping("/{productId}")
@@ -79,7 +87,7 @@ class CatalogueController {
     @GetMapping("/{productId}/picture")
     @ResponseStatus(HttpStatus.OK)
     fun getPictureByProductId(@PathVariable("productId") productId: String): ResponseEntity<Any> {
-        return productService.getPictureByProductId(productId)
+        return photoService.getPictureByProductId(productId)
     }
 
     @PostMapping("/{productId}/picture")
@@ -89,7 +97,7 @@ class CatalogueController {
         @RequestHeader format: String,
         @RequestBody file: MultipartFile
     ) {
-        productService.updatePictureByProductId(productId, format, file)
+        photoService.updatePictureByProductId(productId, format, file)
     }
 
     @GetMapping("/{productId}/warehouses")
@@ -103,13 +111,13 @@ class CatalogueController {
     fun addComment(@PathVariable("productId") productId: String,
                    @RequestBody comment: CommentDTO,
                    @RequestBody @Valid  productRequest: ProductRequestDTO): ProductDTO{
-        return productService.addComment(productId, comment)
+        return commentService.addComment(productId, comment)
     }
 
     @GetMapping("/{productId}/comments")
     @ResponseStatus(HttpStatus.OK)
     fun getComments(@PathVariable("productId") productId: String): List<CommentDTO>{
-        return productService.getCommentsByProductId(productId)
+        return commentService.getCommentsByProductId(productId)
     }
 
     private fun isACategoryOrThrowBadRequest(category: String){

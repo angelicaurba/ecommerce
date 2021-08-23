@@ -2,7 +2,7 @@ package it.polito.wa2.ecommerce.userservice.domain
 
 import it.polito.wa2.ecommerce.common.EntityBase
 import it.polito.wa2.ecommerce.common.Rolename
-import it.polito.wa2.ecommerce.userservice.client.UserDetailsDTO
+import it.polito.wa2.ecommerce.common.security.UserDetailsDTO
 import javax.persistence.*
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotNull
