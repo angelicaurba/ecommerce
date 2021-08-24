@@ -11,7 +11,7 @@ import it.polito.wa2.ecommerce.common.saga.domain.Emittable
     property = "requestType")
 @JsonSubTypes(
     value =  [
-        JsonSubTypes.Type(value = OrderPaymentRequestDTO::class,  name = "PAY"), //TODO test this
+        JsonSubTypes.Type(value = OrderPaymentRequestDTO::class,  name = "PAY"),
         JsonSubTypes.Type(value = RefundRequestDTO::class,  name = "REFUND")
     ])
 interface OrderRequestDTO: Emittable {

@@ -11,7 +11,6 @@ class RefundRequestDTO (
     override val orderId: String
     ): OrderRequestDTO{
 
-    @field:NotNull(message = "Type must be present")
     override val requestType: OrderPaymentType = OrderPaymentType.REFUND
 
     override fun getId(): String {
