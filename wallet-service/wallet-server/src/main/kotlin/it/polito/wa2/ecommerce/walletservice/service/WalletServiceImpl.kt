@@ -36,14 +36,9 @@ class WalletServiceImpl : WalletService {
     @Autowired
     lateinit var transactionRepository: TransactionRepository
 
-
-
     override fun getWalletById(id: String): WalletDTO {
-
         val idInt = id.parseID()
         return walletRepository.findByIdOrNull(idInt)?.toDTO() ?: throw RuntimeException() //TODO change exception type
-
-
     }
 
     override fun addWallet(walletCreationRequest: WalletCreationRequestDTO): WalletDTO {
@@ -121,7 +116,7 @@ class WalletServiceImpl : WalletService {
         //TODO manage exceptions
         val orderId = orderRequestDTO.orderId
         val walletFrom =
-            walletRepository.findByIdAndType(orderRequestDTO.walletFrom.parseID(), WalletType.CUSTOMER)
+            walletRepository.findByIdAndWalletType(orderRequestDTO.walletFrom.parseID(), WalletType.CUSTOMER)
                 ?: return OrderStatus(
                     orderId,
                     Status.FAILED,

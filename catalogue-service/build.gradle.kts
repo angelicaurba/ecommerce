@@ -27,7 +27,7 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j")
     implementation("org.springframework.cloud:spring-cloud-starter-gateway")
     implementation("org.springframework.cloud:spring-cloud-starter-loadbalancer")
-    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+//    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.security:spring-security-core")
 
@@ -36,6 +36,7 @@ dependencies {
 
     //adding internal modules dependency
     implementation(project(":common"))
+    implementation(project(":order-service:order-client"))
 }
 
 dependencyManagement {

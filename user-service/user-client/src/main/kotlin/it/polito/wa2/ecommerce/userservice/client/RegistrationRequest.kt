@@ -1,4 +1,4 @@
-package it.polito.wa2.group6.dto
+package it.polito.wa2.ecommerce.userservice.client
 
 import javax.validation.constraints.*
 
@@ -13,9 +13,8 @@ data class RegistrationRequest(
     val name: String,
     @field:NotNull(message = "surname must be present")
     val surname: String,
-    // TODO should it be nullable?
-    val deliveryAddress: String?,
-    // TODO should roles be defined in the request object, or with different APIs?
+    @field:NotNull(message = "deliveryAddress must be present")
+    val deliveryAddress: String,
     @field:Size(min = 8, message = "password should have a minimum of 8 characters")
     @field:NotNull(message = "password must be present")
     val password: String,

@@ -1,11 +1,15 @@
 package it.polito.wa2.ecommerce.userservice.service.impl
 
+import it.polito.wa2.ecommerce.common.security.JwtUtils
 import it.polito.wa2.ecommerce.common.Rolename
-import it.polito.wa2.ecommerce.userservice.client.UserDetailsDTO
+import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
+import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
+import it.polito.wa2.ecommerce.common.parseID
+import it.polito.wa2.ecommerce.common.security.UserDetailsDTO
 import it.polito.wa2.ecommerce.userservice.domain.User
 import it.polito.wa2.ecommerce.userservice.repository.UserRepository
 import it.polito.wa2.ecommerce.userservice.service.NotificationService
-import it.polito.wa2.group6.dto.RegistrationRequest
+import it.polito.wa2.ecommerce.userservice.client.RegistrationRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
@@ -14,14 +18,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import javax.annotation.security.RolesAllowed
 
 @Transactional
 @Service
 class UserDetailsServiceImpl: UserDetailsService {
 
-    // TODO Connect to mail service
+    // TODO Connect to mail service (using Debezium)
 //    @Autowired
 //    lateinit var mailService: MailService
+
     @Autowired
     lateinit var notificationService: NotificationService
 
@@ -29,29 +35,24 @@ class UserDetailsServiceImpl: UserDetailsService {
     lateinit var userRepository: UserRepository
     @Autowired
     lateinit var passwordEncoder: PasswordEncoder
+    @Autowired
+    lateinit var jwtUtils: JwtUtils
 
     fun createUser(registrationRequest: RegistrationRequest){
         if (userRepository.findByUsername(registrationRequest.username) != null) {
-            // TODO use common exception handlers
-//            throw UsernameAlreadyExists("Username already in use")
-            throw Exception()
+            throw BadRequestException("Username already in use")
         }
         if(userRepository.findByEmail(registrationRequest.email) != null) {
-            // TODO use common exception handlers
-//            throw EmailAlreadyExists("Email already in use")
-            throw Exception()
+            throw BadRequestException("Email already in use")
         }
         if (registrationRequest.password != registrationRequest.confirmPassword) {
-            // TODO use common exception handlers
-//            throw BadRequestException("Passwords do not match")
-            throw Exception()
+            throw BadRequestException("Passwords do not match")
         }
 
         val user = User(
             registrationRequest.username,
             passwordEncoder.encode(registrationRequest.password),
             registrationRequest.email,
-            // TODO should roles be defined in the request object, or with different APIs?
             Rolename.CUSTOMER.toString(),
             registrationRequest.name,
             registrationRequest.surname,
@@ -64,11 +65,12 @@ class UserDetailsServiceImpl: UserDetailsService {
         val token = notificationService.createEmailVerificationToken(savedUser)
 
         // TODO Send email to Mail service
+        // TODO save in outbox table
         println(token.token)
 /*
         mailService.sendMessage(savedUser.email, "Email verification",
             "Hi ${savedUser.name} ${savedUser.surname},\n" +
-                    "thank you for signing in to LARA-FoodDelivery! " +
+                    "thank you for signing in to LARA-ecommerce! " +
                     "please verify your account by clicking on the link " +
                     "http://localhost:8080/auth/registrationConfirm?token=${token.token} \n" +
                     "Pay attention, this link will remain active up to 30 minutes.")
@@ -97,9 +99,29 @@ class UserDetailsServiceImpl: UserDetailsService {
         return user.toDTO()
     }
 
-    fun setPassword(userId: Long, password: String) {
+    fun loadUserEmailById(userId: Long): String {
         val user = findUserById(userId)
-        user.password = passwordEncoder.encode(password)
+        return user.email
+    }
+
+    fun loadUserRolesById(userId: Long): Set<Rolename> {
+        val user = findUserById(userId).toDTO()
+        return user.authorities
+    }
+
+    fun setPassword(userId: Long, oldPassword: String, newPassword: String, jwtToken: String) {
+        if(!verifyPassword(userId, oldPassword)){
+            throw ForbiddenException("User and password provided do not match")
+        }
+
+        val userFromJwtToken = jwtUtils.getDetailsFromJwtToken(jwtToken)
+
+        if(userId != userFromJwtToken.id.parseID()){
+            throw ForbiddenException("A user can only change their own password")
+        }
+
+        val user = findUserById(userId)
+        user.password = passwordEncoder.encode(newPassword)
         userRepository.save(user)
     }
 
@@ -108,9 +130,14 @@ class UserDetailsServiceImpl: UserDetailsService {
         return passwordEncoder.matches(password, user.password)
     }
 
-    fun upgradeToAdmin(userId: Long) {
+    @RolesAllowed("T(it.polito.wa2.ecommerce.common.Rolename).ADMIN")
+    fun upgradeToAdmin(userId: Long, newRoles: Set<Rolename>) {
         val user = findUserById(userId)
-        user.addRole(Rolename.ADMIN)
+
+        newRoles.forEach{
+            user.addRole(it)
+        }
+
         userRepository.save(user)
     }
 
@@ -120,8 +147,7 @@ class UserDetailsServiceImpl: UserDetailsService {
         userRepository.save(user)
     }
 
-    // TODO: Authorization only in gateway (?)
-    // @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
+     @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     fun setIsEnabledByUsername(newIsEnabled: Boolean, username: String){
         val user = findUserByUsername(username)
         user.isEnabled = newIsEnabled

@@ -15,8 +15,6 @@ This controller will be a Apache Kafka subscriber, but for testing purposes
 it will be temporarily implemented as a REST API
 */
 
-// TODO wire common controller advisor
-
 @RestController
 @RequestMapping("/mail")
 @Validated

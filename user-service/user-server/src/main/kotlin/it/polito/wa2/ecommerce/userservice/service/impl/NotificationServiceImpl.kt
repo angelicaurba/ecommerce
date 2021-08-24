@@ -1,5 +1,6 @@
 package it.polito.wa2.ecommerce.userservice.service.impl
 
+import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.userservice.domain.EmailVerificationToken
 import it.polito.wa2.ecommerce.userservice.domain.User
 import it.polito.wa2.ecommerce.userservice.repository.EmailVerificationTokenRepository
@@ -32,9 +33,7 @@ class NotificationServiceImpl: NotificationService {
 
         val evt = emailVerificationTokenRepository.findByToken(token)
         if (evt == null || evt.hasExpired()) {
-            // TODO use common exception handlers
-//            throw TokenExpiredException("Token has expired!")
-            throw Exception()
+            throw ForbiddenException("Token has expired!")
         }
 
         return evt

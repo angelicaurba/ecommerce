@@ -2,6 +2,7 @@ package it.polito.wa2.ecommerce.walletservice.client.order.request
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import it.polito.wa2.ecommerce.common.saga.domain.Emittable
 
 
 @JsonTypeInfo(
@@ -10,10 +11,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
     property = "requestType")
 @JsonSubTypes(
     value =  [
-        JsonSubTypes.Type(value = OrderRequestDTO::class,  name = "PAY"), //TODO test this
+        JsonSubTypes.Type(value = OrderPaymentRequestDTO::class,  name = "PAY"),
         JsonSubTypes.Type(value = RefundRequestDTO::class,  name = "REFUND")
     ])
-interface OrderRequestDTO {
+interface OrderRequestDTO: Emittable {
     val walletFrom: String
     val userId: String
     val orderId: String

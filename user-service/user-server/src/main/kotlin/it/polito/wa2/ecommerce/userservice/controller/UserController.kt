@@ -1,7 +1,12 @@
 package it.polito.wa2.ecommerce.userservice.controller
 
+import it.polito.wa2.ecommerce.common.security.JwtUtils
+import it.polito.wa2.ecommerce.common.Rolename
+import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
+import it.polito.wa2.ecommerce.common.parseID
+import it.polito.wa2.ecommerce.userservice.client.AddRolesRequest
 import it.polito.wa2.ecommerce.userservice.client.PasswordChangeRequest
-import it.polito.wa2.ecommerce.userservice.client.UserDetailsDTO
+import it.polito.wa2.ecommerce.common.security.UserDetailsDTO
 import it.polito.wa2.ecommerce.userservice.service.impl.UserDetailsServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -18,51 +23,60 @@ class UserController {
     @Autowired
     lateinit var userDetailsService: UserDetailsServiceImpl
 
+    @Autowired
+    lateinit var jwtUtils: JwtUtils
+
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    // TODO: check if having a string as a path variable can be a problem when routing
-    fun getUser(@PathVariable userId: String): UserDetailsDTO{
-        return userDetailsService.loadUserById(userId.toLong()).copy(password = null)
+    fun getUser(@PathVariable userId: String): UserDetailsDTO {
+        return userDetailsService.loadUserById(userId.parseID()).copy(password = null)
+    }
+
+    @GetMapping("/{userId}/email")
+    @ResponseStatus(HttpStatus.OK)
+    fun getEmail(@PathVariable userId: String): String{
+        return userDetailsService.loadUserEmailById(userId.parseID())
+    }
+
+    @GetMapping("/{userId}/roles")
+    @ResponseStatus(HttpStatus.OK)
+    fun getRoles(@PathVariable userId: String): Set<Rolename>{
+        return userDetailsService.loadUserRolesById(userId.parseID())
     }
 
     @PutMapping("/{userId}/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    // TODO: check if having a string as a path variable can be a problem when routing
     fun changePassword(
         @PathVariable userId: String,
         @RequestBody @Valid request: PasswordChangeRequest, bindingResult: BindingResult,
+        @RequestHeader headers: Map<String, String>
         ){
         if (bindingResult.hasErrors()) {
-            // TODO use common exception handlers
-//            throw BadRequestException(bindingResult.fieldErrors.joinToString())
-            throw Exception()
+            throw BadRequestException(bindingResult.fieldErrors.joinToString())
         }
 
         if(request.newPassword != request.confirmNewPassword){
-            // TODO use common exception handlers
-//            throw BadRequestException("newPassword and confirmNewPassword should be equal")
-            throw Exception()
+            throw BadRequestException("newPassword and confirmNewPassword should be equal")
         }
 
-        // TODO check if oldPassword == password in DB
+        val jwtCompleteHeader = headers[jwtUtils.jwtHeaderName.lowercase()]!!
 
-        if(!userDetailsService.verifyPassword(userId.toLong(), request.oldPassword)){
-            // TODO use common exception handlers
-            // TODO choose type of exception (for security reasons)
-            throw Exception()
-        }
-
-        // TODO check if userId can update (maybe if it's the same as the JWT token user, or admin?
-        //  But probably an admin can't change the password of a user)
-        return userDetailsService.setPassword(userId.toLong(), request.newPassword)
+        return userDetailsService.setPassword(
+            userId.parseID(),
+            request.oldPassword,
+            request.newPassword,
+            jwtUtils.getJwtTokenFromHeader(jwtCompleteHeader)
+        )
     }
 
     @PatchMapping("/{userId}/roles")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    // TODO: check if having a string as a path variable can be a problem when routing
-    fun changeRoles(@PathVariable userId: String){
+    fun addRoles(@PathVariable userId: String,
+        @RequestBody @Valid request: AddRolesRequest, bindingResult: BindingResult,){
+        if (bindingResult.hasErrors()) {
+            throw BadRequestException(bindingResult.fieldErrors.joinToString())
+        }
 
-        // TODO check if the requester is admin via JWT token
-        return userDetailsService.upgradeToAdmin(userId.toLong())
+        return userDetailsService.upgradeToAdmin(userId.parseID(), request.roles)
     }
 }

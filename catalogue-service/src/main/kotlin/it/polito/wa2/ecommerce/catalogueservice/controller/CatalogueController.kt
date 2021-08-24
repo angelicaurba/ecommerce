@@ -4,7 +4,9 @@ import it.polito.wa2.ecommerce.catalogueservice.domain.Category
 import it.polito.wa2.ecommerce.catalogueservice.dto.CommentDTO
 import it.polito.wa2.ecommerce.catalogueservice.dto.ProductDTO
 import it.polito.wa2.ecommerce.catalogueservice.dto.ProductRequestDTO
-import it.polito.wa2.ecommerce.catalogueservice.service.CatalogueService
+import it.polito.wa2.ecommerce.catalogueservice.service.CommentService
+import it.polito.wa2.ecommerce.catalogueservice.service.PhotoService
+import it.polito.wa2.ecommerce.catalogueservice.service.ProductService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -20,24 +22,30 @@ const val DEFAULT_PAGE_SIZE = "10"
 @RequestMapping("/products")
 class CatalogueController {
 
-    @Autowired lateinit var catalogueService: CatalogueService
+    @Autowired lateinit var productService: ProductService
+    @Autowired lateinit var photoService: PhotoService
+    @Autowired lateinit var commentService: CommentService
 
-    @GetMapping("/")
+            @GetMapping("/")
     @ResponseStatus(HttpStatus.OK)
-    fun getProductsByCategory(@RequestParam("category") category: String,
+    fun getProductsByCategory(@RequestParam("category", required = false) category: String?,
                               @RequestParam("pageIndex", defaultValue = "1") @Min(1) pageIdx: Int,
                               @RequestParam("pageSize", defaultValue = DEFAULT_PAGE_SIZE) @Min(
                                   1
                               ) pageSize: Int
     ): List<ProductDTO> {
-        isACategoryOrThrowBadRequest(category)
-        return catalogueService.getProductByCategory(Category.valueOf(category), pageIdx, pageSize)
+        if(category != null){
+            isACategoryOrThrowBadRequest(category)
+            return productService.getProductsByCategory(Category.valueOf(category), pageIdx, pageSize)
+        }else
+            return productService.getProducts(pageIdx, pageSize)
+
     }
 
     @GetMapping("/{productId}")
     @ResponseStatus(HttpStatus.OK)
     fun getProductById(@PathVariable("productId") productId: String): ProductDTO {
-        return catalogueService.getProductById(productId)
+        return productService.getProductById(productId)
     }
 
     @PostMapping("/")
@@ -45,7 +53,7 @@ class CatalogueController {
     fun addProduct(
         @RequestBody @Valid productRequest: ProductRequestDTO
     ): ProductDTO {
-        return catalogueService.addProduct(productRequest)
+        return productService.addProduct(productRequest)
     }
 
     @PutMapping("/{productId}")
@@ -54,7 +62,7 @@ class CatalogueController {
         @PathVariable("productId") productId: String,
         @RequestBody @Valid  productRequest: ProductRequestDTO
     ): ProductDTO {
-        return catalogueService.updateOrCreateProduct(productId, productRequest)
+        return productService.updateOrCreateProduct(productId, productRequest)
     }
 
     @PatchMapping("/{productId}")
@@ -63,7 +71,9 @@ class CatalogueController {
         @PathVariable("productId") productId: String,
         @RequestBody productRequest: ProductRequestDTO
     ): ProductDTO {
-        return catalogueService.updateProductFields(productId, productRequest)
+        // TODO fare il check a mano che il prezzo sia maggiore di 0
+        //  oppure mettere il @valid e cercare di capire che errore mi ha dato
+        return productService.updateProductFields(productId, productRequest)
     }
 
     @DeleteMapping("/{productId}")
@@ -71,13 +81,13 @@ class CatalogueController {
     fun deleteProduct(
         @PathVariable("productId") productId: String
     ) {
-        catalogueService.deleteProduct(productId)
+        productService.deleteProduct(productId)
     }
 
     @GetMapping("/{productId}/picture")
     @ResponseStatus(HttpStatus.OK)
     fun getPictureByProductId(@PathVariable("productId") productId: String): ResponseEntity<Any> {
-        return catalogueService.getPictureByProductId(productId)
+        return photoService.getPictureByProductId(productId)
     }
 
     @PostMapping("/{productId}/picture")
@@ -87,7 +97,7 @@ class CatalogueController {
         @RequestHeader format: String,
         @RequestBody file: MultipartFile
     ) {
-        catalogueService.updatePictureByProductId(productId, format, file)
+        photoService.updatePictureByProductId(productId, format, file)
     }
 
     @GetMapping("/{productId}/warehouses")
@@ -101,13 +111,13 @@ class CatalogueController {
     fun addComment(@PathVariable("productId") productId: String,
                    @RequestBody comment: CommentDTO,
                    @RequestBody @Valid  productRequest: ProductRequestDTO): ProductDTO{
-        return catalogueService.addComment(productId, comment)
+        return commentService.addComment(productId, comment)
     }
 
     @GetMapping("/{productId}/comments")
     @ResponseStatus(HttpStatus.OK)
     fun getComments(@PathVariable("productId") productId: String): List<CommentDTO>{
-        return catalogueService.getCommentsByProductId(productId)
+        return commentService.getCommentsByProductId(productId)
     }
 
     private fun isACategoryOrThrowBadRequest(category: String){

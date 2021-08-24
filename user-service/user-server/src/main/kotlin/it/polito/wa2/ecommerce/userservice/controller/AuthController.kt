@@ -1,11 +1,14 @@
 package it.polito.wa2.ecommerce.userservice.controller
 
+import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.userservice.client.LoginRequest
-import it.polito.wa2.ecommerce.userservice.client.UserDetailsDTO
-import it.polito.wa2.ecommerce.userservice.security.JwtUtils
+import it.polito.wa2.ecommerce.common.security.UserDetailsDTO
+import it.polito.wa2.ecommerce.common.security.JwtUtils
 import it.polito.wa2.ecommerce.userservice.service.impl.UserDetailsServiceImpl
-import it.polito.wa2.group6.dto.RegistrationRequest
+import it.polito.wa2.ecommerce.userservice.client.RegistrationRequest
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.io.Resource
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -23,15 +26,15 @@ import javax.validation.Valid
 @Validated
 class AuthController(val userDetailsServiceImpl: UserDetailsServiceImpl) {
 
-    // TODO: To be implemented in gateway (?)
-//    @Value( "\${application.jwt.jwtHeaderStart}" )
-//    lateinit var prefix: String
-
     @Autowired
     lateinit var jwtUtils: JwtUtils
 
     @Autowired
     lateinit var authenticationManager: AuthenticationManager
+
+    @Value("classpath:rsa.key")
+    lateinit var privateKeyFile: Resource
+
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -40,9 +43,7 @@ class AuthController(val userDetailsServiceImpl: UserDetailsServiceImpl) {
         bindingResult: BindingResult
     ) {
         if (bindingResult.hasErrors()) {
-            // TODO use common exception handlers
-//            throw BadRequestException(bindingResult.fieldErrors.joinToString())
-            throw Exception()
+            throw BadRequestException(bindingResult.fieldErrors.joinToString())
         }
 
         userDetailsServiceImpl.createUser(registrationRequest)
@@ -51,8 +52,6 @@ class AuthController(val userDetailsServiceImpl: UserDetailsServiceImpl) {
     @GetMapping("/registrationConfirm")
     @ResponseStatus(HttpStatus.OK)
     fun confirmRegistration(@RequestParam("token") token: String) {
-
-        // call verifytoken
         userDetailsServiceImpl.verifyToken(token)
     }
 
@@ -63,21 +62,21 @@ class AuthController(val userDetailsServiceImpl: UserDetailsServiceImpl) {
         response: HttpServletResponse
     ): UserDetails {
         if (bindingResult.hasErrors()) {
-            // TODO use common exception handlers
-//            throw BadRequestException(bindingResult.fieldErrors.joinToString())
-            throw Exception()
+            throw BadRequestException(bindingResult.fieldErrors.joinToString())
         }
         
         val authentication: Authentication = authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password)
         )
 
-        // TODO Prefix in Common, or only passing the JWT token to the gateway, without creating the header
-        val prefix = "Bearer"
-        response.setHeader("Authorization", "$prefix ${jwtUtils.generateJwtToken(authentication)}")
+        val jwtToken = jwtUtils.generateJwtToken(authentication, privateKeyFile.file)
+
+        response.setHeader(
+            jwtUtils.jwtHeaderName,
+            jwtUtils.getHeaderFromJwtToken(jwtToken)
+        )
 
         return (authentication.principal as UserDetailsDTO).copy(password = null)
     }
-
 
 }

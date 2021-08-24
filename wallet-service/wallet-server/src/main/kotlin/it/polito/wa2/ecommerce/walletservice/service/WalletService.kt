@@ -16,5 +16,5 @@ interface WalletService {
     fun getTransactionsByWalletId(walletId: String, pageIdx: Int, pageSize: Int): List<TransactionDTO>
     fun getTransactionByWalletIdAndTransactionId(walletId: String, transactionId: String): TransactionDTO
     fun rechargeWallet(walletId: String, rechargeRequestDTO: RechargeRequestDTO): TransactionDTO
-    fun processOrderRequest(orderequestDTO: OrderRequestDTO): OrderStatus
+    fun processOrderRequest(orderRequestDTO: OrderRequestDTO): OrderStatus
 }

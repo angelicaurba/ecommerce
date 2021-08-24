@@ -5,5 +5,5 @@ include(":wallet-service:wallet-client", ":wallet-service:wallet-server",
     ":order-service:order-client", ":order-service:order-server",
     ":user-service:user-client", ":user-service:user-server",
     ":mail-service:mail-client", ":mail-service:mail-server",
-    ":catalogue-service", ":common"
-    )
+    ":catalogue-service", ":common",
+    ":eureka-server")
