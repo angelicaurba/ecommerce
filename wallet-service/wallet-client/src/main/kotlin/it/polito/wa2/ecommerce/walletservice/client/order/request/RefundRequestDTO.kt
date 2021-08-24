@@ -8,9 +8,14 @@ class RefundRequestDTO (
     @field:NotNull(message = "UserID must be present")
     override val userId: String,
     @field:NotNull(message = "OrderID must be present")
-    override val orderId: String,
+    override val orderId: String
+    ): OrderRequestDTO{
+
     @field:NotNull(message = "Type must be present")
-    override val requestType: OrderPaymentType,
-        ): OrderRequestDTO{
+    override val requestType: OrderPaymentType = OrderPaymentType.REFUND
+
+    override fun getId(): String {
+        return orderId
+    }
 
 }
