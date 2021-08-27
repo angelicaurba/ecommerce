@@ -1,12 +1,14 @@
 package it.polito.wa2.ecommerce.walletservice.service.impl
 
 import it.polito.wa2.ecommerce.common.parseID
+import it.polito.wa2.ecommerce.common.saga.service.MessageService
+import it.polito.wa2.ecommerce.common.saga.service.ProcessingLogService
 import it.polito.wa2.ecommerce.walletservice.client.order.OrderStatus
 import it.polito.wa2.ecommerce.walletservice.client.order.Status
 import it.polito.wa2.ecommerce.walletservice.client.order.request.OrderPaymentRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.order.request.OrderPaymentType
 import it.polito.wa2.ecommerce.walletservice.client.order.request.OrderRequestDTO
-import it.polito.wa2.ecommerce.walletservice.client.order.request.RefundRequestDTO
+import it.polito.wa2.ecommerce.walletservice.client.order.request.OrderRefundRequestDTO
 import it.polito.wa2.ecommerce.walletservice.domain.Transaction
 import it.polito.wa2.ecommerce.walletservice.domain.TransactionType
 import it.polito.wa2.ecommerce.walletservice.domain.WalletType
@@ -17,10 +19,12 @@ import it.polito.wa2.ecommerce.walletservice.service.TransactionService
 import it.polito.wa2.ecommerce.walletservice.service.WalletService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 @Service
-@Transactional
+@Transactional(propagation = Propagation.NESTED)
 class OrderProcessingServiceImpl: OrderProcessingService {
 
     @Autowired
@@ -35,9 +39,38 @@ class OrderProcessingServiceImpl: OrderProcessingService {
     @Autowired
     lateinit var transactionService: TransactionService
 
+    @Autowired
+    lateinit var processingLogService: ProcessingLogService
+
+    @Autowired
+    lateinit var messageService: MessageService
+
+    @Autowired
+    lateinit var self: OrderProcessingService
+
+    override fun process(orderRequestDTO: OrderRequestDTO, id: String){
+        val uuid = UUID.fromString(id)
+        if(processingLogService.isProcessed(uuid))
+            return
+
+        lateinit var status:OrderStatus
+        try {
+            status = self.processOrderRequest(orderRequestDTO)
+        }
+        catch (e:Exception){
+            status = OrderStatus(
+                orderRequestDTO.orderId,
+                Status.FAILED,
+                e.message)
+        }
+        finally {
+            processingLogService.process(uuid)
+            messageService.publish(status, "ORDER-${status.status}", "order") //TODO define name
+        }
+    }
+
 
     override fun processOrderRequest(orderRequestDTO: OrderRequestDTO): OrderStatus {
-        //TODO manage exceptions
         val orderId = orderRequestDTO.orderId
         val walletFrom =
             walletRepository.findByIdAndWalletType(orderRequestDTO.walletFrom.parseID(), WalletType.CUSTOMER)
@@ -55,7 +88,6 @@ class OrderProcessingServiceImpl: OrderProcessingService {
                     walletFrom,
                     walletService.getWalletOrThrowException(transactionRequest.walletTo.parseID()),
                     TransactionType.ORDER_PAYMENT,
-                    System.currentTimeMillis(), //TODO should be autocreated?
                     transactionRequest.amount,
                     orderId
 
@@ -63,7 +95,7 @@ class OrderProcessingServiceImpl: OrderProcessingService {
 
                 transactionService.processTransaction(transaction)
             }
-        } else if (orderRequestDTO is RefundRequestDTO) {
+        } else if (orderRequestDTO is OrderRefundRequestDTO) {
             //REFUND
             val previousTransactions =
                 transactionRepository.findByFromWalletAndOperationReferenceAndType(walletFrom, orderId)
@@ -73,7 +105,6 @@ class OrderProcessingServiceImpl: OrderProcessingService {
                     walletService.getWalletOrThrowException(previousTransaction.toWallet.getId()!!),
                     walletFrom,
                     TransactionType.ORDER_REFUND,
-                    System.currentTimeMillis(), //TODO should be autocreated?
                     previousTransaction.amount,
                     orderId
 

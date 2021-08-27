@@ -3,7 +3,7 @@ package it.polito.wa2.ecommerce.walletservice.controller
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.common.saga.service.MessageServiceImpl
 import it.polito.wa2.ecommerce.walletservice.client.order.request.OrderPaymentRequestDTO
-import it.polito.wa2.ecommerce.walletservice.client.order.request.RefundRequestDTO
+import it.polito.wa2.ecommerce.walletservice.client.order.request.OrderRefundRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.transaction.request.RechargeRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.transaction.TransactionDTO
 import it.polito.wa2.ecommerce.walletservice.client.wallet.request.WalletCreationRequestDTO
@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.BindingResult
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import java.lang.RuntimeException
 import javax.validation.Valid
 import javax.validation.constraints.Min
 
@@ -45,7 +44,7 @@ class WalletController {
          messageService.publish(OrderPaymentRequestDTO("123", "123", "1", listOf()),
             "OrderOK", "topic1")
         else
-            messageService.publish(RefundRequestDTO("123", "123", "1"),
+            messageService.publish(OrderRefundRequestDTO("123", "123", "1"),
                 "OrderOK", "topic1")
     }
 
