@@ -3,8 +3,8 @@ package it.polito.wa2.ecommerce.walletservice.service.impl
 import it.polito.wa2.ecommerce.common.parseID
 import it.polito.wa2.ecommerce.common.saga.service.MessageService
 import it.polito.wa2.ecommerce.common.saga.service.ProcessingLogService
-import it.polito.wa2.ecommerce.walletservice.client.order.OrderStatus
-import it.polito.wa2.ecommerce.walletservice.client.order.Status
+import it.polito.wa2.ecommerce.orderservice.client.order.messages.OrderStatus
+import it.polito.wa2.ecommerce.orderservice.client.order.messages.Status
 import it.polito.wa2.ecommerce.walletservice.client.order.request.WarehouseOrderPaymentRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.order.request.OrderPaymentType
 import it.polito.wa2.ecommerce.walletservice.client.order.request.WarehouseOrderRequestDTO
@@ -53,7 +53,7 @@ class OrderProcessingServiceImpl: OrderProcessingService {
         if(processingLogService.isProcessed(uuid))
             return
 
-        lateinit var status:OrderStatus
+        lateinit var status: OrderStatus
         try {
             status = self.processOrderRequest(orderRequestDTO)
         }

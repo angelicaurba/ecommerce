@@ -1,4 +1,4 @@
-package it.polito.wa2.ecommerce.walletservice.client.order
+package it.polito.wa2.ecommerce.orderservice.client.order.messages
 
 import it.polito.wa2.ecommerce.common.saga.domain.Emittable
 
