@@ -27,6 +27,7 @@ dependencies {
 
     //adding internal modules dependency for dtos
     implementation (project(":order-service:order-client"))
+    implementation (project(":common"))
 
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
