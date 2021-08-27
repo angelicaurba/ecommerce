@@ -5,9 +5,9 @@ import io.github.resilience4j.timelimiter.TimeLimiterConfig
 import it.polito.wa2.ecommerce.catalogueservice.service.ProductService
 import it.polito.wa2.ecommerce.common.ErrorMessageDTO
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
-import it.polito.wa2.ecommerce.orderservice.client.ItemDTO
-import it.polito.wa2.ecommerce.orderservice.client.OrderRequestDTO
-import it.polito.wa2.ecommerce.orderservice.client.PurchaseItemDTO
+import it.polito.wa2.ecommerce.orderservice.client.item.ItemDTO
+import it.polito.wa2.ecommerce.orderservice.client.order.request.OrderRequestDTO
+import it.polito.wa2.ecommerce.orderservice.client.item.PurchaseItemDTO
 import org.reactivestreams.Publisher
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -24,7 +24,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono

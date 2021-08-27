@@ -1,6 +1,7 @@
 package it.polito.wa2.ecommerce.catalogueservice.service
 
 import it.polito.wa2.ecommerce.catalogueservice.domain.Category
+import it.polito.wa2.ecommerce.catalogueservice.domain.Product
 import it.polito.wa2.ecommerce.catalogueservice.dto.CommentDTO
 import it.polito.wa2.ecommerce.catalogueservice.dto.ProductDTO
 import it.polito.wa2.ecommerce.catalogueservice.dto.ProductRequestDTO
@@ -16,4 +17,6 @@ interface ProductService {
     fun updateOrCreateProduct(productId: String, productRequest: ProductRequestDTO): ProductDTO
     fun updateProductFields(productId: String, productRequest: ProductRequestDTO): ProductDTO
     fun deleteProduct(productId: String)
+    fun getProductByIdOrThrowException(productId: String): Product
+    fun isProductPresent(productId: String): Boolean
 }
