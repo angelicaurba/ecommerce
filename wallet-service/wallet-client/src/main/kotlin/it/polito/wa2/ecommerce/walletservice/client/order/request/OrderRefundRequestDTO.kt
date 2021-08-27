@@ -2,7 +2,7 @@ package it.polito.wa2.ecommerce.walletservice.client.order.request
 
 import javax.validation.constraints.NotNull
 
-class RefundRequestDTO (
+class OrderRefundRequestDTO (
     @field:NotNull(message = "WalletFrom must be present")
     override val walletFrom: String,
     @field:NotNull(message = "UserID must be present")
