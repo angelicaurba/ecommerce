@@ -1,5 +1,6 @@
 package it.polito.wa2.ecommerce.common
 
+import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import org.springframework.data.domain.PageRequest
 
 fun getPageable(pageIdx: Int, pageSize: Int) =
@@ -9,5 +10,5 @@ fun getPageable(pageIdx: Int, pageSize: Int) =
     )
 
 fun String.parseID(exception:Exception?=null): Long {
-    return this.toLongOrNull() ?: throw exception ?: RuntimeException("Not found") // TODO change exception type
+    return this.toLongOrNull() ?: throw exception ?: BadRequestException("Invalid ID $this")
 }
