@@ -1,9 +1,9 @@
 package it.polito.wa2.ecommerce.orderservice.it.polito.wa2.ecommerce.orderservice.service.impl
 
-import it.polito.wa2.ecommerce.orderservice.client.OrderDTO
 import it.polito.wa2.ecommerce.orderservice.client.order.request.OrderRequestDTO
 import it.polito.wa2.ecommerce.orderservice.client.item.PurchaseItemDTO
 import it.polito.wa2.ecommerce.orderservice.client.UpdateOrderRequestDTO
+import it.polito.wa2.ecommerce.orderservice.client.order.response.OrderDTO
 import it.polito.wa2.ecommerce.orderservice.it.polito.wa2.ecommerce.orderservice.service.OrderService
 
 class OrderServiceImpl: OrderService {
