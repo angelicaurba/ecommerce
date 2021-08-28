@@ -72,7 +72,6 @@ class TransactionServiceImpl: TransactionService {
         val wallet = walletService.getWalletOrThrowException(walletId.parseID())
         val transaction = Transaction(
             null, wallet, TransactionType.RECHARGE,
-            System.currentTimeMillis(), //TODO should be autocreated?
             rechargeRequestDTO.amount, UUID.randomUUID().toString()
         )
 
