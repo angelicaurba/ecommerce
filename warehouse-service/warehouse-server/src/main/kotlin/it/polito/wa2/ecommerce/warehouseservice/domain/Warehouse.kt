@@ -11,20 +11,18 @@ class Warehouse (
 
     @field:NotNull
     @Column
-    val name: String,
+    var name: String,
 
     @field:NotNull
     @Column
-    val address: String,
+    var address: String,
 
-    // TODO controllare come settare la relazione
     @field:NotNull
     @Column(unique=true)
-    val adminID: String
+    var adminID: String
 
-): EntityBase<Long>(){
+): EntityBase<String>(){
     fun toDTO(): WarehouseDTO {
-        TODO("implement")
-        return WarehouseDTO(getId(), name, address, adminID)
+        return WarehouseDTO(getId().toString(), name, address, adminID)
     }
 }

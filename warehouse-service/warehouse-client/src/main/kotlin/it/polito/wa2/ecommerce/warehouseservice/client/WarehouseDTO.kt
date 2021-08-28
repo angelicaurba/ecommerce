@@ -1,12 +1,9 @@
 package it.polito.wa2.ecommerce.warehouseservice.client
 
-import org.jetbrains.annotations.NotNull
-
+// TODO check constraint
 data class WarehouseDTO(
-    val id: Long?,
-    @field:NotNull
+    val id: String,
     val name: String,
-    @field:NotNull
     val address: String,
     val adminID: String
 )

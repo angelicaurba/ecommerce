@@ -1,6 +1,10 @@
 package it.polito.wa2.ecommerce.warehouseservice.controller
 
+import it.polito.wa2.ecommerce.catalogueservice.controller.DEFAULT_PAGE_SIZE
+import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.warehouseservice.client.StockDTO
+import it.polito.wa2.ecommerce.warehouseservice.client.StockRequestDTO
+import it.polito.wa2.ecommerce.warehouseservice.client.WarehouseRequestDTO
 import it.polito.wa2.ecommerce.warehouseservice.client.WarehouseDTO
 import it.polito.wa2.ecommerce.warehouseservice.service.StockService
 import it.polito.wa2.ecommerce.warehouseservice.service.WarehouseService
@@ -24,81 +28,127 @@ class WarehouseController {
     @Autowired
     lateinit var stockService: StockService
 
-
     @GetMapping("/")
     @ResponseStatus(HttpStatus.OK)
-    fun getAllWarehouses(): List<WarehouseDTO>{
-        return warehouseService.getAllWarehouses()
+    fun getAllWarehouses(
+        @RequestParam(value = "productID", required = false) productID: String?,
+        @RequestParam("pageIndex", defaultValue = "1") @Min(1) pageIdx: Int,
+        @RequestParam("pageSize", defaultValue = DEFAULT_PAGE_SIZE) @Min(1) pageSize: Int
+    ) : List<WarehouseDTO> {
+        if (productID == null)
+            return warehouseService.getAllWarehouses(pageIdx, pageSize)
+        else return warehouseService.getAllWarehousesHavingProduct(productID, pageIdx, pageSize)
     }
 
-    @GetMapping("/{warehouseId}")
+    @GetMapping("/{warehouseID}")
     @ResponseStatus(HttpStatus.OK)
-    fun getWarehouseById(@PathVariable("warehouseId") @Min(0) warehouseId: Long): WarehouseDTO{
+    fun getWarehouseById(
+        @PathVariable("warehouseID") warehouseId: String
+    ) : WarehouseDTO {
         return warehouseService.getWarehouseById(warehouseId)
     }
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    fun addWarehouse(@RequestBody @Valid warehouse: WarehouseDTO,
-                     bindingResult: BindingResult
-    ): WarehouseDTO {
+    fun addWarehouse(
+        @RequestBody @Valid warehouseRequest: WarehouseRequestDTO,
+        bindingResult: BindingResult
+    ) : WarehouseDTO {
         if (bindingResult.hasErrors())
-            throw  Exception("error")// TODO handle exceptions BadRequestException(bindingResult.fieldErrors.joinToString())
-        return warehouseService.addWarehouse(warehouse)
+            throw  BadRequestException(bindingResult.fieldErrors.joinToString())
+        return warehouseService.addWarehouse(warehouseRequest)
     }
 
 
-    @PutMapping("/{warehouseId}")
+    @PutMapping("/{warehouseID}")
     @ResponseStatus(HttpStatus.OK)
-    fun updateWarehouse(@PathVariable("warehouseId") @Min(0) warehouseId: Long,
-                        @RequestBody @NotNull warehouse: WarehouseDTO) : WarehouseDTO {
-        return warehouseService.updateWarehouse(warehouseId, warehouse)
-    }
-    /*
-
-    @PatchMapping("/{warehouseId}")
-    @ResponseStatus(HttpStatus.OK)
-    fun updateQuantity(@PathVariable("productId") @Min(0) productId: Long,
-                       @RequestBody @NotNull quantity: Long) : ProductDTO{
-            return warehouseService.updateQuantity(productId, quantity)
+    fun updateOrCreateWarehouse(
+        @PathVariable("warehouseID") warehouseId: String,
+        @RequestBody @Valid @NotNull warehouseRequest: WarehouseRequestDTO
+    ) : WarehouseDTO {
+        return warehouseService.updateOrCreateWarehouse(warehouseId, warehouseRequest)
     }
 
-    */
 
-    @DeleteMapping("/{warehouseId}")
+    @PatchMapping("/{warehouseID}")
     @ResponseStatus(HttpStatus.OK)
-    fun deleteWarehouseById(@PathVariable("warehouseId") @Min(0) warehouseId: Long): WarehouseDTO{
-        return warehouseService.deleteWarehouseById(warehouseId)
+    fun updateWarehouseFields(
+        @PathVariable("warehouseID") warehouseId: String,
+        @RequestBody @Valid @NotNull warehouseRequest: WarehouseRequestDTO
+    ) : WarehouseDTO {
+            return warehouseService.updateWarehouseFields(warehouseId, warehouseRequest)
+    }
+
+    @DeleteMapping("/{warehouseID}")
+    @ResponseStatus(HttpStatus.OK)
+    fun deleteWarehouseById(
+        @PathVariable("warehouseID") warehouseId: String
+    ) {
+        warehouseService.deleteWarehouseById(warehouseId)
     }
 
     // STOCK
 
     @GetMapping("/{warehouseID}/products")
     @ResponseStatus(HttpStatus.OK)
-    fun getStocksByWarehouseID(@PathVariable("warehouseID") @Min(0) warehouseID: Long): StockDTO{
-        return stockService.getStocksByWarehouseID(warehouseID)
+    fun getStocksByWarehouseID(
+        @PathVariable("warehouseID") warehouseID: String,
+        @RequestParam("pageIndex", defaultValue = "1") @Min(1) pageIdx: Int,
+        @RequestParam("pageSize", defaultValue = DEFAULT_PAGE_SIZE) @Min(1) pageSize: Int
+    ) : List<StockDTO> {
+        return stockService.getStocksByWarehouseID(warehouseID, pageIdx, pageSize)
     }
 
     @GetMapping("/{warehouseID}/products/{productID}")
     @ResponseStatus(HttpStatus.OK)
-    fun getStockByWarehouseIDandProductID(@PathVariable("warehouseID") @Min(0) warehouseID: Long,
-                            @PathVariable("productID") @Min(0) productID: Long): StockDTO{
+    fun getStockByWarehouseIDandProductID(
+        @PathVariable("warehouseID") warehouseID: String,
+        @PathVariable("productID") productID: String
+    ) : StockDTO {
         return stockService.getStockByWarehouseIDandProductID(warehouseID, productID)
     }
 
     @PostMapping("/{warehouseID}/products")
     @ResponseStatus(HttpStatus.CREATED)
-    fun addStock(@RequestBody @Valid stock: StockDTO,
-                 bindingResult: BindingResult, @PathVariable warehouseID: Long
-    ): StockDTO {
+    fun addStock(
+        @PathVariable("warehouseID") warehouseID: String,
+        @RequestBody @Valid stockRequest: StockRequestDTO,
+        bindingResult: BindingResult
+    ) : StockDTO {
         if (bindingResult.hasErrors())
-            throw  Exception("error")//BadRequestException(bindingResult.fieldErrors.joinToString())
-        return stockService.addStock(warehouseID, stock)
+            throw BadRequestException(bindingResult.fieldErrors.joinToString())
+        return stockService.addStock(warehouseID, stockRequest)
+    }
+
+    @PutMapping("/{warehouseID}/products/{productID}")
+    @ResponseStatus(HttpStatus.OK)
+    fun updateOrCreateStock(
+        @PathVariable("warehouseId") warehouseId: String,
+        @PathVariable("productID") productID: String,
+        @RequestBody @Valid @NotNull stockRequestDTO: StockRequestDTO
+    ) : StockDTO {
+        // TODO be careful when creating a stock
+        return stockService.updateOrCreateStock(warehouseId, productID, stockRequestDTO)
     }
 
 
+    @PatchMapping("/{warehouseID}/products/{productID}")
+    @ResponseStatus(HttpStatus.OK)
+    fun updateStockFields(
+        @PathVariable("warehouseId") warehouseId: String,
+        @PathVariable("productID") productID: String,
+        @RequestBody @Valid @NotNull stockRequestDTO: StockRequestDTO
+    ) : StockDTO {
+        return stockService.updateStockFields(warehouseId, productID, stockRequestDTO)
+    }
 
-
-
+    @DeleteMapping("/{warehouseID}/products/{productID}")
+    @ResponseStatus(HttpStatus.OK)
+    fun deleteStock(
+        @PathVariable("warehouseId") warehouseId: String,
+        @PathVariable("productID") productID: String,
+    ) {
+        stockService.deleteStockByWarehouseIdAndProductId(warehouseId, productID)
+    }
 
 }
