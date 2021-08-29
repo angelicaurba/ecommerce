@@ -2,8 +2,8 @@ package it.polito.wa2.ecommerce.walletservice.controller
 
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.common.saga.service.MessageServiceImpl
-import it.polito.wa2.ecommerce.walletservice.client.order.request.WarehouseOrderPaymentRequestDTO
-import it.polito.wa2.ecommerce.walletservice.client.order.request.WarehouseOrderRefundRequestDTO
+import it.polito.wa2.ecommerce.walletservice.client.order.request.WalletOrderPaymentRequestDTO
+import it.polito.wa2.ecommerce.walletservice.client.order.request.WalletOrderRefundRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.transaction.request.RechargeRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.transaction.TransactionDTO
 import it.polito.wa2.ecommerce.walletservice.client.wallet.request.WalletCreationRequestDTO
@@ -41,10 +41,10 @@ class WalletController {
     @PatchMapping("/")
     fun testPublish(@RequestParam("test", defaultValue = "true") test:Boolean){
         if(test)
-         messageService.publish(WarehouseOrderPaymentRequestDTO("123", "123", "1", listOf()),
+         messageService.publish(WalletOrderPaymentRequestDTO("123", "123", "1", listOf()),
             "OrderOK", "topic1")
         else
-            messageService.publish(WarehouseOrderRefundRequestDTO("123", "123", "1"),
+            messageService.publish(WalletOrderRefundRequestDTO("123", "123", "1"),
                 "OrderOK", "topic1")
     }
 

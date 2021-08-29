@@ -11,10 +11,10 @@ import it.polito.wa2.ecommerce.common.saga.domain.Emittable
     property = "requestType")
 @JsonSubTypes(
     value =  [
-        JsonSubTypes.Type(value = WarehouseOrderPaymentRequestDTO::class,  name = "PAY"),
-        JsonSubTypes.Type(value = WarehouseOrderRefundRequestDTO::class,  name = "REFUND")
+        JsonSubTypes.Type(value = WalletOrderPaymentRequestDTO::class,  name = "PAY"),
+        JsonSubTypes.Type(value = WalletOrderRefundRequestDTO::class,  name = "REFUND")
     ])
-interface WarehouseOrderRequestDTO: Emittable {
+interface WalletOrderRequestDTO: Emittable {
     val walletFrom: String
     val userId: String
     val orderId: String

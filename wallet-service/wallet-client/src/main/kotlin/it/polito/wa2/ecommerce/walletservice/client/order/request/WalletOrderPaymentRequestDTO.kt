@@ -3,7 +3,7 @@ package it.polito.wa2.ecommerce.walletservice.client.order.request
 import it.polito.wa2.ecommerce.walletservice.client.transaction.request.OrderTransactionRequestDTO
 import javax.validation.constraints.NotNull
 
-class WarehouseOrderPaymentRequestDTO(
+class WalletOrderPaymentRequestDTO(
     //TODO is validation necessary for Kakfa?
     //TODO also aggregate_id is emitted as ID
     @field:NotNull(message = "WalletFrom must be present")
@@ -14,7 +14,7 @@ class WarehouseOrderPaymentRequestDTO(
     override val orderId: String,
     @field:NotNull(message = "List of transactions must be present")
     val transactionList:List<OrderTransactionRequestDTO>
-): WarehouseOrderRequestDTO {
+): WalletOrderRequestDTO {
 
     override var requestType: OrderPaymentType = OrderPaymentType.PAY
 }

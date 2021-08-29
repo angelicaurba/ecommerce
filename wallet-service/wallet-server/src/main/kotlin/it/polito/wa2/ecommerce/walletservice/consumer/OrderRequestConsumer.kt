@@ -1,6 +1,6 @@
 package it.polito.wa2.ecommerce.walletservice.consumer
 
-import it.polito.wa2.ecommerce.walletservice.client.order.request.WarehouseOrderRequestDTO
+import it.polito.wa2.ecommerce.walletservice.client.order.request.WalletOrderRequestDTO
 import it.polito.wa2.ecommerce.walletservice.service.OrderProcessingService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.kafka.annotation.KafkaListener
@@ -15,9 +15,8 @@ class OrderRequestConsumer{
     lateinit var orderProcessingService: OrderProcessingService
 
 
-    //TODO set correct name of topic and listener
-    @KafkaListener(id="test-reader-ecommerce", topics=["topic1"])
-    fun listen(@Payload orderRequestDTO: WarehouseOrderRequestDTO,
+    @KafkaListener( topics=["payment-request"])
+    fun listen(@Payload orderRequestDTO: WalletOrderRequestDTO,
                @Header("id") id: String,
                @Header("eventType") eventType:String
     ){
