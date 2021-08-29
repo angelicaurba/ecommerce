@@ -5,10 +5,10 @@ import it.polito.wa2.ecommerce.common.saga.service.MessageService
 import it.polito.wa2.ecommerce.common.saga.service.ProcessingLogService
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.OrderStatus
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.Status
-import it.polito.wa2.ecommerce.walletservice.client.order.request.WarehouseOrderPaymentRequestDTO
+import it.polito.wa2.ecommerce.walletservice.client.order.request.WalletOrderPaymentRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.order.request.OrderPaymentType
-import it.polito.wa2.ecommerce.walletservice.client.order.request.WarehouseOrderRequestDTO
-import it.polito.wa2.ecommerce.walletservice.client.order.request.WarehouseOrderRefundRequestDTO
+import it.polito.wa2.ecommerce.walletservice.client.order.request.WalletOrderRequestDTO
+import it.polito.wa2.ecommerce.walletservice.client.order.request.WalletOrderRefundRequestDTO
 import it.polito.wa2.ecommerce.walletservice.domain.Transaction
 import it.polito.wa2.ecommerce.walletservice.domain.TransactionType
 import it.polito.wa2.ecommerce.walletservice.domain.WalletType
@@ -48,7 +48,7 @@ class OrderProcessingServiceImpl: OrderProcessingService {
     @Autowired
     lateinit var self: OrderProcessingService
 
-    override fun process(orderRequestDTO: WarehouseOrderRequestDTO, id: String){
+    override fun process(orderRequestDTO: WalletOrderRequestDTO, id: String){
         val uuid = UUID.fromString(id)
         if(processingLogService.isProcessed(uuid))
             return
@@ -70,7 +70,7 @@ class OrderProcessingServiceImpl: OrderProcessingService {
     }
 
 
-    override fun processOrderRequest(orderRequestDTO: WarehouseOrderRequestDTO): OrderStatus {
+    override fun processOrderRequest(orderRequestDTO: WalletOrderRequestDTO): OrderStatus {
         val orderId = orderRequestDTO.orderId
         val walletFrom =
             walletRepository.findByIdAndWalletType(orderRequestDTO.walletFrom.parseID(), WalletType.CUSTOMER)
@@ -80,7 +80,7 @@ class OrderProcessingServiceImpl: OrderProcessingService {
                     "Cannot find required wallet"
                 )
 
-        if (orderRequestDTO is WarehouseOrderPaymentRequestDTO) {
+        if (orderRequestDTO is WalletOrderPaymentRequestDTO) {
 
 
             for (transactionRequest in orderRequestDTO.transactionList) {
@@ -95,7 +95,7 @@ class OrderProcessingServiceImpl: OrderProcessingService {
 
                 transactionService.processTransaction(transaction)
             }
-        } else if (orderRequestDTO is WarehouseOrderRefundRequestDTO) {
+        } else if (orderRequestDTO is WalletOrderRefundRequestDTO) {
             //REFUND
             val previousTransactions =
                 transactionRepository.findByFromWalletAndOperationReferenceAndType(walletFrom, orderId)
