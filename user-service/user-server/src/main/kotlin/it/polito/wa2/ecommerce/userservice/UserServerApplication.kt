@@ -5,6 +5,7 @@ import it.polito.wa2.ecommerce.userservice.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 import org.springframework.context.annotation.Bean
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
@@ -18,6 +19,7 @@ const val tokenClearPeriod: Long = 3600000
 // 1000 * 60 * 60 * 1 = 3600000 = 1 hour
 
 @SpringBootApplication(scanBasePackages = ["it.polito.wa2.ecommerce"])
+@EnableEurekaClient
 @EnableScheduling
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class UserServerApplication{
