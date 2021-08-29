@@ -27,13 +27,18 @@ class ProductServiceImpl: ProductService {
 
     @Autowired lateinit var productRepository: ProductRepository
 
-    override fun getProductByCategory(category: Category, pageIdx: Int, pageSize: Int): List<ProductDTO> {
+    override fun getProductsByCategory(category: Category, pageIdx: Int, pageSize: Int): List<ProductDTO> {
         val page = getPageable(pageIdx, pageSize)
         return productRepository.findByCategory(category, page).map { it.toDTO() }
     }
 
+    override fun getProducts(pageIdx: Int, pageSize: Int): List<ProductDTO> {
+        val page = getPageable(pageIdx, pageSize)
+        return productRepository.findAll(page).toList().map { it.toDTO() }
+    }
+
     override fun getProductById(productId: String): ProductDTO {
-        return getProductByIdOrThrowException(productRepository,productId).toDTO()
+        return getProductByIdOrThrowException(productId).toDTO()
     }
 
     override fun addProduct(productRequest: ProductRequestDTO, productId: String?): ProductDTO {
@@ -51,7 +56,7 @@ class ProductServiceImpl: ProductService {
     }
 
     override fun updateOrCreateProduct(productId: String, productRequest: ProductRequestDTO): ProductDTO {
-        return if(isProductPresent(productRepository,productId)){
+        return if(isProductPresent(productId)){
             val product : Product = productRepository.findById(productId).get()
             product.name = productRequest.name!!
             product.description = productRequest.description!!
@@ -63,7 +68,7 @@ class ProductServiceImpl: ProductService {
     }
 
     override fun updateProductFields(productId: String, productRequest: ProductRequestDTO): ProductDTO {
-        val product = getProductByIdOrThrowException(productRepository,productId)
+        val product = getProductByIdOrThrowException(productId)
 
         productRequest.name?.also { product.name = it }
         productRequest.description?.also { product.description = it }
@@ -74,8 +79,20 @@ class ProductServiceImpl: ProductService {
     }
 
     override fun deleteProduct(productId: String) {
-        val product = getProductByIdOrThrowException(productRepository,productId)
+        val product = getProductByIdOrThrowException(productId)
         productRepository.delete(product)
+    }
+
+    override fun getProductByIdOrThrowException(productId: String): Product {
+        val product = productRepository.findById(productId)
+        if (product.isPresent)
+            return product.get()
+        else
+            throw Exception() // TODO put the right exception
+    }
+
+    override fun isProductPresent(productId: String): Boolean{
+        return productRepository.findById(productId).isPresent
     }
 
 }

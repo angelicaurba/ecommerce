@@ -15,4 +15,5 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation("com.fasterxml.jackson.core:jackson-annotations:2.12.4")
     implementation("javax.validation:validation-api:2.0.0.Final")
+    implementation(project(":common"))
 }

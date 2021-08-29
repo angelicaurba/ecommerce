@@ -4,6 +4,7 @@ import it.polito.wa2.ecommerce.catalogueservice.domain.Photo
 import it.polito.wa2.ecommerce.catalogueservice.repository.PhotoRepository
 import it.polito.wa2.ecommerce.catalogueservice.repository.ProductRepository
 import it.polito.wa2.ecommerce.catalogueservice.service.PhotoService
+import it.polito.wa2.ecommerce.catalogueservice.service.ProductService
 import org.bson.BsonBinarySubType
 import org.bson.types.Binary
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,10 +18,10 @@ import org.springframework.web.multipart.MultipartFile
 @Transactional
 class PhotoServiceImpl : PhotoService{
     @Autowired lateinit var photoRepository: PhotoRepository
-    @Autowired lateinit var productRepository: ProductRepository
+    @Autowired lateinit var productService: ProductService
 
     override fun getPictureByProductId(productId: String): ResponseEntity<Any> {
-        getProductByIdOrThrowException(productRepository,productId)
+        productService.getProductByIdOrThrowException(productId)
         val result = photoRepository.findByProductId(productId)
         if(result.isEmpty){
             //TODO throw exception
@@ -36,7 +37,7 @@ class PhotoServiceImpl : PhotoService{
     }
 
     override fun updatePictureByProductId(productId: String, format: String, file: MultipartFile) {
-        getProductByIdOrThrowException(productRepository,productId)
+        productService.getProductByIdOrThrowException(productId)
         val newPhoto = Photo(null, format,
             Binary(BsonBinarySubType.BINARY, file.bytes),
             productId

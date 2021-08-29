@@ -1,15 +1,19 @@
 package it.polito.wa2.ecommerce.walletservice.controller
 
+import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
+import it.polito.wa2.ecommerce.common.saga.service.MessageServiceImpl
+import it.polito.wa2.ecommerce.walletservice.client.order.request.WarehouseOrderPaymentRequestDTO
+import it.polito.wa2.ecommerce.walletservice.client.order.request.WarehouseOrderRefundRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.transaction.request.RechargeRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.transaction.TransactionDTO
 import it.polito.wa2.ecommerce.walletservice.client.wallet.request.WalletCreationRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.wallet.WalletDTO
+import it.polito.wa2.ecommerce.walletservice.service.TransactionService
 import it.polito.wa2.ecommerce.walletservice.service.WalletService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.BindingResult
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import java.lang.RuntimeException
 import javax.validation.Valid
 import javax.validation.constraints.Min
 
@@ -22,7 +26,27 @@ const val DEFAULT_PAGE_SIZE = "10"
 class WalletController {
 
     @Autowired
+    lateinit var messageService: MessageServiceImpl
+
+    @Autowired
     lateinit var walletService: WalletService
+
+    @Autowired
+    lateinit var transactionService: TransactionService
+
+    private fun errorMapper (bindingResult: BindingResult): String {
+        return bindingResult.allErrors.joinToString { it.toString() }
+    }
+
+    @PatchMapping("/")
+    fun testPublish(@RequestParam("test", defaultValue = "true") test:Boolean){
+        if(test)
+         messageService.publish(WarehouseOrderPaymentRequestDTO("123", "123", "1", listOf()),
+            "OrderOK", "topic1")
+        else
+            messageService.publish(WarehouseOrderRefundRequestDTO("123", "123", "1"),
+                "OrderOK", "topic1")
+    }
 
     @GetMapping("/{walletId}")
     fun getWalletById(@PathVariable("walletId") walletId:String): WalletDTO {
@@ -34,7 +58,7 @@ class WalletController {
                      bindingResult: BindingResult
     ): WalletDTO {
         if(bindingResult.hasErrors())
-            throw RuntimeException("validation errors") //TODO change exception type
+            throw BadRequestException(errorMapper(bindingResult))
         return walletService.addWallet(walletCreationRequest)
     }
 
@@ -54,10 +78,10 @@ class WalletController {
         ) pageSize: Int
     ):List<TransactionDTO>{
         return if (startTime != null && endTime != null)
-            walletService.getTransactionsByWalletIdAndTimeInterval(walletId, startTime, endTime, pageIdx, pageSize)
+            transactionService.getTransactionsByWalletIdAndTimeInterval(walletId, startTime, endTime, pageIdx, pageSize)
         else if (startTime == null && endTime == null)
-            walletService.getTransactionsByWalletId(walletId, pageIdx, pageSize)
-        else throw RuntimeException("Both parameters (from and to) have to be present, or none") //TODO change exception
+            transactionService.getTransactionsByWalletId(walletId, pageIdx, pageSize)
+        else throw BadRequestException("Both parameters (from and to) have to be present, or none")
     }
 
     @GetMapping("/{walletId}/transactions/{transactionId}")
@@ -66,7 +90,7 @@ class WalletController {
         @PathVariable("transactionId") transactionId: String
     )
             : TransactionDTO {
-        return walletService.getTransactionByWalletIdAndTransactionId(walletId, transactionId)
+        return transactionService.getTransactionByWalletIdAndTransactionId(walletId, transactionId)
     }
 
     @PostMapping("/{walletId}/recharges")
@@ -74,7 +98,7 @@ class WalletController {
                        @RequestBody @Valid rechargeRequestDTO: RechargeRequestDTO,
                        bindingResult: BindingResult): TransactionDTO {
         if(bindingResult.hasErrors())
-            throw Exception() //TODO should be bad request
-        return walletService.rechargeWallet(walletId, rechargeRequestDTO)
+            throw BadRequestException(errorMapper(bindingResult))
+        return transactionService.rechargeWallet(walletId, rechargeRequestDTO)
     }
 }

@@ -1,6 +1,5 @@
 package it.polito.wa2.ecommerce.warehouseservice.domain
 
-// import it.polito.wa2.ecommerce.catalogueservice.domain.Product
 import it.polito.wa2.ecommerce.warehouseservice.client.StockDTO
 import it.polito.wa2.ecommerce.common.EntityBase
 import javax.persistence.Column
@@ -11,23 +10,22 @@ import javax.validation.constraints.NotNull
 @Entity
 class Stock (
     @ManyToOne
-    val warehouse: Warehouse,
+    var warehouse: Warehouse,
 
     @field:NotNull
     @Column(unique=true)
-    val product: String,
+    var product: String,
 
     @field:NotNull
     @Column
-    val quantity: Long,
+    var quantity: Long,
 
     @field:NotNull
     @Column
-    val alarm: Long
-) : EntityBase<Long>(){
+    var alarm: Long
+) : EntityBase<String>(){
 
     fun toDTO(): StockDTO {
-        TODO("implement")
-        return StockDTO(warehouse.getId(), product, quantity, alarm)
+        return StockDTO(getId().toString(),warehouse.getId().toString(), product, quantity, alarm)
     }
 }

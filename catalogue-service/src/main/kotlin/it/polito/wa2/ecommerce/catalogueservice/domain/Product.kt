@@ -2,6 +2,7 @@ package it.polito.wa2.ecommerce.catalogueservice.domain
 
 import it.polito.wa2.ecommerce.catalogueservice.dto.ProductDTO
 import org.bson.types.ObjectId
+import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.math.BigDecimal
@@ -16,7 +17,6 @@ data class Product(
     var price: BigDecimal,
     var numStars: Long,
     var numRatings: Long,
-    val creationDate: Date,
     ){
     fun toDTO(): ProductDTO{
         return ProductDTO(
@@ -32,6 +32,8 @@ data class Product(
             "/products/$id/comments"
         )
     }
+    @CreatedDate
+    lateinit var creationDate: Date
 }
 
 enum class Category{

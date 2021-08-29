@@ -31,9 +31,11 @@ dependencies {
 
     //adding internal modules dependency for dtos
     implementation (project(":wallet-service:wallet-client"))
+    implementation (project(":order-service:order-client"))
     implementation(project(":common"))
 
-    runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
+//    runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
+    runtimeOnly("mysql:mysql-connector-java")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.kafka:spring-kafka-test")
 }
