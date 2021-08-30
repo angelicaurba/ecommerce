@@ -27,6 +27,7 @@ dependencies {
     implementation("org.springframework.kafka:spring-kafka")
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-security")
+    runtimeOnly("mysql:mysql-connector-java")
 
     //dependency for spring-kafka JSON deserialization
     implementation("com.fasterxml.jackson.core:jackson-databind")

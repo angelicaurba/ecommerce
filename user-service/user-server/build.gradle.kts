@@ -38,6 +38,7 @@ dependencies {
 
     //adding internal modules dependency for dtos
     implementation (project(":user-service:user-client"))
+    implementation (project(":mail-service:mail-client"))
     implementation(project(":common"))
 
 //    runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
