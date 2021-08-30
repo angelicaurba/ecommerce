@@ -5,6 +5,7 @@ import it.polito.wa2.ecommerce.common.Rolename
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.common.parseID
+import it.polito.wa2.ecommerce.common.security.JwtTokenDetails
 import it.polito.wa2.ecommerce.common.security.UserDetailsDTO
 import it.polito.wa2.ecommerce.userservice.domain.User
 import it.polito.wa2.ecommerce.userservice.repository.UserRepository
@@ -13,6 +14,7 @@ import it.polito.wa2.ecommerce.userservice.client.RegistrationRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -109,12 +111,12 @@ class UserDetailsServiceImpl: UserDetailsService {
         return user.authorities
     }
 
-    fun setPassword(userId: Long, oldPassword: String, newPassword: String, jwtToken: String) {
+    fun setPassword(userId: Long, oldPassword: String, newPassword: String) {
         if(!verifyPassword(userId, oldPassword)){
             throw ForbiddenException("User and password provided do not match")
         }
 
-        val userFromJwtToken = jwtUtils.getDetailsFromJwtToken(jwtToken)
+        val userFromJwtToken = SecurityContextHolder.getContext().authentication.principal as JwtTokenDetails
 
         if(userId != userFromJwtToken.id.parseID()){
             throw ForbiddenException("A user can only change their own password")

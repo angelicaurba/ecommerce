@@ -52,6 +52,7 @@ class AuthController(val userDetailsServiceImpl: UserDetailsServiceImpl) {
     @GetMapping("/registrationConfirm")
     @ResponseStatus(HttpStatus.OK)
     fun confirmRegistration(@RequestParam("token") token: String) {
+        // TODO create wallet when the user is created
         userDetailsServiceImpl.verifyToken(token)
     }
 
