@@ -25,11 +25,14 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     implementation("org.springframework.kafka:spring-kafka")
 
+    // TODO dovrebbe andare nel common ma non riesce a prenderlo
+    implementation("org.springframework.security:spring-security-core")
+
     //adding internal modules dependency for dtos
     implementation (project(":order-service:order-client"))
     implementation (project(":common"))
 
-    runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
+    runtimeOnly("mysql:mysql-connector-java")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.kafka:spring-kafka-test")
 }

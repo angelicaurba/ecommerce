@@ -1,7 +1,7 @@
-package it.polito.wa2.ecommerce.orderservice.it.polito.wa2.ecommerce.orderservice.consumer
+package it.polito.wa2.ecommerce.orderservice.consumer
 
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.OrderDetailsDTO
-import it.polito.wa2.ecommerce.orderservice.it.polito.wa2.ecommerce.orderservice.service.OrderService
+import it.polito.wa2.ecommerce.orderservice.service.OrderService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.messaging.handler.annotation.Header

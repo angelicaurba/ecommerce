@@ -30,7 +30,7 @@ import reactor.core.publisher.Mono
 import java.lang.Exception
 import java.time.Duration
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = ["it.polito.wa2.ecommerce.catalogueservice", "it.polito.wa2.ecommerce.common.security"])
 class CatalogueServiceApplication {
 
     @Bean

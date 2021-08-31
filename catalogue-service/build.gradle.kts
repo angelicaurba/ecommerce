@@ -35,8 +35,8 @@ dependencies {
     testImplementation("io.projectreactor:reactor-test")
 
     //adding internal modules dependency
-    implementation(project(":common"))
-    implementation(project(":order-service:order-client"))
+    implementation(project(":common")){exclude( group="org.springframework.boot",module="spring-boot-starter-data-jpa")}
+    implementation(project(":order-service:order-client")){exclude( group="org.springframework.boot",module="spring-boot-starter-data-jpa")}
 }
 
 dependencyManagement {
