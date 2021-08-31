@@ -1,11 +1,9 @@
 package it.polito.wa2.ecommerce.orderservice.client
 
-// TODO check import
-import it.polito.wa2.ecommerce.orderservice.client.order.messages.ResponseStatus
+import it.polito.wa2.ecommerce.orderservice.client.order.response.Status
+import org.jetbrains.annotations.NotNull
 
 data class UpdateOrderRequestDTO(
-
-    val responseStatus: ResponseStatus
+    @field:NotNull
+    val status: Status
 )
-
-// TODO(add validation)

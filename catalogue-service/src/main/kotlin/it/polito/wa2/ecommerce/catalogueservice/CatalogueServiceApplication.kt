@@ -110,10 +110,10 @@ class AddPriceToItem : RewriteFunction<OrderRequestDTO<ItemDTO>, OrderRequestDTO
     lateinit var productService: ProductService
 
     override fun apply(t: ServerWebExchange?, u: OrderRequestDTO<ItemDTO>?): Publisher<OrderRequestDTO<PurchaseItemDTO>> {
-        print("Transforming order")
         var newOrderRequest: OrderRequestDTO<PurchaseItemDTO>? = null
         if (u != null) {
             newOrderRequest = OrderRequestDTO<PurchaseItemDTO>(
+                u.buyerId,
                 u.buyerWalletId,
                 u.address,
                 u.deliveryItems
