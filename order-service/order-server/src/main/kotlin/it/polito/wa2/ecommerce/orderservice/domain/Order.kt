@@ -15,15 +15,15 @@ import javax.validation.constraints.NotNull
 @Table(name = "orders")
 @Entity
 class Order(
-    @Column @NotNull
+    @Column @field:NotNull
     val buyerId: String,
-    @Column @NotNull
+    @Column @field:NotNull
     val address: String,
-    @Column @NotNull
+    @Column @field:NotNull
     val buyerWalletId: String,
-    @NotNull @OneToMany(mappedBy = "order")
+    @field:NotNull @OneToMany(mappedBy = "order")
     val deliveryItems: Set<PurchaseItem>,
-    @Column @NotNull
+    @Column @field:NotNull
     val status: Status
 ) : EntityBase<Long>() {
     fun toDTO(): OrderDTO{
@@ -48,4 +48,3 @@ class Order(
         )
     }
 }
-// TODO(add validation and columns)
