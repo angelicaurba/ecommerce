@@ -1,15 +1,18 @@
 package it.polito.wa2.ecommerce.catalogueservice.controller
 
 import it.polito.wa2.ecommerce.catalogueservice.domain.Category
+import it.polito.wa2.ecommerce.catalogueservice.dto.AddCommentDTO
 import it.polito.wa2.ecommerce.catalogueservice.dto.CommentDTO
 import it.polito.wa2.ecommerce.catalogueservice.dto.ProductDTO
 import it.polito.wa2.ecommerce.catalogueservice.dto.ProductRequestDTO
 import it.polito.wa2.ecommerce.catalogueservice.service.CommentService
 import it.polito.wa2.ecommerce.catalogueservice.service.PhotoService
 import it.polito.wa2.ecommerce.catalogueservice.service.ProductService
+import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import javax.validation.Valid
@@ -109,9 +112,12 @@ class CatalogueController {
     @PostMapping("/{productId}/comments")
     @ResponseStatus(HttpStatus.CREATED)
     fun addComment(@PathVariable("productId") productId: String,
-                   @RequestBody comment: CommentDTO,
-                   @RequestBody @Valid  productRequest: ProductRequestDTO): ProductDTO{
-        return commentService.addComment(productId, comment)
+                   @RequestBody comment: AddCommentDTO,
+                   bindingResult: BindingResult
+    ): ProductDTO{
+        if (!bindingResult.hasErrors())
+            return commentService.addComment(productId, comment)
+        else throw BadRequestException("Bad add comment request")
     }
 
     @GetMapping("/{productId}/comments")

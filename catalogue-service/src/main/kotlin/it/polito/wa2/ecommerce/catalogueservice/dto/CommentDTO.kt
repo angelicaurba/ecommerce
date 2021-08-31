@@ -7,25 +7,9 @@ import javax.validation.constraints.NotNull
 
 
 data class CommentDTO(
-    @field:NotNull
     val title: String,
-    @field:NotNull
     val body: String,
-    @field:NotNull @field:Min(0)
     val stars: Int,
-    @field:NotNull
     val creationDate: Date,
-    @field:NotNull
     val productId: String
-){
-    fun toEntity(): Comment {
-        return Comment(
-            null,
-            title,
-            body,
-            stars,
-            Date(),
-            productId
-        )
-    }
-}
+)

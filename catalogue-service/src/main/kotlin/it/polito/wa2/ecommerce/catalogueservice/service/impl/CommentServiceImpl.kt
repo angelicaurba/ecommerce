@@ -1,5 +1,6 @@
 package it.polito.wa2.ecommerce.catalogueservice.service.impl
 
+import it.polito.wa2.ecommerce.catalogueservice.dto.AddCommentDTO
 import it.polito.wa2.ecommerce.catalogueservice.dto.CommentDTO
 import it.polito.wa2.ecommerce.catalogueservice.dto.ProductDTO
 import it.polito.wa2.ecommerce.catalogueservice.repository.CommentRepository
@@ -17,7 +18,7 @@ class CommentServiceImpl: CommentService {
     @Autowired lateinit var productService: ProductService
     @Autowired lateinit var productRepository: ProductRepository
 
-    override fun addComment(productId: String, comment: CommentDTO): ProductDTO {
+    override fun addComment(productId: String, comment: AddCommentDTO): ProductDTO {
         val product = productService.getProductByIdOrThrowException(productId)
         val addedComment = commentRepository.insert(comment.toEntity())
         product.numStars += addedComment.stars
