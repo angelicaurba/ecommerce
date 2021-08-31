@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne
 import javax.validation.constraints.DecimalMin
 import javax.persistence.Table
 import javax.persistence.UniqueConstraint
+import javax.validation.constraints.Digits
 
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotNull
@@ -21,6 +22,7 @@ class PurchaseItem (
     @Column(nullable = false) @field:Min(1) @field:NotNull
     var amount: Int,
     @Column(nullable = false) @field:NotNull
+    @field:Digits(fraction=2, integer = 10)
     @field:DecimalMin(value = "0.00", inclusive = true, message = "amount should not be negative")
     var price: BigDecimal,
     @Column(nullable = true)

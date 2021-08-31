@@ -14,5 +14,3 @@ data class OrderDTO(
 enum class Status{
     PENDING, ISSUED, DELIVERING, DELIVERED, FAILED, CANCELED
 }
-
-// TODO(add validation)
