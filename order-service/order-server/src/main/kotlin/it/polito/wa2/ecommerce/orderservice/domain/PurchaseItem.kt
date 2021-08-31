@@ -1,4 +1,4 @@
-package it.polito.wa2.ecommerce.orderservice.it.polito.wa2.ecommerce.orderservice.domain
+package it.polito.wa2.ecommerce.orderservice.domain
 
 import it.polito.wa2.ecommerce.common.EntityBase
 import java.math.BigDecimal

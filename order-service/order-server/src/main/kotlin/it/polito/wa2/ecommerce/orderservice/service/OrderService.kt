@@ -1,4 +1,4 @@
-package it.polito.wa2.ecommerce.orderservice.it.polito.wa2.ecommerce.orderservice.service
+package it.polito.wa2.ecommerce.orderservice.service
 
 import it.polito.wa2.ecommerce.orderservice.client.*
 import it.polito.wa2.ecommerce.orderservice.client.order.request.OrderRequestDTO

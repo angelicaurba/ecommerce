@@ -1,7 +1,11 @@
-package it.polito.wa2.ecommerce.orderservice.it.polito.wa2.ecommerce.orderservice.service.impl
+package it.polito.wa2.ecommerce.orderservice.service.impl
 
 import it.polito.wa2.ecommerce.common.parseID
 import it.polito.wa2.ecommerce.common.saga.service.ProcessingLogService
+import it.polito.wa2.ecommerce.common.Rolename
+import it.polito.wa2.ecommerce.common.getPageable
+import it.polito.wa2.ecommerce.common.security.UserDetailsDTO
+import org.springframework.security.core.context.SecurityContextHolder
 import it.polito.wa2.ecommerce.orderservice.client.order.request.OrderRequestDTO
 import it.polito.wa2.ecommerce.orderservice.client.item.PurchaseItemDTO
 import it.polito.wa2.ecommerce.orderservice.client.UpdateOrderRequestDTO
@@ -10,8 +14,8 @@ import it.polito.wa2.ecommerce.orderservice.client.order.messages.OrderDetailsDT
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.OrderStatus
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.Status
 import it.polito.wa2.ecommerce.orderservice.client.order.response.OrderDTO
-import it.polito.wa2.ecommerce.orderservice.it.polito.wa2.ecommerce.orderservice.repository.OrderRepository
-import it.polito.wa2.ecommerce.orderservice.it.polito.wa2.ecommerce.orderservice.service.OrderService
+import it.polito.wa2.ecommerce.orderservice.repository.OrderRepository
+import it.polito.wa2.ecommerce.orderservice.service.OrderService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
