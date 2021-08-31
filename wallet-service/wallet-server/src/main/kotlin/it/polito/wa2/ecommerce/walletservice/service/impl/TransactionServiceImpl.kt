@@ -105,6 +105,8 @@ class TransactionServiceImpl: TransactionService {
                 if (transaction.fromWallet!!.walletType != WalletType.WAREHOUSE) {
                     throw BadRequestException("Refund must have a wallet from belonging to a warehouse")
                 }
+
+                // no check on available amount -> admitting negative warehouse wallet
                 transaction.fromWallet!!.amount = transaction.fromWallet!!.amount.minus(amount)
                 transaction.toWallet.amount = transaction.toWallet.amount.plus(amount)
 

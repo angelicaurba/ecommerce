@@ -6,6 +6,6 @@ import it.polito.wa2.ecommerce.walletservice.client.order.request.WalletOrderReq
 
 interface OrderProcessingService {
 
-    fun processOrderRequest(orderRequestDTO: WalletOrderRequestDTO): OrderStatus
+    fun processOrderRequest(orderRequestDTO: WalletOrderRequestDTO): OrderStatus?
     fun process(orderRequestDTO: WalletOrderRequestDTO, id: String)
 }
