@@ -1,10 +1,12 @@
 package it.polito.wa2.ecommerce.orderservice.domain
 
 import it.polito.wa2.ecommerce.common.EntityBase
+import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.orderservice.client.item.PurchaseItemDTO
 import it.polito.wa2.ecommerce.orderservice.client.order.request.ItemsInWarehouseDTO
 import it.polito.wa2.ecommerce.orderservice.client.order.response.OrderDTO
 import it.polito.wa2.ecommerce.orderservice.client.order.response.Status
+import it.polito.wa2.ecommerce.orderservice.utils.extractProductInWarehouse
 
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -16,35 +18,41 @@ import javax.validation.constraints.NotNull
 @Entity
 class Order(
     @Column @field:NotNull
-    val buyerId: String,
+    var buyerId: String,
     @Column @field:NotNull
-    val address: String,
+    var address: String,
     @Column @field:NotNull
-    val buyerWalletId: String,
+    var buyerWalletId: String,
     @field:NotNull @OneToMany(mappedBy = "order")
-    val deliveryItems: Set<PurchaseItem>,
-    @Column @field:NotNull
-    val status: Status
+    var deliveryItems: Set<PurchaseItem>,
+    @Column
+    var status: Status
+
 ) : EntityBase<Long>() {
     fun toDTO(): OrderDTO{
-        val itemsInWarehouseDTOList: List<ItemsInWarehouseDTO<PurchaseItemDTO>>
-
-        val warehouseItemsMap : Map<String, List<PurchaseItemDTO>> =
-        deliveryItems.groupBy ({it -> it.warehouseId!!}, {it -> PurchaseItemDTO(it.productId, it.amount, it.price)})
-
         return OrderDTO(
             buyerId,
             address,
             buyerWalletId,
-            warehouseItemsMap
-                .toList()
-                .map {
-                    ItemsInWarehouseDTO<PurchaseItemDTO>(
-                        it.first,
-                        it.second
-                    )
-                },
+            deliveryItems.extractProductInWarehouse { PurchaseItemDTO(it.productId, it.amount, it.price) },
             status
         )
+    }
+
+    fun updateStatus(newStatus: Status, e:Exception?=null){
+        val exception = e ?: ForbiddenException( "Cannot update status from $status to $newStatus")
+
+        when(newStatus){
+            Status.PENDING -> {
+                throw exception
+            }
+            Status.ISSUED -> if(status != Status.PENDING) throw exception
+            Status.DELIVERING -> if(status != Status.ISSUED) throw exception
+            Status.DELIVERED -> if(status != Status.DELIVERING) throw exception
+            Status.FAILED -> if(status != Status.FAILED) throw exception
+            Status.CANCELED -> if(status != Status.ISSUED) throw exception
+        }
+
+        status = newStatus
     }
 }
