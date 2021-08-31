@@ -1,6 +1,7 @@
 package it.polito.wa2.ecommerce.orderservice.domain
 
 import it.polito.wa2.ecommerce.common.EntityBase
+import it.polito.wa2.ecommerce.orderservice.client.item.PurchaseItemDTO
 import java.math.BigDecimal
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -30,4 +31,17 @@ class PurchaseItem (
     @ManyToOne(optional = false)
     @JoinColumn(name = "order_id")
     var order: Order? = null
+
+    fun toDTO(): PurchaseItemDTO{
+        return PurchaseItemDTO(productId, amount, price)
+    }
+}
+
+fun PurchaseItemDTO.toEntity(): PurchaseItem{
+    return PurchaseItem(
+        productId,
+        amount,
+        price,
+        null
+    )
 }
