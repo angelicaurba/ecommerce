@@ -1,8 +1,8 @@
 package it.polito.wa2.ecommerce.walletservice.service.impl
 
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
-import it.polito.wa2.ecommerce.common.exceptions.OutOfMoneyException
-import it.polito.wa2.ecommerce.common.exceptions.TransactionNotFoundException
+import it.polito.wa2.ecommerce.walletservice.exception.OutOfMoneyException
+import it.polito.wa2.ecommerce.walletservice.exception.TransactionNotFoundException
 import it.polito.wa2.ecommerce.common.getPageable
 import it.polito.wa2.ecommerce.common.parseID
 import it.polito.wa2.ecommerce.walletservice.client.transaction.TransactionDTO

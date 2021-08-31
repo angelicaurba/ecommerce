@@ -1,7 +1,7 @@
 package it.polito.wa2.ecommerce.walletservice.service.impl
 
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
-import it.polito.wa2.ecommerce.common.exceptions.WalletNotFound
+import it.polito.wa2.ecommerce.walletservice.exception.WalletNotFound
 import it.polito.wa2.ecommerce.common.parseID
 import it.polito.wa2.ecommerce.walletservice.client.wallet.WalletDTO
 import it.polito.wa2.ecommerce.walletservice.client.wallet.request.CustomerWalletCreationRequestDTO
