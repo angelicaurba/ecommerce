@@ -7,10 +7,14 @@ import javax.persistence.Entity
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 import javax.validation.constraints.DecimalMin
+import javax.persistence.Table
+import javax.persistence.UniqueConstraint
+
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotNull
 
 @Entity
+@Table(uniqueConstraints = [UniqueConstraint(columnNames = ["order_id", "product_id"])])
 class PurchaseItem (
     @Column(nullable = false) @field:NotNull
     var productId: String,
