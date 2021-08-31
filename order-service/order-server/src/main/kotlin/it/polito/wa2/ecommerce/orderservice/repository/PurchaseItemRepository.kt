@@ -1,6 +1,5 @@
 package it.polito.wa2.ecommerce.orderservice.repository
 import it.polito.wa2.ecommerce.orderservice.domain.PurchaseItem
-import it.polito.wa2.ecommerce.orderservice.it.polito.wa2.ecommerce.orderservice.domain.PurchaseItem
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
