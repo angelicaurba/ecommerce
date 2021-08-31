@@ -49,8 +49,7 @@ class ProductServiceImpl: ProductService {
             productRequest.category!!,
             productRequest.price!!,
             0,
-            0,
-            Date()
+            0
         )
         return productRepository.insert(newProduct).toDTO()
     }
