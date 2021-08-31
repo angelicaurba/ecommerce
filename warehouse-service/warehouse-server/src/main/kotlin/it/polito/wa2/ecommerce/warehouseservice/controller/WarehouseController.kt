@@ -132,6 +132,7 @@ class WarehouseController {
     }
 
 
+    // TODO variable name in path (/{warehouseID}) doesn't correspond to path variable ("warehouseId")
     @PatchMapping("/{warehouseID}/products/{productID}")
     @ResponseStatus(HttpStatus.OK)
     fun updateStockFields(
@@ -142,6 +143,7 @@ class WarehouseController {
         return stockService.updateStockFields(warehouseId, productID, stockRequestDTO)
     }
 
+    // TODO variable name in path (/{warehouseID}) doesn't correspond to path variable ("warehouseId")
     @DeleteMapping("/{warehouseID}/products/{productID}")
     @ResponseStatus(HttpStatus.OK)
     fun deleteStock(

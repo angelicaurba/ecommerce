@@ -23,7 +23,8 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+    // TODO Re-insert commented implementation when configuring eureka client behaviour
+//    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     implementation("org.springframework.kafka:spring-kafka")
     implementation("javax.validation:validation-api:2.0.0.Final")
 
@@ -39,7 +40,8 @@ dependencies {
     implementation (project(":user-service:user-client"))
     implementation(project(":common"))
 
-    runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
+//    runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
+    runtimeOnly("mysql:mysql-connector-java")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.kafka:spring-kafka-test")
 }
