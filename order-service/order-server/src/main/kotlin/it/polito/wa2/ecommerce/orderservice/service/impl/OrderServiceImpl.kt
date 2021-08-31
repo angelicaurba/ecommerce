@@ -1,21 +1,24 @@
 package it.polito.wa2.ecommerce.orderservice.service.impl
 
 import it.polito.wa2.ecommerce.common.parseID
+import it.polito.wa2.ecommerce.common.saga.service.MessageService
 import it.polito.wa2.ecommerce.common.saga.service.ProcessingLogService
-import it.polito.wa2.ecommerce.common.Rolename
-import it.polito.wa2.ecommerce.common.getPageable
-import it.polito.wa2.ecommerce.common.security.UserDetailsDTO
-import org.springframework.security.core.context.SecurityContextHolder
+import it.polito.wa2.ecommerce.mailservice.client.MailDTO
 import it.polito.wa2.ecommerce.orderservice.client.order.request.OrderRequestDTO
 import it.polito.wa2.ecommerce.orderservice.client.item.PurchaseItemDTO
 import it.polito.wa2.ecommerce.orderservice.client.UpdateOrderRequestDTO
+import it.polito.wa2.ecommerce.orderservice.client.item.ItemDTO
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.EventTypeOrderStatus
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.OrderDetailsDTO
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.OrderStatus
-import it.polito.wa2.ecommerce.orderservice.client.order.messages.Status
+import it.polito.wa2.ecommerce.orderservice.client.order.messages.ResponseStatus
 import it.polito.wa2.ecommerce.orderservice.client.order.response.OrderDTO
+import it.polito.wa2.ecommerce.orderservice.client.order.response.Status
 import it.polito.wa2.ecommerce.orderservice.repository.OrderRepository
 import it.polito.wa2.ecommerce.orderservice.service.OrderService
+import it.polito.wa2.ecommerce.orderservice.repository.PurchaseItemRepository
+import it.polito.wa2.ecommerce.orderservice.utils.extractProductInWarehouse
+import it.polito.wa2.ecommerce.warehouseservice.client.order.request.WarehouseOrderRequestCancelDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -31,6 +34,12 @@ class OrderServiceImpl: OrderService {
 
     @Autowired
     lateinit var orderRepository: OrderRepository
+
+    @Autowired
+    lateinit var purchaseItemRepository: PurchaseItemRepository
+
+    @Autowired
+    lateinit var messageService: MessageService
 
     override fun getAllOrders(pageIdx: Int, pageSize: Int): List<OrderDTO> {
         TODO("Not yet implemented")
@@ -64,23 +73,41 @@ class OrderServiceImpl: OrderService {
         val eventID = UUID.fromString(id)
         if(processingLogService.isProcessed(eventID))
             return
-        when(orderStatus.status){
-            Status.COMPLETED->{
-                // TODO:
+
+        val orderId = orderStatus.orderID.parseID()
+        val order = orderRepository.findByIdOrNull(orderId) ?: throw RuntimeException("Cannot find oder n. $orderId") //TODO exceptions?
+        when(orderStatus.responseStatus){
+            ResponseStatus.COMPLETED->{
+
                 // - set status to ISSUED
+                order.updateStatus(Status.ISSUED) // TODO add function to verify status correctness
+
                 // - send email
+                val mail:MailDTO = MailDTO(order.buyerId, null,
+                    "Your order has been issued: $orderId",
+                            "The order has been correctly issued")
+//                messageService.publish(mail, "OrderIssued", "mail") // TODO uncomment //TODO add constants for topics
+                orderRepository.save(order)
+
             }
-            Status.FAILED-> {
-                // TODO:
-                // - cancel order
-                // - if payment error rollback warehouse
+            ResponseStatus.FAILED-> {
+
                 // - set status to FAILED
+                order.updateStatus( Status.FAILED)
+                if(eventType == EventTypeOrderStatus.OrderPaymentFailed){
+                    // - if payment error rollback warehouse
+                    val request = WarehouseOrderRequestCancelDTO(orderId.toString(),
+                        order.deliveryItems.extractProductInWarehouse { ItemDTO(it.productId, it.amount) })
+
+                    messageService.publish(request, "order-request", "OrderCancel") //TODO add constants for topics
+                }
+
                 // - send email
-            }
-            Status.REFUNDED ->{
-                // TODO:
-                // - set to CANCELLED
-                // - send email (?)
+                val mail:MailDTO = MailDTO(order.buyerId, null,
+                    "Your order has failed issued: $orderId",
+                    "The order was not issued.\nError message: ${orderStatus.errorMessage}")
+//                messageService.publish(mail, "OrderIssued", "mail") // TODO uncomment //TODO add constants for topics
+                orderRepository.save(order)
             }
         }
 
@@ -93,11 +120,11 @@ class OrderServiceImpl: OrderService {
         if(processingLogService.isProcessed(eventID))
             return
 
-        // TODO:
-        // - update products for order
-
+        val orderId : Long = orderDetailsDTO.orderId.parseID()
         orderDetailsDTO.productWarehouseList.forEach {
             productWarehouseDTO ->
+             purchaseItemRepository.updateWarehouseByOrderAndProduct(orderId, productWarehouseDTO.productId, productWarehouseDTO.warehouseId )
+
         }
         processingLogService.process(eventID)
     }
