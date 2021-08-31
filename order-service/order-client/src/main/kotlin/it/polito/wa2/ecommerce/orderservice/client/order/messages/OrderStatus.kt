@@ -7,7 +7,7 @@ import it.polito.wa2.ecommerce.common.saga.domain.Emittable
 //TODO change to OrderStatusDTO
 data class OrderStatus(
     val orderID: String,
-    val status: Status,
+    val responseStatus: ResponseStatus,
     val errorMessage: String?
 ):Emittable {
     override fun getId(): String {
@@ -15,10 +15,9 @@ data class OrderStatus(
     }
 }
 
-enum class Status{
+enum class ResponseStatus{
     COMPLETED, // The transaction has been correctly executed
-    FAILED, // The transaction was not correctly executed
-    REFUNDED // Transaction has been cancelled and refunded
+    FAILED // The transaction was not correctly executed
 }
 
 enum class EventTypeOrderStatus{
