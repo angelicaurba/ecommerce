@@ -5,7 +5,10 @@ import it.polito.wa2.ecommerce.common.Rolename
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.common.parseID
+import it.polito.wa2.ecommerce.common.saga.service.MessageService
+import it.polito.wa2.ecommerce.common.security.JwtTokenDetails
 import it.polito.wa2.ecommerce.common.security.UserDetailsDTO
+import it.polito.wa2.ecommerce.mailservice.client.MailDTO
 import it.polito.wa2.ecommerce.userservice.domain.User
 import it.polito.wa2.ecommerce.userservice.repository.UserRepository
 import it.polito.wa2.ecommerce.userservice.service.NotificationService
@@ -13,6 +16,7 @@ import it.polito.wa2.ecommerce.userservice.client.RegistrationRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -24,9 +28,8 @@ import javax.annotation.security.RolesAllowed
 @Service
 class UserDetailsServiceImpl: UserDetailsService {
 
-    // TODO Connect to mail service (using Debezium)
-//    @Autowired
-//    lateinit var mailService: MailService
+    @Autowired
+    lateinit var messageService: MessageService
 
     @Autowired
     lateinit var notificationService: NotificationService
@@ -64,17 +67,30 @@ class UserDetailsServiceImpl: UserDetailsService {
 
         val token = notificationService.createEmailVerificationToken(savedUser)
 
-        // TODO Send email to Mail service
-        // TODO save in outbox table
-        println(token.token)
-/*
-        mailService.sendMessage(savedUser.email, "Email verification",
-            "Hi ${savedUser.name} ${savedUser.surname},\n" +
-                    "thank you for signing in to LARA-ecommerce! " +
-                    "please verify your account by clicking on the link " +
-                    "http://localhost:8080/auth/registrationConfirm?token=${token.token} \n" +
-                    "Pay attention, this link will remain active up to 30 minutes.")
-*/
+//        println(token.token)
+        val userDTO = savedUser.toDTO()
+
+        val mailSubject = "Email verification"
+        val mailBody = "Hi ${userDTO.name} ${userDTO.surname},\n" +
+                "thank you for signing in to LARA-ecommerce! " +
+                "please verify your account by clicking on the link " +
+                "http://localhost:8080/auth/registrationConfirm?token=${token.token} \n" +
+                "Pay attention, this link will remain active up to 30 minutes."
+
+
+        val message = MailDTO(
+            userDTO.id,
+            userDTO.email,
+            mailSubject,
+            mailBody
+        )
+
+        // TODO if needed, standardize topic names (or message types)
+        messageService.publish(
+            message,
+            "SendEmail",
+            "mail"
+        )
     }
 
     fun addRoleByUsername(newRole: Rolename, username: String){
@@ -109,12 +125,12 @@ class UserDetailsServiceImpl: UserDetailsService {
         return user.authorities
     }
 
-    fun setPassword(userId: Long, oldPassword: String, newPassword: String, jwtToken: String) {
+    fun setPassword(userId: Long, oldPassword: String, newPassword: String) {
         if(!verifyPassword(userId, oldPassword)){
             throw ForbiddenException("User and password provided do not match")
         }
 
-        val userFromJwtToken = jwtUtils.getDetailsFromJwtToken(jwtToken)
+        val userFromJwtToken = SecurityContextHolder.getContext().authentication.principal as JwtTokenDetails
 
         if(userId != userFromJwtToken.id.parseID()){
             throw ForbiddenException("A user can only change their own password")

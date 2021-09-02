@@ -1,5 +1,6 @@
 package it.polito.wa2.ecommerce.userservice.security
 
+import it.polito.wa2.ecommerce.common.security.JwtAuthenticationTokenFilter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 
 @Configuration
@@ -19,6 +21,8 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
     lateinit var passwordEncoder: PasswordEncoder
     @Autowired
     lateinit var userDetailsService: UserDetailsService
+    @Autowired
+    lateinit var authenticationJwtTokenFiletr: JwtAuthenticationTokenFilter
 
     override fun configure (auth: AuthenticationManagerBuilder) {
         auth
@@ -27,12 +31,21 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
     }
 
     override fun configure(http: HttpSecurity) {
+        // TODO compare with previous project's configuration, when the microservice environment is complete
+
         http.csrf().disable() // disable csrf
 
         http
             .authorizeRequests()
-            .anyRequest()
+            .antMatchers("/auth/**")
             .permitAll()
+            .and()
+            .authorizeRequests()
+            .anyRequest()
+            .authenticated()
+
+        http.addFilterBefore(authenticationJwtTokenFiletr,
+            UsernamePasswordAuthenticationFilter::class.java)
     }
 
     @Bean
