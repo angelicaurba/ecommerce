@@ -25,6 +25,8 @@ const val tokenClearPeriod: Long = 3600000
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class UserServerApplication{
 
+    // TODO implement db population
+
     @Bean
     fun passwordEncoder(): PasswordEncoder {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder()
