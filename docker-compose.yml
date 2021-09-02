@@ -30,23 +30,23 @@ services:
 #    environment:
 #      # Important for clients to register with eureka
 #      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
-#  service1:
-#    build:
-#      context: ./service1
-#      dockerfile: Dockerfile
-#    image: wa2-group6-service1
-#    hostname: service1
-#    container_name: service1
-#    networks:
-#      - wa2-group6
-#    expose:
-#      - 8100
-#    depends_on:
-#      - eureka-server
+  warehouse-service:
+    build:
+      context: ./warehouse-service
+      dockerfile: Dockerfile
+    image: wa2-group6-warehouse-service
+    hostname: warehouse-service
+    container_name: warehouse-service
+    networks:
+      - wa2-group6
+    expose:
+      - 8100
+    depends_on:
+      - eureka-server
 #      - gateway
-#    environment:
-#      # Important for clients to register with eureka
-#      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
+    environment:
+      # Important for clients to register with eureka
+      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
 #  service2:
 #    build:
 #      context: ./service2

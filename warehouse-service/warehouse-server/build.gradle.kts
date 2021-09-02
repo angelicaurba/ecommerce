@@ -29,6 +29,7 @@ dependencies {
     //adding internal modules dependency for dtos
     implementation (project(":warehouse-service:warehouse-client"))
     implementation (project(":catalogue-service"))
+    implementation (project(":order-service:order-client"))
     implementation(project(":common"))
 
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client")

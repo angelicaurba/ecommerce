@@ -15,7 +15,7 @@ class OrderRequestConsumer{
     lateinit var orderProcessingService: OrderProcessingService
 
 
-    @KafkaListener( topics=["payment-request"])
+    @KafkaListener( topics=["order-request"])
     fun listen(@Payload orderRequestDTO: WarehouseOrderRequestDTO,
                @Header("id") id: String,
                @Header("eventType") eventType:String
