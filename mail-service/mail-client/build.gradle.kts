@@ -13,4 +13,6 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
+    implementation("javax.validation:validation-api:2.0.0.Final")
+    implementation(project(":common"))
 }

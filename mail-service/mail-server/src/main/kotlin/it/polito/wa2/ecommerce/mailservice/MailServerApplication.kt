@@ -3,7 +3,7 @@ package it.polito.wa2.ecommerce.mailservice
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient
+//import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 import org.springframework.context.annotation.Bean
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.JavaMailSenderImpl
@@ -12,7 +12,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import java.util.*
 
 @SpringBootApplication(scanBasePackages = ["it.polito.wa2.ecommerce"])
-@EnableEurekaClient
+// TODO Re-insert commented annotation when configuring eureka client behaviour
+//@EnableEurekaClient
 @EnableScheduling
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class MailServerApplication{

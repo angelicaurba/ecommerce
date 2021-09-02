@@ -9,12 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
+// TODO for debug purposes, it will be deleted when kafka/debezium is fully implemented
 /*
-TODO
-This controller will be a Apache Kafka subscriber, but for testing purposes
-it will be temporarily implemented as a REST API
-*/
-
 @RestController
 @RequestMapping("/mail")
 @Validated
@@ -29,3 +25,4 @@ class MailController{
         mailService.sendMail(mail)
     }
 }
+*/
