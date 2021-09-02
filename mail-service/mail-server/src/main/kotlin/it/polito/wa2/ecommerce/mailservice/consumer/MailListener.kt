@@ -1,10 +1,11 @@
 package it.polito.wa2.ecommerce.mailservice.consumer
 
-/*
 import it.polito.wa2.ecommerce.mailservice.client.MailDTO
 import it.polito.wa2.ecommerce.mailservice.service.impl.MailServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.kafka.annotation.KafkaListener
+import org.springframework.messaging.handler.annotation.Header
+import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.stereotype.Component
 
 @Component
@@ -12,11 +13,11 @@ class MailListener {
     @Autowired
     lateinit var mailService: MailServiceImpl
 
-    @KafkaListener(
-        topics = ["mail"],
-        containerFactory = "kafkaListenerContainerFactory")
-    fun mailListener(mail: MailDTO) {
-        mailService.sendMail(mail)
+    @KafkaListener(topics = ["mail"])
+    fun mailListener(@Payload mailDTO: MailDTO,
+                     @Header("id") id: String,
+                     @Header("eventType") eventType:String) {
+        println("Processing message $id ($eventType) : $mailDTO")
+        mailService.sendMail(mailDTO, id)
     }
 }
-*/

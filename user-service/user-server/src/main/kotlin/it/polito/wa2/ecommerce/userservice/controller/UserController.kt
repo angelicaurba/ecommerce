@@ -48,8 +48,7 @@ class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun changePassword(
         @PathVariable userId: String,
-        @RequestBody @Valid request: PasswordChangeRequest, bindingResult: BindingResult,
-        @RequestHeader headers: Map<String, String>
+        @RequestBody @Valid request: PasswordChangeRequest, bindingResult: BindingResult
         ){
         if (bindingResult.hasErrors()) {
             throw BadRequestException(bindingResult.fieldErrors.joinToString())
@@ -59,13 +58,10 @@ class UserController {
             throw BadRequestException("newPassword and confirmNewPassword should be equal")
         }
 
-        val jwtCompleteHeader = headers[jwtUtils.jwtHeaderName.lowercase()]!!
-
         return userDetailsService.setPassword(
             userId.parseID(),
             request.oldPassword,
-            request.newPassword,
-            jwtUtils.getJwtTokenFromHeader(jwtCompleteHeader)
+            request.newPassword
         )
     }
 
