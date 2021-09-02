@@ -26,6 +26,8 @@ class UserController {
     @Autowired
     lateinit var jwtUtils: JwtUtils
 
+    // TODO user information accessible only by user itself or admin
+
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
     fun getUser(@PathVariable userId: String): UserDetailsDTO {
