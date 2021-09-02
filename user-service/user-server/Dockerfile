@@ -3,7 +3,7 @@ VOLUME /tmp
 ARG JAR_FILE=build/libs/*.jar
 COPY ${JAR_FILE} userserver.jar
 
-EXPOSE 8200
+EXPOSE 8300
 
 ## RUN addgroup -S app && adduser -S app -G app
 ## USER app
