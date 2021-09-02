@@ -2,6 +2,7 @@ package it.polito.wa2.ecommerce.common.security
 
 import io.jsonwebtoken.*
 import it.polito.wa2.ecommerce.common.Rolename
+import it.polito.wa2.ecommerce.common.constants.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.Resource
 import org.springframework.security.core.Authentication
@@ -15,30 +16,8 @@ import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
 import java.util.*
 
-
-// TODO application properties don't work inside common
-const val JWT_EXPIRATION_MS = 1800000
-const val JWT_HEADER_NAME = "Authorization"
-const val JWT_HEADER_START = "Bearer"
-const val JWT_HEADER_SEPARATOR_CHAR = " "
-const val ENCRYPT_ALGORITHM = "RSA"
-
 @Component
 class JwtUtils {
-
-    // TODO application properties don't work inside common
-
-//    @Value("\${application.jwt.jwtSecret}")
-//    private lateinit var jwtSecret: String
-//
-//    @Value("\${application.jwt.jwtExpirationMs}")
-//    var jwtExpirationMs: Long = -1
-//
-//    @Value("\${application.jwt.jwtHeaderName}")
-//    lateinit var jwtHeaderName: String
-//
-//    @Value("\${application.jwt.jwtHeaderStart}")
-//    lateinit var jwtHeaderStart: String
 
     val jwtExpirationMs = JWT_EXPIRATION_MS
     val jwtHeaderName = JWT_HEADER_NAME
