@@ -2,6 +2,7 @@ package it.polito.wa2.ecommerce.userservice.service.impl
 
 import it.polito.wa2.ecommerce.common.security.JwtUtils
 import it.polito.wa2.ecommerce.common.Rolename
+import it.polito.wa2.ecommerce.common.constants.mailTopic
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.common.parseID
@@ -99,11 +100,10 @@ class UserDetailsServiceImpl: UserDetailsService {
             mailBody
         )
 
-        // TODO if needed, standardize topic names (or message types)
         messageService.publish(
             message,
             "SendEmail",
-            "mail"
+            mailTopic
         )
     }
 
