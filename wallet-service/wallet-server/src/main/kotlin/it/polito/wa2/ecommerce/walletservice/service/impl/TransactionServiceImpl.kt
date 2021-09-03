@@ -61,7 +61,7 @@ class TransactionServiceImpl: TransactionService {
         val walletIdLong = walletId.parseID()
         walletService.getWalletOrThrowException(walletIdLong)
         val transaction = getTransactionOrThrowException(transactionId.parseID())
-        if (transaction.fromWallet?.getId() != walletIdLong && transaction.toWallet.getId() != walletIdLong) {
+        if (transaction.fromWallet?.getId() != walletIdLong && transaction.toWallet!!.getId() != walletIdLong) {
             throw TransactionNotFoundException("Cannot find transaction with ID $transactionId for wallet $walletId")
         }
         return transaction.toDTO()
@@ -93,11 +93,11 @@ class TransactionServiceImpl: TransactionService {
                 if (transaction.fromWallet!!.amount < amount) {
                     throw  OutOfMoneyException("Order cannot be processed")
                 }
-                if (transaction.toWallet.walletType != WalletType.WAREHOUSE) {
+                if (transaction.toWallet!!.walletType != WalletType.WAREHOUSE) {
                     throw BadRequestException("Wallet to must belong to a warehouse for orders")
                 }
                 transaction.fromWallet!!.amount = transaction.fromWallet!!.amount.minus(amount)
-                transaction.toWallet.amount = transaction.toWallet.amount.plus(amount)
+                transaction.toWallet!!.amount = transaction.toWallet!!.amount.plus(amount)
 
 
             }
@@ -108,14 +108,14 @@ class TransactionServiceImpl: TransactionService {
 
                 // no check on available amount -> admitting negative warehouse wallet
                 transaction.fromWallet!!.amount = transaction.fromWallet!!.amount.minus(amount)
-                transaction.toWallet.amount = transaction.toWallet.amount.plus(amount)
+                transaction.toWallet!!.amount = transaction.toWallet!!.amount.plus(amount)
 
             }
             TransactionType.RECHARGE -> {
                 if (transaction.fromWallet != null)
                     throw BadRequestException("No field fromWallet in recharges")
 
-                transaction.toWallet.amount = transaction.toWallet.amount.plus(amount)
+                transaction.toWallet!!.amount = transaction.toWallet!!.amount.plus(amount)
 
             }
         }
@@ -123,7 +123,7 @@ class TransactionServiceImpl: TransactionService {
         transaction.fromWallet?.apply {
             walletRepository.save(this)
         }
-        walletRepository.save(transaction.toWallet)
+        walletRepository.save(transaction.toWallet!!)
 
         return transactionRepository.save(transaction)
 

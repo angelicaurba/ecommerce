@@ -113,7 +113,7 @@ class OrderProcessingServiceImpl: OrderProcessingService {
             for (previousTransaction in previousTransactions) {
 
                 val transaction = Transaction(
-                    walletService.getWalletOrThrowException(previousTransaction.toWallet.getId()!!),
+                    walletService.getWalletOrThrowException(previousTransaction.toWallet!!.getId()!!),
                     walletFrom,
                     TransactionType.ORDER_REFUND,
                     previousTransaction.amount,
