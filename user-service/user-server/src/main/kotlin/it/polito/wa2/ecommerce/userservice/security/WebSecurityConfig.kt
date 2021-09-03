@@ -41,6 +41,10 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
             .permitAll()
             .and()
             .authorizeRequests()
+            .antMatchers("/users/**/email")
+            .permitAll()
+            .and()
+            .authorizeRequests()
             .anyRequest()
             .authenticated()
 

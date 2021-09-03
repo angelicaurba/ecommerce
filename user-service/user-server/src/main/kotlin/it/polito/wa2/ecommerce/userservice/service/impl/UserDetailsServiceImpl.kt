@@ -41,6 +41,19 @@ class UserDetailsServiceImpl: UserDetailsService {
     @Autowired
     lateinit var jwtUtils: JwtUtils
 
+    private fun verifyIfAdminOrSameUser(userId: Long){
+        val userFromJwtToken = SecurityContextHolder.getContext().authentication.principal as JwtTokenDetails
+
+
+        if(userFromJwtToken.roles.contains(Rolename.ADMIN) ||
+            userId == userFromJwtToken.id.parseID()){
+                // Admins and the user involved in the process are authorized
+            return
+        }
+
+        throw ForbiddenException("Only an admin or the user related to this information are authorized.")
+    }
+
     fun createUser(registrationRequest: RegistrationRequest){
         if (userRepository.findByUsername(registrationRequest.username) != null) {
             throw BadRequestException("Username already in use")
@@ -112,16 +125,22 @@ class UserDetailsServiceImpl: UserDetailsService {
     }
 
     fun loadUserById(userId: Long): UserDetailsDTO {
+        verifyIfAdminOrSameUser(userId)
+
         val user = findUserById(userId)
         return user.toDTO()
     }
 
     fun loadUserEmailById(userId: Long): String {
+        // No authorization check, this route is only accessible by internal microservices
+
         val user = findUserById(userId)
         return user.email
     }
 
     fun loadUserRolesById(userId: Long): Set<Rolename> {
+        verifyIfAdminOrSameUser(userId)
+
         val user = findUserById(userId).toDTO()
         return user.authorities
     }
@@ -131,11 +150,7 @@ class UserDetailsServiceImpl: UserDetailsService {
             throw ForbiddenException("User and password provided do not match")
         }
 
-        val userFromJwtToken = SecurityContextHolder.getContext().authentication.principal as JwtTokenDetails
-
-        if(userId != userFromJwtToken.id.parseID()){
-            throw ForbiddenException("A user can only change their own password")
-        }
+        verifyIfAdminOrSameUser(userId)
 
         val user = findUserById(userId)
         user.password = passwordEncoder.encode(newPassword)
