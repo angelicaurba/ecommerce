@@ -2,6 +2,80 @@ version: "3.7"
 
 services:
 
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+    networks:
+      - wa2-group6
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:29092
+      - 29093:29093
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29093, PLAINTEXT_EXT://192.168.1.5:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,PLAINTEXT_EXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - wa2-group6
+
+  kakfa-connect:
+    #    build:
+    #        context: ../kafka-connector-router
+    #        dockerfile: Dockerfile
+    #    image:  custom-connect
+    image: debezium/connect:1.6
+    depends_on:
+      - kafka
+      - mysql
+    #    volumes:
+    #      - ../kafka-connector-router/build
+    ports:
+      - 8083:8083
+    environment:
+      GROUP_ID: 1
+      CONFIG_STORAGE_TOPIC: my_connect_configs
+      OFFSET_STORAGE_TOPIC: my_connect_offsets
+      STATUS_STORAGE_TOPIC: my_connect_statuses
+      BOOTSTRAP_SERVERS: kafka:9092
+    networks:
+      - wa2-group6
+
+
+  mysql:
+    restart: always
+    image: mysql
+    container_name: mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - "../databases/init.sql:/docker-entrypoint-initdb.d/init.sql"
+    networks:
+      - wa2-group6
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+
+
+  mongo:
+    image: mongo
+    restart: always
+    container_name: mongo
+    ports:
+      - 27017:27017
+    networks:
+      - wa2-group6
+
+
   eureka-server:
     build:
       context: ./eureka-server
@@ -14,56 +88,124 @@ services:
     networks:
       - wa2-group6
 
-#  gateway:
-#    build:
-#      context: ./gateway
-#      dockerfile: Dockerfile
-#    image: wa2-group6-gateway
-#    hostname: gateway
-#    container_name: gateway
-#    ports:
-#      - 8080:8080
-#    networks:
-#      - wa2-group6
-#    depends_on:
-#      - eureka-server
-#    environment:
-#      # Important for clients to register with eureka
-#      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
-#  service1:
-#    build:
-#      context: ./service1
-#      dockerfile: Dockerfile
-#    image: wa2-group6-service1
-#    hostname: service1
-#    container_name: service1
-#    networks:
-#      - wa2-group6
-#    expose:
-#      - 8100
-#    depends_on:
-#      - eureka-server
-#      - gateway
-#    environment:
-#      # Important for clients to register with eureka
-#      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
-#  service2:
-#    build:
-#      context: ./service2
-#      dockerfile: Dockerfile
-#    image: wa2-group6-service2
-#    hostname: service2
-#    container_name: service2
-#    networks:
-#      - wa2-group6
-#    expose:
-#      - 8200
-#   depends_on:
-#      - eureka-server
-#      - gateway
-#    environment:
-#      # Important for clients to register with eureka
-#      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
+
+#  this is catalogue-service + gateway
+  catalogue-service:
+    build:
+      context: ./catalogue-service
+      dockerfile: Dockerfile
+    image: wa2-group6-catalogue-service
+    hostname: catalogue-service
+    container_name: catalogue-service
+    ports:
+      - 8080:8080
+    networks:
+      - wa2-group6
+    depends_on:
+      - eureka-server
+      - mongo
+      - mysql
+    environment:
+      # Important for clients to register with eureka
+      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
+
+
+  warehouse-service:
+    build:
+      context: ./warehouse-service
+      dockerfile: Dockerfile
+    image: wa2-group6-warehouse-service
+    hostname: warehouse-service
+    container_name: warehouse-service
+    networks:
+      - wa2-group6
+    expose:
+      - 8100
+    depends_on:
+      - eureka-server
+      - catalogue-service
+    environment:
+      # Important for clients to register with eureka
+      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
+
+
+  wallet-service:
+    build:
+      context: ./wallet-service
+      dockerfile: Dockerfile
+    image: wa2-group6-wallet-service
+    hostname: wallet-service
+    container_name: wallet-service
+    networks:
+      - wa2-group6
+    expose:
+      - 8200
+    depends_on:
+      - eureka-server
+      - catalogue-service
+    environment:
+      # Important for clients to register with eureka
+      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
+
+
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    image: wa2-group6-user-service
+    hostname: user-service
+    container_name: user-service
+    networks:
+      - wa2-group6
+    expose:
+      - 8300
+    depends_on:
+      - eureka-server
+      - catalogue-service
+    environment:
+      # Important for clients to register with eureka
+      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
+
+
+  order-service:
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile
+    image: wa2-group6-order-service
+    hostname: order-service
+    container_name: order-service
+    networks:
+      - wa2-group6
+    expose:
+      - 8400
+    depends_on:
+      - eureka-server
+      - catalogue-service
+    environment:
+      # Important for clients to register with eureka
+      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
+
+
+  mail-service:
+    build:
+      context: ./mail-service
+      dockerfile: Dockerfile
+    image: wa2-group6-mail-service
+    hostname: mail-service
+    container_name: mail-service
+    networks:
+      - wa2-group6
+    expose:
+      - 8500
+    depends_on:
+      - eureka-server
+      - catalogue-service
+    environment:
+      # Important for clients to register with eureka
+      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
+
+
+
 networks:
   wa2-group6:
     driver: bridge
