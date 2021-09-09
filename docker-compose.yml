@@ -59,7 +59,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - "../databases/init.sql:/docker-entrypoint-initdb.d/init.sql"
+      - "./databases/init.sql:/docker-entrypoint-initdb.d/init.sql"
     networks:
       - wa2-group6
     environment:
