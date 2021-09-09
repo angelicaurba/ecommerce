@@ -4,6 +4,7 @@ services:
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -14,6 +15,7 @@ services:
 
   kafka:
     image: confluentinc/cp-kafka:latest
+    container_name: kafka
     depends_on:
       - zookeeper
     ports:
@@ -29,12 +31,13 @@ services:
     networks:
       - wa2-group6
 
-  kakfa-connect:
+  kafka-connect:
     #    build:
     #        context: ../kafka-connector-router
     #        dockerfile: Dockerfile
     #    image:  custom-connect
     image: debezium/connect:1.6
+    container_name: kafka-connect
     depends_on:
       - kafka
       - mysql
