@@ -10,27 +10,40 @@ import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 import java.math.BigDecimal
 import java.util.*
 
 @SpringBootApplication(scanBasePackages = ["it.polito.wa2.ecommerce"])
-class WalletServerApplication{
+class WalletServerApplication {
     @Bean
-    fun populateDB(walletRepository: WalletRepository, transactionRepository: TransactionRepository): CommandLineRunner {
+    fun populateDB(
+        walletRepository: WalletRepository,
+        transactionRepository: TransactionRepository
+    ): CommandLineRunner {
         return CommandLineRunner {
+            transactionRepository.deleteAll()
+            walletRepository.deleteAll()
 
+            //Id: "1"
             val w1 = walletRepository.save(
-                Wallet("1", WalletType.CUSTOMER, BigDecimal("0.00"))) //TODO update ids
+                Wallet("1", WalletType.CUSTOMER, BigDecimal("0.00"))
+            ) //TODO update ids
+
+            //Id: "2"
             val w2 = walletRepository.save(
-                Wallet("2", WalletType.WAREHOUSE, BigDecimal("50.00")))
+                Wallet("2", WalletType.WAREHOUSE, BigDecimal("50.00"))
+            )
+
+            //Id:"3"
             val w3 = walletRepository.save(
-                Wallet("2", WalletType.CUSTOMER, BigDecimal("100.00")))
+                Wallet("2", WalletType.CUSTOMER, BigDecimal("100.00"))
+            )
 
 
+            //Id:"4"
+            val t1 = Transaction(null, w3, TransactionType.RECHARGE, BigDecimal("150.00"), UUID.randomUUID().toString())
 
-            val t1 = Transaction(null, w3, TransactionType.RECHARGE, BigDecimal("150.00"), UUID.randomUUID().toString() )
+            //Id:"5"
             val t2 = Transaction(w3, w2, TransactionType.ORDER_PAYMENT, BigDecimal("50.00"), "1") //TODO Set an order id
 
             transactionRepository.save(t1)
