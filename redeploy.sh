@@ -58,3 +58,11 @@ docker-compose up -d
 
 
 docker exec -i mysql sh -c "exec mysql -uroot --password=admin " < ./databases/init.sql
+
+# Configure debezium
+DEBEZIUM_CONFIG_FILE="./sample_debezium_config.json"
+DEBEZIUM_CONFIG="$(cat "$DEBEZIUM_CONFIG_FILE")"
+echo "$DEBEZIUM_CONFIG"
+# TODO update "database.include.list" and "table.include.list"
+
+#curl -d $DEBEZIUM_CONFIG -X POST # kakfa-connect:3036/connectors
