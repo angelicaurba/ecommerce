@@ -11,12 +11,12 @@ echo " "
 echo " "
 echo 'Eureka server'
 #./gradlew :eureka-server:build
-./gradlew :eureka-server:bootJar
+#./gradlew :eureka-server:bootJar
 
 echo " "
 echo 'Catalogue service'
 #./gradlew :catalogue-service:build
-./gradlew :catalogue-service:bootJar
+#./gradlew :catalogue-service:bootJar
 
 # TODO
 # Check if my changes also work in your configurations
@@ -26,27 +26,27 @@ echo 'Catalogue service'
 echo " "
 echo 'Mail service'
 #./gradlew :mail-service:mail-server:build
-./gradlew :mail-service:mail-server:bootJar
+#./gradlew :mail-service:mail-server:bootJar
 
 echo " "
 echo 'Order service'
 #./gradlew :order-service:order-server:build
-./gradlew :order-service:order-server:bootJar
+#./gradlew :order-service:order-server:bootJar
 
 echo " "
 echo 'User service'
 #./gradlew :user-service:user-server:build
-./gradlew :user-service:user-server:bootJar
+#./gradlew :user-service:user-server:bootJar
 
 echo " "
 echo 'Wallet service'
 #./gradlew :wallet-service:wallet-server:build
-./gradlew :wallet-service:wallet-server:bootJar
+#./gradlew :wallet-service:wallet-server:bootJar
 
 echo " "
 echo 'Warehouse service'
 #./gradlew :warehouse-service:warehouse-server:build
-./gradlew :warehouse-service:warehouse-server:bootJar
+#./gradlew :warehouse-service:warehouse-server:bootJar
 
 echo " "
 echo " "
@@ -61,8 +61,10 @@ docker exec -i mysql sh -c "exec mysql -uroot --password=admin " < ./databases/i
 
 # Configure debezium
 DEBEZIUM_CONFIG_FILE="./sample_debezium_config.json"
-DEBEZIUM_CONFIG="$(cat "$DEBEZIUM_CONFIG_FILE")"
-echo "$DEBEZIUM_CONFIG"
-# TODO update "database.include.list" and "table.include.list"
+DEBEZIUM_CONFIG="$(cat "$DEBEZIUM_CONFIG_FILE" | tr -d '\r' | tr -d '\n')"
+#echo "$DEBEZIUM_CONFIG" > TEST_FILE.txt
 
-#curl -d $DEBEZIUM_CONFIG -X POST # kakfa-connect:3036/connectors
+
+# TODO update "database.include.list" and "table.include.list"
+echo " "
+docker exec kafka-connect curl -d "$DEBEZIUM_CONFIG" -H "Content-Type: application/json" -X POST kafka-connect:8083/connectors
