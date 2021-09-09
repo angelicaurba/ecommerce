@@ -57,5 +57,4 @@ docker-compose build
 docker-compose up -d
 
 
-#docker exec -i mysql sh -c "exec mysql -uroot --password=admin " < .\databases\init.sql
 docker exec -i mysql sh -c "exec mysql -uroot --password=admin " < ./databases/init.sql
