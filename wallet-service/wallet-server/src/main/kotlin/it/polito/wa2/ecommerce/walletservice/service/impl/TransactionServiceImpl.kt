@@ -1,28 +1,30 @@
 package it.polito.wa2.ecommerce.walletservice.service.impl
 
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
-import it.polito.wa2.ecommerce.walletservice.exception.OutOfMoneyException
-import it.polito.wa2.ecommerce.walletservice.exception.TransactionNotFoundException
 import it.polito.wa2.ecommerce.common.getPageable
 import it.polito.wa2.ecommerce.common.parseID
+import it.polito.wa2.ecommerce.common.security.IdentityVerifier
 import it.polito.wa2.ecommerce.walletservice.client.transaction.TransactionDTO
 import it.polito.wa2.ecommerce.walletservice.client.transaction.request.RechargeRequestDTO
 import it.polito.wa2.ecommerce.walletservice.domain.Transaction
 import it.polito.wa2.ecommerce.walletservice.domain.TransactionType
 import it.polito.wa2.ecommerce.walletservice.domain.WalletType
+import it.polito.wa2.ecommerce.walletservice.exception.OutOfMoneyException
+import it.polito.wa2.ecommerce.walletservice.exception.TransactionNotFoundException
 import it.polito.wa2.ecommerce.walletservice.repository.TransactionRepository
 import it.polito.wa2.ecommerce.walletservice.repository.WalletRepository
 import it.polito.wa2.ecommerce.walletservice.service.TransactionService
 import it.polito.wa2.ecommerce.walletservice.service.WalletService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Service
-@Transactional //TODO which is the correct import?
-class TransactionServiceImpl: TransactionService {
+@Transactional
+class TransactionServiceImpl : TransactionService {
 
     @Autowired
     private lateinit var transactionRepository: TransactionRepository
@@ -31,7 +33,10 @@ class TransactionServiceImpl: TransactionService {
     private lateinit var walletService: WalletService
 
     @Autowired
-    private lateinit var walletRepository:WalletRepository
+    private lateinit var walletRepository: WalletRepository
+
+    @Autowired
+    lateinit var identityVerifier: IdentityVerifier
 
     override fun getTransactionsByWalletIdAndTimeInterval(
         walletId: String,
@@ -44,8 +49,6 @@ class TransactionServiceImpl: TransactionService {
             throw BadRequestException("Invalid time range")
         }
         val wallet = walletService.getWalletOrThrowException(walletId.parseID())
-
-
         val page = getPageable(pageIdx, pageSize)
 
         return transactionRepository.findByWalletInTimeRange(wallet, startTime, endTime, page).map { it.toDTO() }
@@ -67,8 +70,8 @@ class TransactionServiceImpl: TransactionService {
         return transaction.toDTO()
     }
 
+    @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     override fun rechargeWallet(walletId: String, rechargeRequestDTO: RechargeRequestDTO): TransactionDTO {
-        //TODO verify admin role
         val wallet = walletService.getWalletOrThrowException(walletId.parseID())
         val transaction = Transaction(
             null, wallet, TransactionType.RECHARGE,
