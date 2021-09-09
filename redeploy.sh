@@ -67,4 +67,6 @@ DEBEZIUM_CONFIG="$(cat "$DEBEZIUM_CONFIG_FILE" | tr -d '\r' | tr -d '\n')"
 
 # TODO update "database.include.list" and "table.include.list"
 echo " "
+docker exec kafka-connect curl -d "$DEBEZIUM_CONFIG" -X DELETE kafka-connect:8083/connectors/test-router
+echo " "
 docker exec kafka-connect curl -d "$DEBEZIUM_CONFIG" -H "Content-Type: application/json" -X POST kafka-connect:8083/connectors
