@@ -8,26 +8,45 @@ echo 'starting gradle tasks...'
 echo " "
 echo " "
 
+echo " "
+echo 'Eureka server'
 #./gradlew :eureka-server:build
 ./gradlew :eureka-server:bootJar
 
+echo " "
+echo 'Catalogue service'
 #./gradlew :catalogue-service:build
 ./gradlew :catalogue-service:bootJar
 
-#./gradlew :mail-service:build
-./gradlew :mail-service:bootJar
+# TODO
+# Check if my changes also work in your configurations
+# With the previous commands, this script couldn't find gradlew files
+# nested inside x-server folders
 
-#./gradlew :order-service:build
-./gradlew :order-service:bootJar
+echo " "
+echo 'Mail service'
+#./gradlew :mail-service:mail-server:build
+./gradlew :mail-service:mail-server:bootJar
 
-#./gradlew :user-service:build
-./gradlew :user-service:bootJar
+echo " "
+echo 'Order service'
+#./gradlew :order-service:order-server:build
+./gradlew :order-service:order-server:bootJar
 
-#./gradlew :wallet-service:build
-./gradlew :wallet-service:bootJar
+echo " "
+echo 'User service'
+#./gradlew :user-service:user-server:build
+./gradlew :user-service:user-server:bootJar
 
-#./gradlew :wallet-service:build
-./gradlew :wallet-service:bootJar
+echo " "
+echo 'Wallet service'
+#./gradlew :wallet-service:wallet-server:build
+./gradlew :wallet-service:wallet-server:bootJar
+
+echo " "
+echo 'Warehouse service'
+#./gradlew :warehouse-service:warehouse-server:build
+./gradlew :warehouse-service:warehouse-server:bootJar
 
 echo " "
 echo " "
@@ -38,4 +57,12 @@ docker-compose build
 docker-compose up -d
 
 
-docker exec -i mysql sh -c "exec mysql -uroot --password=admin " < .\databases\init.sql
+docker exec -i mysql sh -c "exec mysql -uroot --password=admin " < ./databases/init.sql
+
+# Configure debezium
+DEBEZIUM_CONFIG_FILE="./sample_debezium_config.json"
+DEBEZIUM_CONFIG="$(cat "$DEBEZIUM_CONFIG_FILE")"
+echo "$DEBEZIUM_CONFIG"
+# TODO update "database.include.list" and "table.include.list"
+
+#curl -d $DEBEZIUM_CONFIG -X POST # kakfa-connect:3036/connectors
