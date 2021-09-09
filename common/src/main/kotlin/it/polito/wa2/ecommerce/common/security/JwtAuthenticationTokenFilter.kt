@@ -1,5 +1,7 @@
 package it.polito.wa2.ecommerce.common.security
 
+import it.polito.wa2.ecommerce.common.constants.JWT_HEADER_NAME
+import it.polito.wa2.ecommerce.common.constants.JWT_HEADER_START
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
@@ -14,7 +16,6 @@ import javax.servlet.http.HttpServletResponse
 @Component
 class JwtAuthenticationTokenFilter: OncePerRequestFilter() {
 
-    // TODO application properties don't work inside common
     val header = JWT_HEADER_NAME
     val prefix = JWT_HEADER_START
 

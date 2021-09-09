@@ -4,6 +4,7 @@ import it.polito.wa2.ecommerce.common.EntityBase
 import it.polito.wa2.ecommerce.walletservice.client.transaction.TransactionDTO
 import org.springframework.data.annotation.CreatedDate
 import java.math.BigDecimal
+import java.util.*
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.ManyToOne
@@ -31,16 +32,15 @@ class Transaction (
         ): EntityBase<Long>(){
 
     @Column(nullable=false)
-    @CreatedDate
     @field:NotNull
-    var timestamp: Long? = null
+    var timestamp: Long = System.currentTimeMillis()
 
     fun toDTO(): TransactionDTO {
         return TransactionDTO(getId()!!,
             fromWallet?.getId().toString(),
             toWallet!!.getId().toString(),
             amount,
-            timestamp!!, //TODO convert to date for frontend?
+            timestamp, //TODO convert to date for frontend?
             "$type: $operationReference"
         )
     }

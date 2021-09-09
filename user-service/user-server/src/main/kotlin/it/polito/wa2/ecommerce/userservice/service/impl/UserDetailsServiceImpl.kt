@@ -2,6 +2,7 @@ package it.polito.wa2.ecommerce.userservice.service.impl
 
 import it.polito.wa2.ecommerce.common.security.JwtUtils
 import it.polito.wa2.ecommerce.common.Rolename
+import it.polito.wa2.ecommerce.common.constants.mailTopic
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.common.parseID
@@ -41,6 +42,19 @@ class UserDetailsServiceImpl: UserDetailsService {
     @Autowired
     lateinit var jwtUtils: JwtUtils
 
+    private fun verifyIfAdminOrSameUser(userId: Long){
+        val userFromJwtToken = SecurityContextHolder.getContext().authentication.principal as JwtTokenDetails
+
+
+        if(userFromJwtToken.roles.contains(Rolename.ADMIN) ||
+            userId == userFromJwtToken.id.parseID()){
+                // Admins and the user involved in the process are authorized
+            return
+        }
+
+        throw ForbiddenException("Only an admin or the user related to this information are authorized.")
+    }
+
     fun createUser(registrationRequest: RegistrationRequest){
         if (userRepository.findByUsername(registrationRequest.username) != null) {
             throw BadRequestException("Username already in use")
@@ -71,10 +85,11 @@ class UserDetailsServiceImpl: UserDetailsService {
         val userDTO = savedUser.toDTO()
 
         val mailSubject = "Email verification"
+        // TODO dynamically generate link to registrationConfirm
         val mailBody = "Hi ${userDTO.name} ${userDTO.surname},\n" +
                 "thank you for signing in to LARA-ecommerce! " +
                 "please verify your account by clicking on the link " +
-                "http://localhost:8080/auth/registrationConfirm?token=${token.token} \n" +
+                "http://localhost:8200/auth/registrationConfirm?token=${token.token} \n" +
                 "Pay attention, this link will remain active up to 30 minutes."
 
 
@@ -85,11 +100,10 @@ class UserDetailsServiceImpl: UserDetailsService {
             mailBody
         )
 
-        // TODO if needed, standardize topic names (or message types)
         messageService.publish(
             message,
             "SendEmail",
-            "mail"
+            mailTopic
         )
     }
 
@@ -111,16 +125,22 @@ class UserDetailsServiceImpl: UserDetailsService {
     }
 
     fun loadUserById(userId: Long): UserDetailsDTO {
+        verifyIfAdminOrSameUser(userId)
+
         val user = findUserById(userId)
         return user.toDTO()
     }
 
     fun loadUserEmailById(userId: Long): String {
+        // No authorization check, this route is only accessible by internal microservices
+
         val user = findUserById(userId)
         return user.email
     }
 
     fun loadUserRolesById(userId: Long): Set<Rolename> {
+        verifyIfAdminOrSameUser(userId)
+
         val user = findUserById(userId).toDTO()
         return user.authorities
     }
@@ -130,11 +150,7 @@ class UserDetailsServiceImpl: UserDetailsService {
             throw ForbiddenException("User and password provided do not match")
         }
 
-        val userFromJwtToken = SecurityContextHolder.getContext().authentication.principal as JwtTokenDetails
-
-        if(userId != userFromJwtToken.id.parseID()){
-            throw ForbiddenException("A user can only change their own password")
-        }
+        verifyIfAdminOrSameUser(userId)
 
         val user = findUserById(userId)
         user.password = passwordEncoder.encode(newPassword)

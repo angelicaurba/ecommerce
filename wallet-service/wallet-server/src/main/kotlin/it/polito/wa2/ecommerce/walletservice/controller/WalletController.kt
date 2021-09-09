@@ -26,9 +26,6 @@ const val DEFAULT_PAGE_SIZE = "10"
 class WalletController {
 
     @Autowired
-    lateinit var messageService: MessageServiceImpl
-
-    @Autowired
     lateinit var walletService: WalletService
 
     @Autowired
@@ -36,16 +33,6 @@ class WalletController {
 
     private fun errorMapper (bindingResult: BindingResult): String {
         return bindingResult.allErrors.joinToString { it.toString() }
-    }
-
-    @PatchMapping("/")
-    fun testPublish(@RequestParam("test", defaultValue = "true") test:Boolean){
-        if(test)
-         messageService.publish(WalletOrderPaymentRequestDTO("123", "123", "1", listOf()),
-            "OrderOK", "topic1")
-        else
-            messageService.publish(WalletOrderRefundRequestDTO("123", "123", "1"),
-                "OrderOK", "topic1")
     }
 
     @GetMapping("/{walletId}")
@@ -60,11 +47,6 @@ class WalletController {
         if(bindingResult.hasErrors())
             throw BadRequestException(errorMapper(bindingResult))
         return walletService.addWallet(walletCreationRequest)
-    }
-
-    @DeleteMapping("/{walletId}")
-    fun deleteWalletById(@PathVariable("walletId") @Min(1) walletId:String){
-        return walletService.deleteWallet(walletId)
     }
 
     @GetMapping("/{walletId}/transactions")
@@ -94,6 +76,7 @@ class WalletController {
     }
 
     @PostMapping("/{walletId}/recharges")
+
     fun rechargeWallet(@PathVariable("walletId") walletId: String,
                        @RequestBody @Valid rechargeRequestDTO: RechargeRequestDTO,
                        bindingResult: BindingResult): TransactionDTO {

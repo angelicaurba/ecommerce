@@ -1,6 +1,6 @@
 FROM openjdk:11-jre-slim
 VOLUME /tmp
-ARG JAR_FILE=build/libs/*.jar
+ARG JAR_FILE=build/libs/*SNAPSHOT.jar
 COPY ${JAR_FILE} eurekaserver.jar
 
 EXPOSE 8761

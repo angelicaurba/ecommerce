@@ -1,5 +1,6 @@
 package it.polito.wa2.ecommerce.walletservice.service.impl
 
+import it.polito.wa2.ecommerce.common.constants.orderStatusTopic
 import it.polito.wa2.ecommerce.common.parseID
 import it.polito.wa2.ecommerce.common.saga.service.MessageService
 import it.polito.wa2.ecommerce.common.saga.service.ProcessingLogService
@@ -71,7 +72,7 @@ class OrderProcessingServiceImpl: OrderProcessingService {
                     if(it.responseStatus == ResponseStatus.COMPLETED)
                         EventTypeOrderStatus.OrderOk.toString()
                     else EventTypeOrderStatus.OrderPaymentFailed.toString(),
-                    "order-status") //TODO define constant
+                    orderStatusTopic)
             }
         }
     }
@@ -113,7 +114,7 @@ class OrderProcessingServiceImpl: OrderProcessingService {
             for (previousTransaction in previousTransactions) {
 
                 val transaction = Transaction(
-                    walletService.getWalletOrThrowException(previousTransaction.toWallet.getId()!!),
+                    walletService.getWalletOrThrowException(previousTransaction.toWallet!!.getId()!!),
                     walletFrom,
                     TransactionType.ORDER_REFUND,
                     previousTransaction.amount,

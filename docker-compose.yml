@@ -59,7 +59,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - "../databases/init.sql:/docker-entrypoint-initdb.d/init.sql"
+      - "./databases/init.sql:/docker-entrypoint-initdb.d/init.sql"
     networks:
       - wa2-group6
     environment:
@@ -112,7 +112,7 @@ services:
 
   warehouse-service:
     build:
-      context: ./warehouse-service
+      context: ./warehouse-service/warehouse-server
       dockerfile: Dockerfile
     image: wa2-group6-warehouse-service
     hostname: warehouse-service
@@ -131,7 +131,7 @@ services:
 
   wallet-service:
     build:
-      context: ./wallet-service
+      context: ./wallet-service/wallet-server
       dockerfile: Dockerfile
     image: wa2-group6-wallet-service
     hostname: wallet-service
@@ -150,7 +150,7 @@ services:
 
   user-service:
     build:
-      context: ./user-service
+      context: ./user-service/user-server
       dockerfile: Dockerfile
     image: wa2-group6-user-service
     hostname: user-service
@@ -169,7 +169,7 @@ services:
 
   order-service:
     build:
-      context: ./order-service
+      context: ./order-service/order-server
       dockerfile: Dockerfile
     image: wa2-group6-order-service
     hostname: order-service
@@ -188,7 +188,7 @@ services:
 
   mail-service:
     build:
-      context: ./mail-service
+      context: ./mail-service/mail-server
       dockerfile: Dockerfile
     image: wa2-group6-mail-service
     hostname: mail-service
