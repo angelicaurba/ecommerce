@@ -11,12 +11,12 @@ echo " "
 echo " "
 echo 'Eureka server'
 #./gradlew :eureka-server:build
-#./gradlew :eureka-server:bootJar
+./gradlew :eureka-server:bootJar
 
 echo " "
 echo 'Catalogue service'
 #./gradlew :catalogue-service:build
-#./gradlew :catalogue-service:bootJar
+./gradlew :catalogue-service:bootJar
 
 # TODO
 # Check if my changes also work in your configurations
@@ -26,27 +26,27 @@ echo 'Catalogue service'
 echo " "
 echo 'Mail service'
 #./gradlew :mail-service:mail-server:build
-#./gradlew :mail-service:mail-server:bootJar
+./gradlew :mail-service:mail-server:bootJar
 
 echo " "
 echo 'Order service'
 #./gradlew :order-service:order-server:build
-#./gradlew :order-service:order-server:bootJar
+./gradlew :order-service:order-server:bootJar
 
 echo " "
 echo 'User service'
 #./gradlew :user-service:user-server:build
-#./gradlew :user-service:user-server:bootJar
+./gradlew :user-service:user-server:bootJar
 
 echo " "
 echo 'Wallet service'
 #./gradlew :wallet-service:wallet-server:build
-#./gradlew :wallet-service:wallet-server:bootJar
+./gradlew :wallet-service:wallet-server:bootJar
 
 echo " "
 echo 'Warehouse service'
 #./gradlew :warehouse-service:warehouse-server:build
-#./gradlew :warehouse-service:warehouse-server:bootJar
+./gradlew :warehouse-service:warehouse-server:bootJar
 
 echo " "
 echo " "
