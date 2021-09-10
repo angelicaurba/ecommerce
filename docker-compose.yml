@@ -4,6 +4,7 @@ services:
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -14,6 +15,7 @@ services:
 
   kafka:
     image: confluentinc/cp-kafka:latest
+    container_name: kafka
     depends_on:
       - zookeeper
     ports:
@@ -22,19 +24,20 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29093, PLAINTEXT_EXT://192.168.1.5:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://kafka:29093, PLAINTEXT_EXT://kafka:29092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,PLAINTEXT_EXT:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks:
       - wa2-group6
 
-  kakfa-connect:
+  kafka-connect:
     #    build:
     #        context: ../kafka-connector-router
     #        dockerfile: Dockerfile
     #    image:  custom-connect
     image: debezium/connect:1.6
+    container_name: kafka-connect
     depends_on:
       - kafka
       - mysql
@@ -59,7 +62,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - "../databases/init.sql:/docker-entrypoint-initdb.d/init.sql"
+      - "./databases/init.sql:/docker-entrypoint-initdb.d/init.sql"
     networks:
       - wa2-group6
     environment:
@@ -112,7 +115,7 @@ services:
 
   warehouse-service:
     build:
-      context: ./warehouse-service
+      context: ./warehouse-service/warehouse-server
       dockerfile: Dockerfile
     image: wa2-group6-warehouse-service
     hostname: warehouse-service
@@ -131,7 +134,7 @@ services:
 
   wallet-service:
     build:
-      context: ./wallet-service
+      context: ./wallet-service/wallet-server
       dockerfile: Dockerfile
     image: wa2-group6-wallet-service
     hostname: wallet-service
@@ -150,7 +153,7 @@ services:
 
   user-service:
     build:
-      context: ./user-service
+      context: ./user-service/user-server
       dockerfile: Dockerfile
     image: wa2-group6-user-service
     hostname: user-service
@@ -169,7 +172,7 @@ services:
 
   order-service:
     build:
-      context: ./order-service
+      context: ./order-service/order-server
       dockerfile: Dockerfile
     image: wa2-group6-order-service
     hostname: order-service
@@ -188,7 +191,7 @@ services:
 
   mail-service:
     build:
-      context: ./mail-service
+      context: ./mail-service/mail-server
       dockerfile: Dockerfile
     image: wa2-group6-mail-service
     hostname: mail-service

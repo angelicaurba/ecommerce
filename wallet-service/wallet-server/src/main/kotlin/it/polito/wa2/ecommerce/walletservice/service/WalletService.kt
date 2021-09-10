@@ -8,6 +8,5 @@ interface WalletService {
 
     fun getWalletById(id:String): WalletDTO
     fun addWallet(walletCreationRequest: WalletCreationRequestDTO): WalletDTO
-    fun deleteWallet(walletId: String)
     fun getWalletOrThrowException(walletId: Long): Wallet
 }

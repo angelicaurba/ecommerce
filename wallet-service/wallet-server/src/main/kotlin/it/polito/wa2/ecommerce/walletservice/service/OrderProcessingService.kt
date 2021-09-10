@@ -1,6 +1,5 @@
 package it.polito.wa2.ecommerce.walletservice.service
 
-// TODO Check import
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.OrderStatus
 import it.polito.wa2.ecommerce.walletservice.client.order.request.WalletOrderRequestDTO
 
