@@ -20,10 +20,10 @@ class CommentServiceImpl: CommentService {
 
     override fun addComment(productId: String, comment: AddCommentDTO): ProductDTO {
         val product = productService.getProductByIdOrThrowException(productId)
-        val addedComment = commentRepository.insert(comment.toEntity())
+        val addedComment = commentRepository.save(comment.toEntity())
         product.numStars += addedComment.stars
         product.numRatings++
-        return productRepository.insert(product).toDTO()
+        return productRepository.save(product).toDTO()
     }
 
     override fun getCommentsByProductId(productId: String): List<CommentDTO> {

@@ -11,6 +11,6 @@ data class Photo(
     val id: String? = null,
     val format: String,
     val image: Binary,
-    @Indexed
+    @Indexed(unique=true)
     val productId: String
 )

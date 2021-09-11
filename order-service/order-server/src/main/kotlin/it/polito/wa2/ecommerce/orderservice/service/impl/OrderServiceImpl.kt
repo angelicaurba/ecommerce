@@ -1,6 +1,8 @@
 package it.polito.wa2.ecommerce.orderservice.service.impl
 
 import it.polito.wa2.ecommerce.common.Rolename
+import it.polito.wa2.ecommerce.common.constants.mailTopic
+import it.polito.wa2.ecommerce.common.constants.orderRequestTopic
 import it.polito.wa2.ecommerce.common.parseID
 import it.polito.wa2.ecommerce.common.saga.service.MessageService
 import it.polito.wa2.ecommerce.common.saga.service.ProcessingLogService
@@ -146,7 +148,7 @@ class OrderServiceImpl: OrderService {
                     "Your order has been issued: $orderId",
                     "The order has been correctly issued"
                 )
-//                messageService.publish(mail, "OrderIssued", "mail") // TODO uncomment //TODO add constants for topics
+                messageService.publish(mail, "OrderIssued", mailTopic)
                 orderRepository.save(order)
 
             }
@@ -159,7 +161,7 @@ class OrderServiceImpl: OrderService {
                     val request = WarehouseOrderRequestCancelDTO(orderId.toString(),
                         order.deliveryItems.extractProductInWarehouse { ItemDTO(it.productId, it.amount) })
 
-                    messageService.publish(request, "order-request", "OrderCancel") //TODO add constants for topics
+                    messageService.publish(request,  "OrderCancel", orderRequestTopic) 
                 }
 
                 // - send email
@@ -168,7 +170,7 @@ class OrderServiceImpl: OrderService {
                     "Your order has failed issued: $orderId",
                     "The order was not issued.\nError message: ${orderStatus.errorMessage}"
                 )
-//                messageService.publish(mail, "OrderIssued", "mail") // TODO uncomment //TODO add constants for topics
+                messageService.publish(mail, "OrderIssued", mailTopic)
                 orderRepository.save(order)
             }
         }
@@ -181,10 +183,10 @@ class OrderServiceImpl: OrderService {
         if(processingLogService.isProcessed(eventID))
             return
 
-        val orderId : Long = orderDetailsDTO.orderId.parseID()
+        val order = getOrderOrThrowException(orderDetailsDTO.orderId)
         orderDetailsDTO.productWarehouseList.forEach {
             productWarehouseDTO ->
-             purchaseItemRepository.updateWarehouseByOrderAndProduct(orderId, productWarehouseDTO.productId, productWarehouseDTO.warehouseId )
+             purchaseItemRepository.setWarehouseByOrderAndProduct(order, productWarehouseDTO.productId, productWarehouseDTO.warehouseId )
 
         }
         processingLogService.process(eventID)

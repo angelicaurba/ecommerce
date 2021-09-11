@@ -5,6 +5,7 @@ import org.bson.types.ObjectId
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
+import org.springframework.data.mongodb.core.mapping.Field
 import java.math.BigDecimal
 import java.util.*
 import javax.validation.constraints.DecimalMin
@@ -33,6 +34,8 @@ data class Product(
     @field:NotNull
     @field:Min(0)
     var numRatings: Long,
+    @field:NotNull
+    var creationDate: Date = Date()
     ){
     fun toDTO(): ProductDTO{
         return ProductDTO(
@@ -48,10 +51,8 @@ data class Product(
             "/products/$id/comments"
         )
     }
-    @CreatedDate
-    lateinit var creationDate: Date
 }
 
 enum class Category{
-    HOME, FOOD, TECH, OTHER
+    HOME, FOOD, TECH, GAMES, CLOTHES, MUSIC, BOOKS, OTHER
 }

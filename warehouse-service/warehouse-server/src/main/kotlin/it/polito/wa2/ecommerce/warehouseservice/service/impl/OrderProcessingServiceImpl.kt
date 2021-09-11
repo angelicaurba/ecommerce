@@ -1,14 +1,20 @@
 package it.polito.wa2.ecommerce.warehouseservice.service.impl
 
+import it.polito.wa2.ecommerce.common.constants.orderDetailsTopic
+import it.polito.wa2.ecommerce.common.constants.orderStatusTopic
+import it.polito.wa2.ecommerce.common.constants.paymentTopic
+import it.polito.wa2.ecommerce.common.constants.warehouseService
 import it.polito.wa2.ecommerce.common.saga.service.MessageService
 import it.polito.wa2.ecommerce.common.saga.service.ProcessingLogService
-import it.polito.wa2.ecommerce.warehouseservice.client.order.request.WarehouseOrderRequestDTO
-import it.polito.wa2.ecommerce.orderservice.client.order.messages.EventTypeOrderStatus
-import it.polito.wa2.ecommerce.orderservice.client.order.messages.ResponseStatus
-import it.polito.wa2.ecommerce.orderservice.client.order.messages.OrderStatus
+import it.polito.wa2.ecommerce.orderservice.client.order.messages.*
+import it.polito.wa2.ecommerce.walletservice.client.order.request.WalletOrderPaymentRequestDTO
+import it.polito.wa2.ecommerce.walletservice.client.order.request.WalletOrderRequestDTO
+import it.polito.wa2.ecommerce.walletservice.client.transaction.request.OrderTransactionRequestDTO
 import it.polito.wa2.ecommerce.warehouseservice.client.order.request.WarehouseOrderRequestCancelDTO
+import it.polito.wa2.ecommerce.warehouseservice.client.order.request.WarehouseOrderRequestDTO
 import it.polito.wa2.ecommerce.warehouseservice.client.order.request.WarehouseOrderRequestNewDTO
 import it.polito.wa2.ecommerce.warehouseservice.service.OrderProcessingService
+import it.polito.wa2.ecommerce.warehouseservice.service.StockService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -19,7 +25,8 @@ import java.util.*
 @Transactional(propagation = Propagation.NESTED)
 class OrderProcessingServiceImpl: OrderProcessingService {
 
-
+    @Autowired
+    lateinit var stockService: StockService
 
     @Autowired
     lateinit var processingLogService: ProcessingLogService
@@ -27,52 +34,69 @@ class OrderProcessingServiceImpl: OrderProcessingService {
     @Autowired
     lateinit var messageService: MessageService
 
-    @Autowired
-    lateinit var self: OrderProcessingService
+    override fun process(orderRequestDTO: WarehouseOrderRequestDTO, id: String) {
 
-    override fun process(orderRequestDTO: WarehouseOrderRequestDTO, id: String){
         val uuid = UUID.fromString(id)
         if(processingLogService.isProcessed(uuid))
             return
 
-        lateinit var status: OrderStatus
+        var orderDetails: OrderDetailsDTO? = null
+        var paymentRequest: WalletOrderRequestDTO? = null
+        var orderStatus: OrderStatus? = null
+
         try {
-            status = self.processOrderRequest(orderRequestDTO)
+
+            if (orderRequestDTO is WarehouseOrderRequestNewDTO) {
+
+                // List<ProductWarehouseDTO>
+                val productWarehouseDTO = stockService.getWarehouseHavingProducts(orderRequestDTO.productList)
+
+                // if it not throw exception, continue
+                // List<OrderTransactionRequestDTO>
+                val orderTransactionRequestDTO = stockService.updateAndRetrieveAmount(orderRequestDTO.productList)
+
+                orderDetails = OrderDetailsDTO(orderRequestDTO.orderId, productWarehouseDTO)
+                paymentRequest = WalletOrderPaymentRequestDTO(
+                    orderRequestDTO.buyerWalletId,
+                    orderRequestDTO.buyerId,
+                    orderRequestDTO.orderId,
+                    orderTransactionRequestDTO
+                    )
+
+            } else if (orderRequestDTO is WarehouseOrderRequestCancelDTO) {
+
+                    stockService.cancelRequestUpdate(orderRequestDTO.productList)
+
+            }
+
         }
         catch (e:Exception){
-            status = OrderStatus(
+            orderStatus = OrderStatus(
                 orderRequestDTO.orderId,
                 ResponseStatus.FAILED,
                 e.message)
         }
         finally {
             processingLogService.process(uuid)
-            status.also {
+
+            orderStatus?.also {
                 messageService.publish(it,
-                    if(it.responseStatus == ResponseStatus.COMPLETED)
-                        EventTypeOrderStatus.OrderOk.toString()
-                    else EventTypeOrderStatus.OrderPaymentFailed.toString(),
-                    "order-status") //TODO define constant
+                    EventTypeOrderStatus.OrderItemsNotAvailable.toString(),
+                    orderStatusTopic)
             }
+
+            orderDetails?.also {
+                messageService.publish(it,
+                    "OrderDetails",
+                    orderDetailsTopic)
+            }
+
+            paymentRequest?.also {
+                messageService.publish(it,
+                    "PaymentRequest",
+                    paymentTopic)
+            }
+
         }
     }
-
-    override fun processOrderRequest(orderRequestDTO: WarehouseOrderRequestDTO): OrderStatus {
-        TODO("Not yet implemented")
-        /*
-        val orderId = orderRequestDTO.orderId
-
-        if (orderRequestDTO is WarehouseOrderRequestNewDTO) {
-
-        } else if (orderRequestDTO is WarehouseOrderRequestCancelDTO) 
-
-        return OrderStatus(
-            orderId, when (orderRequestDTO.requestType) {
-                OrderPaymentType.PAY -> Req.COMPLETED
-                OrderPaymentType.REFUND -> OrderStatus.REFUNDED
-            }, null
-        )
-        */
-    }
-
 }

@@ -1,10 +1,12 @@
 package it.polito.wa2.ecommerce.catalogueservice.service.impl
 
 import it.polito.wa2.ecommerce.catalogueservice.domain.Photo
+import it.polito.wa2.ecommerce.catalogueservice.exceptions.ProductNotFoundException
 import it.polito.wa2.ecommerce.catalogueservice.repository.PhotoRepository
 import it.polito.wa2.ecommerce.catalogueservice.repository.ProductRepository
 import it.polito.wa2.ecommerce.catalogueservice.service.PhotoService
 import it.polito.wa2.ecommerce.catalogueservice.service.ProductService
+import it.polito.wa2.ecommerce.common.exceptions.NotFoundException
 import org.bson.BsonBinarySubType
 import org.bson.types.Binary
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,13 +24,11 @@ class PhotoServiceImpl : PhotoService{
 
     override fun getPictureByProductId(productId: String): ResponseEntity<Any> {
         productService.getProductByIdOrThrowException(productId)
-        val result = photoRepository.findByProductId(productId)
+        val result = photoRepository.findPhotoByProductId(productId)
 
-        // TODO "result.isEmpty" is not recognized, temporarily  commented in order to compile
-//        if(result.isEmpty){
-//            //TODO throw exception
-//            throw Exception()
-//        }
+        if(!result.isPresent){
+            throw NotFoundException("There is no photo for product $productId")
+        }
 
         val format = "image/" + result.get().format
         val image = result.get().image
@@ -45,6 +45,6 @@ class PhotoServiceImpl : PhotoService{
             productId
         )
 
-        photoRepository.insert(newPhoto)
+        photoRepository.save(newPhoto)
     }
 }

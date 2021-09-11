@@ -23,6 +23,5 @@ class OrderRequestConsumer{
         println("Processing message $id ($eventType) : $orderRequestDTO")
         orderProcessingService.process(orderRequestDTO,id)
 
-
     }
 }

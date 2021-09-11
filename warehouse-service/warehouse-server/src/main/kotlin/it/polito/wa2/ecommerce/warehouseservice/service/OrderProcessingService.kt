@@ -5,5 +5,4 @@ import it.polito.wa2.ecommerce.warehouseservice.client.order.request.WarehouseOr
 
 interface OrderProcessingService {
     fun process(orderRequestDTO: WarehouseOrderRequestDTO, id: String)
-    fun processOrderRequest(orderRequestDTO: WarehouseOrderRequestDTO): OrderStatus
 }

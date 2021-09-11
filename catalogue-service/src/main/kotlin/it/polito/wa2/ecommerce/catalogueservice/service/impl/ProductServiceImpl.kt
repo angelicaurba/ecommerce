@@ -1,31 +1,26 @@
 package it.polito.wa2.ecommerce.catalogueservice.service.impl
 
 import it.polito.wa2.ecommerce.catalogueservice.domain.Category
-import it.polito.wa2.ecommerce.catalogueservice.domain.Photo
 import it.polito.wa2.ecommerce.catalogueservice.domain.Product
-import it.polito.wa2.ecommerce.catalogueservice.dto.CommentDTO
 import it.polito.wa2.ecommerce.catalogueservice.dto.ProductDTO
 import it.polito.wa2.ecommerce.catalogueservice.dto.ProductRequestDTO
-import it.polito.wa2.ecommerce.catalogueservice.repository.CommentRepository
-import it.polito.wa2.ecommerce.catalogueservice.repository.PhotoRepository
+import it.polito.wa2.ecommerce.catalogueservice.exceptions.ProductNotFoundException
 import it.polito.wa2.ecommerce.catalogueservice.repository.ProductRepository
 import it.polito.wa2.ecommerce.catalogueservice.service.ProductService
+import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.common.getPageable
-import org.bson.BsonBinarySubType
-import org.bson.types.Binary
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.multipart.MultipartFile
-import java.util.*
+import java.math.BigDecimal
+
 
 @Service
 @Transactional
-class ProductServiceImpl: ProductService {
+class ProductServiceImpl : ProductService {
 
-    @Autowired lateinit var productRepository: ProductRepository
+    @Autowired
+    lateinit var productRepository: ProductRepository
 
     override fun getProductsByCategory(category: Category, pageIdx: Int, pageSize: Int): List<ProductDTO> {
         val page = getPageable(pageIdx, pageSize)
@@ -51,30 +46,34 @@ class ProductServiceImpl: ProductService {
             0,
             0
         )
-        return productRepository.insert(newProduct).toDTO()
+        return productRepository.save(newProduct).toDTO()
     }
 
     override fun updateOrCreateProduct(productId: String, productRequest: ProductRequestDTO): ProductDTO {
-        return if(isProductPresent(productId)){
-            val product : Product = productRepository.findById(productId).get()
+        return if (isProductPresent(productId)) {
+            val product: Product = productRepository.findById(productId).get()
             product.name = productRequest.name!!
             product.description = productRequest.description!!
             product.category = productRequest.category!!
             product.price = productRequest.price!!
 
-            productRepository.insert(product).toDTO()
+            productRepository.save(product).toDTO()
         } else addProduct(productRequest, productId)
     }
 
     override fun updateProductFields(productId: String, productRequest: ProductRequestDTO): ProductDTO {
         val product = getProductByIdOrThrowException(productId)
+        productRequest.price?.also {
+            if (it < BigDecimal("0.00"))
+                throw ForbiddenException("Negative price update not allowed")
+        }
 
         productRequest.name?.also { product.name = it }
         productRequest.description?.also { product.description = it }
         productRequest.category?.also { product.category = it }
         productRequest.price?.also { product.price = it }
 
-        return productRepository.insert(product).toDTO()
+        return productRepository.save(product).toDTO()
     }
 
     override fun deleteProduct(productId: String) {
@@ -87,10 +86,10 @@ class ProductServiceImpl: ProductService {
         if (product.isPresent)
             return product.get()
         else
-            throw Exception() // TODO put the right exception
+            throw ProductNotFoundException(productId)
     }
 
-    override fun isProductPresent(productId: String): Boolean{
+    override fun isProductPresent(productId: String): Boolean {
         return productRepository.findById(productId).isPresent
     }
 
