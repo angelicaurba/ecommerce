@@ -12,6 +12,7 @@ import org.bson.types.Binary
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -38,6 +39,7 @@ class PhotoServiceImpl : PhotoService{
             .body(image.data)
     }
 
+    @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     override fun updatePictureByProductId(productId: String, format: String, file: MultipartFile) {
         productService.getProductByIdOrThrowException(productId)
         val newPhoto = Photo(null, format,

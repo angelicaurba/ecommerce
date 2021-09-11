@@ -56,6 +56,7 @@ echo 'starting docker-compose...'
 echo " "
 echo " "
 
+docker-compose down
 docker-compose build
 docker-compose up -d
 
