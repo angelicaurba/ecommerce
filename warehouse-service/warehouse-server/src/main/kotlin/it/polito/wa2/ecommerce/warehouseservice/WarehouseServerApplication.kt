@@ -6,7 +6,9 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 
 @SpringBootApplication(scanBasePackages = ["it.polito.wa2.ecommerce"])
 @EnableEurekaClient
-class WarehouseServerApplication
+class WarehouseServerApplication {
+
+}
 
 fun main(args: Array<String>) {
     runApplication<WarehouseServerApplication>(*args)
