@@ -1,5 +1,6 @@
 package it.polito.wa2.ecommerce.orderservice.consumer
 
+import it.polito.wa2.ecommerce.common.constants.orderStatusTopic
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.EventTypeOrderStatus
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.OrderStatus
 import it.polito.wa2.ecommerce.orderservice.service.OrderService
@@ -15,7 +16,7 @@ class OrderStatusConsumer {
     @Autowired
     lateinit var orderService: OrderService
 
-    @KafkaListener(id="order-service", topics=["order-status"])
+    @KafkaListener(id="order-service", topics=[orderStatusTopic])
     fun listen(@Payload orderStatus: OrderStatus,
                @Header("id") id: String,
                @Header("eventType") eventType: EventTypeOrderStatus

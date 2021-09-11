@@ -8,12 +8,12 @@ import it.polito.wa2.ecommerce.orderservice.client.order.messages.EventTypeOrder
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.OrderStatus
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.ResponseStatus
 import it.polito.wa2.ecommerce.walletservice.client.order.request.WalletOrderPaymentRequestDTO
-import it.polito.wa2.ecommerce.walletservice.client.order.request.OrderPaymentType
 import it.polito.wa2.ecommerce.walletservice.client.order.request.WalletOrderRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.order.request.WalletOrderRefundRequestDTO
 import it.polito.wa2.ecommerce.walletservice.domain.Transaction
 import it.polito.wa2.ecommerce.walletservice.domain.TransactionType
 import it.polito.wa2.ecommerce.walletservice.domain.WalletType
+import it.polito.wa2.ecommerce.walletservice.exception.WalletNotFound
 import it.polito.wa2.ecommerce.walletservice.repository.TransactionRepository
 import it.polito.wa2.ecommerce.walletservice.repository.WalletRepository
 import it.polito.wa2.ecommerce.walletservice.service.OrderProcessingService
@@ -90,9 +90,13 @@ class OrderProcessingServiceImpl: OrderProcessingService {
 
         if (orderRequestDTO is WalletOrderPaymentRequestDTO) {
             for (transactionRequest in orderRequestDTO.transactionList) {
+                val warehouseWallet = walletRepository.findByWalletTypeAndOwner(WalletType.WAREHOUSE,
+                        transactionRequest.warehouseTo) ?: throw WalletNotFound("Cannot find wallet for warehouse" +
+                            " ${transactionRequest.warehouseTo}")
+
                 val transaction = Transaction(
                     walletFrom,
-                    walletService.getWalletOrThrowException(transactionRequest.walletTo.parseID()),
+                    warehouseWallet,
                     TransactionType.ORDER_PAYMENT,
                     transactionRequest.amount,
                     orderId
