@@ -32,7 +32,7 @@ dependencies {
     implementation (project(":order-service:order-client"))
     implementation(project(":common"))
 
-    runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
+    runtimeOnly("mysql:mysql-connector-java")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.kafka:spring-kafka-test")
 }
