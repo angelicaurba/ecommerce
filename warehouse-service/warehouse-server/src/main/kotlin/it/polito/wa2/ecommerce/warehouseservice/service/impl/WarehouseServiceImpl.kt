@@ -28,7 +28,7 @@ class WarehouseServiceImpl : WarehouseService {
     }
 
     override fun updateWarehouseFields(warehouseId: String, warehouseRequest: WarehouseRequestDTO): WarehouseDTO {
-        var warehouse = getWarehouseOrThrowException(warehouseId)
+        val warehouse = getWarehouseOrThrowException(warehouseId)
 
         warehouseRequest.name?.also { warehouse.name = it }
         warehouseRequest.address?.also { warehouse.address = it }
@@ -69,14 +69,6 @@ class WarehouseServiceImpl : WarehouseService {
         val page = getPageable(pageIdx, pageSize)
 
         return warehouseRepository.findAll(page).toList().map { it.toDTO() }
-    }
-
-    override fun getAllWarehousesHavingProduct(productID: String, pageIdx: Int, pageSize: Int): List<WarehouseDTO> {
-        // TODO should remain in this service?
-        val page = getPageable(pageIdx, pageSize)
-        // return warehouseRepository.
-        TODO("Not yet implemented")
-
     }
 
 }

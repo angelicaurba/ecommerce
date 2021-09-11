@@ -10,6 +10,7 @@ import it.polito.wa2.ecommerce.catalogueservice.service.ProductService
 import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.common.getPageable
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
@@ -36,6 +37,7 @@ class ProductServiceImpl : ProductService {
         return getProductByIdOrThrowException(productId).toDTO()
     }
 
+    @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     override fun addProduct(productRequest: ProductRequestDTO, productId: String?): ProductDTO {
         val newProduct = Product(
             productId,
@@ -49,6 +51,7 @@ class ProductServiceImpl : ProductService {
         return productRepository.save(newProduct).toDTO()
     }
 
+    @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     override fun updateOrCreateProduct(productId: String, productRequest: ProductRequestDTO): ProductDTO {
         return if (isProductPresent(productId)) {
             val product: Product = productRepository.findById(productId).get()
@@ -61,6 +64,7 @@ class ProductServiceImpl : ProductService {
         } else addProduct(productRequest, productId)
     }
 
+    @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     override fun updateProductFields(productId: String, productRequest: ProductRequestDTO): ProductDTO {
         val product = getProductByIdOrThrowException(productId)
         productRequest.price?.also {
@@ -76,8 +80,10 @@ class ProductServiceImpl : ProductService {
         return productRepository.save(product).toDTO()
     }
 
+    @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     override fun deleteProduct(productId: String) {
         val product = getProductByIdOrThrowException(productId)
+        // TODO gestire il fatto che il warehouse dovrebbe cancellare degli stock ?
         productRepository.delete(product)
     }
 

@@ -1,5 +1,6 @@
 package it.polito.wa2.ecommerce.warehouseservice.service
 
+import it.polito.wa2.ecommerce.common.getPageable
 import it.polito.wa2.ecommerce.orderservice.client.item.ItemDTO
 import it.polito.wa2.ecommerce.orderservice.client.item.PurchaseItemDTO
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.ProductWarehouseDTO
@@ -7,6 +8,7 @@ import it.polito.wa2.ecommerce.orderservice.client.order.request.ItemsInWarehous
 import it.polito.wa2.ecommerce.walletservice.client.transaction.request.OrderTransactionRequestDTO
 import it.polito.wa2.ecommerce.warehouseservice.client.StockDTO
 import it.polito.wa2.ecommerce.warehouseservice.client.StockRequestDTO
+import it.polito.wa2.ecommerce.warehouseservice.client.WarehouseDTO
 
 interface StockService {
     fun updateStockFields(warehouseId: String, productID: String, stockRequestDTO: StockRequestDTO): StockDTO
@@ -16,6 +18,8 @@ interface StockService {
     fun getStocksByWarehouseID(warehouseID: String, pageIdx: Int, pageSize: Int): List<StockDTO>
     fun deleteStockByWarehouseIdAndProductId(warehouseId: String, productID: String)
 
+
+    fun getAllWarehousesHavingProduct(productID: String, pageIdx: Int, pageSize: Int): List<WarehouseDTO>
     fun getWarehouseHavingProducts(productList: List<PurchaseItemDTO>): List<ProductWarehouseDTO>
     fun updateAndRetrieveAmount(productList: List<PurchaseItemDTO>): List<OrderTransactionRequestDTO>
     fun cancelRequestUpdate(productList: List<ItemsInWarehouseDTO<ItemDTO>>)
