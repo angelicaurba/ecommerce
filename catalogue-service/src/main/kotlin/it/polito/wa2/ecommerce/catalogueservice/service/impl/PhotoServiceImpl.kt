@@ -5,6 +5,7 @@ import it.polito.wa2.ecommerce.catalogueservice.repository.PhotoRepository
 import it.polito.wa2.ecommerce.catalogueservice.repository.ProductRepository
 import it.polito.wa2.ecommerce.catalogueservice.service.PhotoService
 import it.polito.wa2.ecommerce.catalogueservice.service.ProductService
+import it.polito.wa2.ecommerce.common.exceptions.NotFoundException
 import org.bson.BsonBinarySubType
 import org.bson.types.Binary
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,11 +25,9 @@ class PhotoServiceImpl : PhotoService{
         productService.getProductByIdOrThrowException(productId)
         val result = photoRepository.findByProductId(productId)
 
-        // TODO "result.isEmpty" is not recognized, temporarily  commented in order to compile
-//        if(result.isEmpty){
-//            //TODO throw exception
-//            throw Exception()
-//        }
+        if(result.isPresent){
+            throw NotFoundException(productId)
+        }
 
         val format = "image/" + result.get().format
         val image = result.get().image

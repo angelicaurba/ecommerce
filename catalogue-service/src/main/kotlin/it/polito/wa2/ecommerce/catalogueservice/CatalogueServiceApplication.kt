@@ -130,7 +130,7 @@ class AddPriceToItem : RewriteFunction<OrderRequestDTO<ItemDTO>, OrderRequestDTO
         if (newOrderRequest != null)
             return Mono.just(newOrderRequest)
         else
-            throw BadRequestException("Error in checking products' price")
+            throw BadRequestException("Error in checking products' prices")
     }
 
 }

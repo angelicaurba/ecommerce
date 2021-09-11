@@ -74,8 +74,6 @@ class CatalogueController {
         @PathVariable("productId") productId: String,
         @RequestBody productRequest: ProductRequestDTO
     ): ProductDTO {
-        // TODO fare il check a mano che il prezzo sia maggiore di 0
-        //  oppure mettere il @valid e cercare di capire che errore mi ha dato
         return productService.updateProductFields(productId, productRequest)
     }
 
@@ -128,7 +126,7 @@ class CatalogueController {
 
     private fun isACategoryOrThrowBadRequest(category: String){
         if (! Category.values().map{it.toString()}.contains(category) ) throw Exception()
-        // TODO throw the correct exception
+            throw BadRequestException("Bad category")
     }
 
 }
