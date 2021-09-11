@@ -37,7 +37,7 @@ class WarehouseController {
     ) : List<WarehouseDTO> {
         if (productID == null)
             return warehouseService.getAllWarehouses(pageIdx, pageSize)
-        else return warehouseService.getAllWarehousesHavingProduct(productID, pageIdx, pageSize)
+        else return stockService.getAllWarehousesHavingProduct(productID, pageIdx, pageSize)
     }
 
     @GetMapping("/{warehouseID}")
@@ -123,31 +123,29 @@ class WarehouseController {
     @PutMapping("/{warehouseID}/products/{productID}")
     @ResponseStatus(HttpStatus.OK)
     fun updateOrCreateStock(
-        @PathVariable("warehouseId") warehouseId: String,
+        @PathVariable("warehouseID") warehouseId: String,
         @PathVariable("productID") productID: String,
         @RequestBody @Valid @NotNull stockRequestDTO: StockRequestDTO
     ) : StockDTO {
-        // TODO be careful when creating a stock
+        // TODO be careful when creating a stock (warehouseID, productID should exist)
         return stockService.updateOrCreateStock(warehouseId, productID, stockRequestDTO)
     }
 
 
-    // TODO variable name in path (/{warehouseID}) doesn't correspond to path variable ("warehouseId")
     @PatchMapping("/{warehouseID}/products/{productID}")
     @ResponseStatus(HttpStatus.OK)
     fun updateStockFields(
-        @PathVariable("warehouseId") warehouseId: String,
+        @PathVariable("warehouseID") warehouseId: String,
         @PathVariable("productID") productID: String,
         @RequestBody @Valid @NotNull stockRequestDTO: StockRequestDTO
     ) : StockDTO {
         return stockService.updateStockFields(warehouseId, productID, stockRequestDTO)
     }
 
-    // TODO variable name in path (/{warehouseID}) doesn't correspond to path variable ("warehouseId")
     @DeleteMapping("/{warehouseID}/products/{productID}")
     @ResponseStatus(HttpStatus.OK)
     fun deleteStock(
-        @PathVariable("warehouseId") warehouseId: String,
+        @PathVariable("warehouseID") warehouseId: String,
         @PathVariable("productID") productID: String,
     ) {
         stockService.deleteStockByWarehouseIdAndProductId(warehouseId, productID)
