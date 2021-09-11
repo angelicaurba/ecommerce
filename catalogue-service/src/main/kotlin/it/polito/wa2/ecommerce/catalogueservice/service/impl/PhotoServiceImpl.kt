@@ -45,6 +45,6 @@ class PhotoServiceImpl : PhotoService{
             productId
         )
 
-        photoRepository.insert(newPhoto)
+        photoRepository.save(newPhoto)
     }
 }

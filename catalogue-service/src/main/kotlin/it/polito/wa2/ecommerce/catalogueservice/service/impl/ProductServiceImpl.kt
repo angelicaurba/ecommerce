@@ -62,7 +62,7 @@ class ProductServiceImpl: ProductService {
             product.category = productRequest.category!!
             product.price = productRequest.price!!
 
-            productRepository.insert(product).toDTO()
+            productRepository.save(product).toDTO()
         } else addProduct(productRequest, productId)
     }
 
@@ -74,7 +74,7 @@ class ProductServiceImpl: ProductService {
         productRequest.category?.also { product.category = it }
         productRequest.price?.also { product.price = it }
 
-        return productRepository.insert(product).toDTO()
+        return productRepository.save(product).toDTO()
     }
 
     override fun deleteProduct(productId: String) {
