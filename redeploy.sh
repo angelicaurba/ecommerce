@@ -20,11 +20,6 @@ echo 'Catalogue service'
 #./gradlew :catalogue-service:build
 ./gradlew :catalogue-service:bootJar
 
-# TODO
-# Check if my changes also work in your configurations
-# With the previous commands, this script couldn't find gradlew files
-# nested inside x-server folders
-
 echo " "
 echo 'Mail service'
 #./gradlew :mail-service:mail-server:build
@@ -66,10 +61,8 @@ until docker exec -i mysql sh -c "exec mysql -uroot --password=admin " < ./datab
   done
 
 # Debezium configuration
-DEBEZIUM_CONFIG_FILE='./sample_debezium_config.json'
+DEBEZIUM_CONFIG_FILE='./debezium_config.json'
 DEBEZIUM_CONFIG="$(cat "$DEBEZIUM_CONFIG_FILE" | tr -d '\r' | tr -d '\n' | tr -d ' ' )"
-
-# TODO update "database.include.list" and "table.include.list"
 
 until output=$(docker exec kafka-connect curl -f kafka-connect:8083/connectors)
   do

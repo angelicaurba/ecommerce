@@ -1,5 +1,5 @@
 {
-  "name": "test-router",
+  "name": "ecommerce",
   "config": {
     "connector.class": "io.debezium.connector.mysql.MySqlConnector",
     "tasks.max": "1",
@@ -9,8 +9,8 @@
     "database.password": "admin",
     "database.server.id": "184054",
     "database.server.name": "dbserver1",
-    "database.include.list": "user,mail",
-    "table.include.list": "user.outbox,mail.outbox",
+    "database.include.list": "user,mail,wallet,warehouse,order",
+    "table.include.list": "user.outbox,mail.outbox,wallet.outbox,warehouse.outbox,order.outbox",
     "database.history.kafka.bootstrap.servers": "kafka:9092",
     "database.history.kafka.topic": "schema-changes.inventory",
     "tombstones.on.delete" : "false",
