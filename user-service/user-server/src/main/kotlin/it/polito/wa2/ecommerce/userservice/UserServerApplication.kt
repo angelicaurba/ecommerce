@@ -1,6 +1,6 @@
 package it.polito.wa2.ecommerce.userservice
 
-//import org.springframework.cloud.netflix.eureka.EnableEurekaClient
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 import it.polito.wa2.ecommerce.userservice.domain.User
 import it.polito.wa2.ecommerce.userservice.repository.EmailVerificationTokenRepository
 import it.polito.wa2.ecommerce.userservice.repository.UserRepository
@@ -22,8 +22,7 @@ const val tokenClearPeriod: Long = 3600000
 
 
 @SpringBootApplication(scanBasePackages = ["it.polito.wa2.ecommerce"])
-// TODO Re-insert commented annotation when configuring eureka client behaviour
-//@EnableEurekaClient
+@EnableEurekaClient
 @EnableScheduling
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class UserServerApplication{
