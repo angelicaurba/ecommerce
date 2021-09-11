@@ -1,11 +1,14 @@
 package it.polito.wa2.ecommerce.warehouseservice.service.impl
 
 import it.polito.wa2.ecommerce.common.getPageable
+import it.polito.wa2.ecommerce.orderservice.client.item.ItemDTO
 import it.polito.wa2.ecommerce.orderservice.client.item.PurchaseItemDTO
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.ProductWarehouseDTO
+import it.polito.wa2.ecommerce.orderservice.client.order.request.ItemsInWarehouseDTO
 import it.polito.wa2.ecommerce.walletservice.client.transaction.request.OrderTransactionRequestDTO
 import it.polito.wa2.ecommerce.warehouseservice.client.StockDTO
 import it.polito.wa2.ecommerce.warehouseservice.client.StockRequestDTO
+import it.polito.wa2.ecommerce.warehouseservice.client.WarehouseDTO
 import it.polito.wa2.ecommerce.warehouseservice.domain.Stock
 import it.polito.wa2.ecommerce.warehouseservice.exception.StockNotFound
 import it.polito.wa2.ecommerce.warehouseservice.repository.StockRepository
@@ -92,12 +95,23 @@ class StockServiceImpl: StockService {
         stockRepository.delete(stock)
     }
 
+    override fun getAllWarehousesHavingProduct(productID: String, pageIdx: Int, pageSize: Int): List<WarehouseDTO> {
+        val page = getPageable(pageIdx, pageSize)
+        // return warehouseRepository.
+        TODO("Not yet implemented")
+
+    }
+
     override fun getWarehouseHavingProducts(productList: List<PurchaseItemDTO>): List<ProductWarehouseDTO> {
         TODO("Not yet implemented")
-        // TODO here : throw Exception("Items not available") //  define exception
+        // here : throw Exception("Items not available") //  define exception
     }
 
     override fun updateAndRetrieveAmount(productList: List<PurchaseItemDTO>): List<OrderTransactionRequestDTO> {
+        TODO("Not yet implemented")
+    }
+
+    override fun cancelRequestUpdate(productList: List<ItemsInWarehouseDTO<ItemDTO>>) {
         TODO("Not yet implemented")
     }
 

@@ -10,5 +10,4 @@ interface WarehouseService {
     fun addWarehouse(warehouseRequest: WarehouseRequestDTO, warehouseId: String? = null): WarehouseDTO
     fun getWarehouseById(warehouseId: String): WarehouseDTO
     fun getAllWarehouses(pageIdx: Int, pageSize: Int): List<WarehouseDTO>
-    fun getAllWarehousesHavingProduct(productID: String, pageIdx: Int, pageSize: Int): List<WarehouseDTO>
 }
