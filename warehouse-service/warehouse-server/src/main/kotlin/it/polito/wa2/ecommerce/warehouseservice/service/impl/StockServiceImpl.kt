@@ -1,6 +1,9 @@
 package it.polito.wa2.ecommerce.warehouseservice.service.impl
 
 import it.polito.wa2.ecommerce.common.getPageable
+import it.polito.wa2.ecommerce.orderservice.client.item.PurchaseItemDTO
+import it.polito.wa2.ecommerce.orderservice.client.order.messages.ProductWarehouseDTO
+import it.polito.wa2.ecommerce.walletservice.client.transaction.request.OrderTransactionRequestDTO
 import it.polito.wa2.ecommerce.warehouseservice.client.StockDTO
 import it.polito.wa2.ecommerce.warehouseservice.client.StockRequestDTO
 import it.polito.wa2.ecommerce.warehouseservice.domain.Stock
@@ -87,6 +90,15 @@ class StockServiceImpl: StockService {
     override fun deleteStockByWarehouseIdAndProductId(warehouseId: String, productID: String) {
         val stock = getStockOrThrowException(warehouseId,productID)
         stockRepository.delete(stock)
+    }
+
+    override fun getWarehouseHavingProducts(productList: List<PurchaseItemDTO>): List<ProductWarehouseDTO> {
+        TODO("Not yet implemented")
+        // TODO here : throw Exception("Items not available") //  define exception
+    }
+
+    override fun updateAndRetrieveAmount(productList: List<PurchaseItemDTO>): List<OrderTransactionRequestDTO> {
+        TODO("Not yet implemented")
     }
 
 
