@@ -54,5 +54,5 @@ data class Product(
 }
 
 enum class Category{
-    HOME, FOOD, TECH, OTHER
+    HOME, FOOD, TECH, GAMES, CLOTHES, MUSIC, BOOKS, OTHER
 }
