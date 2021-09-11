@@ -1,5 +1,6 @@
 package it.polito.wa2.ecommerce.orderservice.consumer
 
+import it.polito.wa2.ecommerce.common.constants.orderDetailsTopic
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.OrderDetailsDTO
 import it.polito.wa2.ecommerce.orderservice.service.OrderService
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,7 +15,7 @@ class OrderDetailsConsumer{
     @Autowired
     lateinit var orderService: OrderService
 
-    @KafkaListener( topics=["order-details"])
+    @KafkaListener( topics= [orderDetailsTopic])
     fun listen(@Payload orderDetailsDTO: OrderDetailsDTO,
                @Header("id") id: String,
                @Header("eventType") eventType:String
