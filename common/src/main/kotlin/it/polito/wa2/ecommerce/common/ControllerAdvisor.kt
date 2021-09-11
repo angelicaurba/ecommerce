@@ -3,6 +3,7 @@ package it.polito.wa2.ecommerce.common
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.common.exceptions.NotFoundException
+import it.polito.wa2.ecommerce.common.exceptions.ServiceUnavailable
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.MissingRequestValueException
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -33,6 +34,12 @@ class ControllerAdvisor {
     @ExceptionHandler( value = [ForbiddenException::class] )
     fun forbiddenExceptionHandler(req: HttpServletRequest, e: Exception): ErrorMessageDTO {
         return ErrorMessageDTO(e, HttpStatus.FORBIDDEN, req.requestURI)
+    }
+
+    @ResponseStatus(value = HttpStatus.SERVICE_UNAVAILABLE)
+    @ExceptionHandler( value = [ServiceUnavailable::class] )
+    fun serviceUnavailableExceptionHandler(req: HttpServletRequest, e: Exception): ErrorMessageDTO {
+        return ErrorMessageDTO(e, HttpStatus.SERVICE_UNAVAILABLE, req.requestURI)
     }
 
 }
