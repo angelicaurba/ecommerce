@@ -47,7 +47,7 @@ class OrderProcessingServiceImpl: OrderProcessingService {
         }
         finally {
             processingLogService.process(uuid)
-            status?.also {
+            status.also {
                 messageService.publish(it,
                     if(it.responseStatus == ResponseStatus.COMPLETED)
                         EventTypeOrderStatus.OrderOk.toString()
@@ -59,6 +59,7 @@ class OrderProcessingServiceImpl: OrderProcessingService {
 
     override fun processOrderRequest(orderRequestDTO: WarehouseOrderRequestDTO): OrderStatus {
         TODO("Not yet implemented")
+        /*
         val orderId = orderRequestDTO.orderId
 
         if (orderRequestDTO is WarehouseOrderRequestNewDTO) {
@@ -71,6 +72,7 @@ class OrderProcessingServiceImpl: OrderProcessingService {
                 OrderPaymentType.REFUND -> OrderStatus.REFUNDED
             }, null
         )
+        */
     }
 
 }
