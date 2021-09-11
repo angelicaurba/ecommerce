@@ -1,6 +1,7 @@
 package it.polito.wa2.ecommerce.catalogueservice.service.impl
 
 import it.polito.wa2.ecommerce.catalogueservice.domain.Photo
+import it.polito.wa2.ecommerce.catalogueservice.exceptions.ProductNotFoundException
 import it.polito.wa2.ecommerce.catalogueservice.repository.PhotoRepository
 import it.polito.wa2.ecommerce.catalogueservice.repository.ProductRepository
 import it.polito.wa2.ecommerce.catalogueservice.service.PhotoService
@@ -23,10 +24,10 @@ class PhotoServiceImpl : PhotoService{
 
     override fun getPictureByProductId(productId: String): ResponseEntity<Any> {
         productService.getProductByIdOrThrowException(productId)
-        val result = photoRepository.findByProductId(productId)
+        val result = photoRepository.findPhotoByProductId(productId)
 
-        if(result.isPresent){
-            throw NotFoundException(productId)
+        if(!result.isPresent){
+            throw NotFoundException("There is no photo for product $productId")
         }
 
         val format = "image/" + result.get().format

@@ -8,5 +8,5 @@ import java.util.*
 interface PhotoRepository : MongoRepository<Photo, String>{
 
     @Transactional(readOnly = true)
-    fun findByProductId(productId: String): Optional<Photo>
+    fun findPhotoByProductId(productId: String): Optional<Photo>
 }
