@@ -38,6 +38,7 @@ dependencies {
     //adding internal modules dependency for dtos
     implementation (project(":user-service:user-client"))
     implementation (project(":mail-service:mail-client"))
+    implementation (project(":wallet-service:wallet-client"))
     implementation(project(":common"))
 
     runtimeOnly("mysql:mysql-connector-java")

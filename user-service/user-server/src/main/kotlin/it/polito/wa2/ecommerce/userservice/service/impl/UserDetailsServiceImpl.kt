@@ -85,11 +85,11 @@ class UserDetailsServiceImpl: UserDetailsService {
         val userDTO = savedUser.toDTO()
 
         val mailSubject = "Email verification"
-        // TODO dynamically generate link to registrationConfirm
+        
         val mailBody = "Hi ${userDTO.name} ${userDTO.surname},\n" +
                 "thank you for signing in to LARA-ecommerce! " +
                 "please verify your account by clicking on the link " +
-                "http://localhost:8200/auth/registrationConfirm?token=${token.token} \n" +
+                "http://localhost:8080/auth/registrationConfirm?token=${token.token} \n" +
                 "Pay attention, this link will remain active up to 30 minutes."
 
 
