@@ -42,8 +42,8 @@ class UserServerApplication{
             userRepository.deleteAll()
 
             val user1 = User(
-                "andrea",
-                "{bcrypt}\$2a\$10\$D4i9Smqxyk27dQbp8ssZ0O4FWQnZKR7.N7lgR9b.V8u4TuSzH2gf2",
+                "customer1",
+                "{bcrypt}\$2a\$10\$Cjn8j9vyjUYNsnMU4d0upeEHR2vdzB0P0cuVoTrrRIttVTGVKJn6W",
                 "mail@mail.mail",
                 "CUSTOMER",
                 "Andrea",
@@ -52,8 +52,8 @@ class UserServerApplication{
                 true
             )
             val user2 = User(
-                "andrea2",
-                "{bcrypt}\$2a\$10\$EqrWyhwFRhgwjud7kPG1SOrycfrCQvzUWhHkjkV8kUJQmutRjnvYS",
+                "customer2",
+                "{bcrypt}\$2a\$10\$DeWA2pb7T3quohYitK6PUOsyctiMjUCWELykFhhNrjWbQFY0Qbebe",
                 "boh@boh.boh",
                 "CUSTOMER",
                 "Andrea2",
@@ -62,8 +62,8 @@ class UserServerApplication{
                 true
             )
             val user3 = User(
-                "admin",
-                "{bcrypt}\$2a\$10\$dFtHJEFfmBEkyzBVccdba.Bb0ti7PSOsZ/PlcjHj7K7C85fuE7XSi",
+                "adminAccount",
+                "{bcrypt}\$2a\$10\$.dGWqRYiFDMrsgo6LsutFutRgO4TiGbcV6zaW/EXnJXvVEjb/qXoC",
                 "admin@admin.admin",
                 "CUSTOMER ADMIN",
                 "Admin",
