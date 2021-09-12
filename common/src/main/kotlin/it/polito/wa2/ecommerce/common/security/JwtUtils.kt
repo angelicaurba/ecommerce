@@ -26,11 +26,10 @@ class JwtUtils {
     val encryptAlgorithm = ENCRYPT_ALGORITHM
 
 
-    @Value("classpath:rsa.pubkey")
-    lateinit var publicKeyFile: Resource
-
     private val publicKey: PublicKey by lazy {
-        getPublicKey(publicKeyFile.file)
+        getPublicKey(
+            File("src/main/resources/rsa.pubkey")
+        )
     }
 
 

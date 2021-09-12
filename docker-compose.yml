@@ -104,6 +104,8 @@ services:
       - 8080:8080
     networks:
       - wa2-group6
+    volumes:
+      - ./common/src/main/resources/rsa.pubkey:/src/main/resources/rsa.pubkey
     depends_on:
       - eureka-server
       - mongo
@@ -122,6 +124,8 @@ services:
     container_name: warehouse-service
     networks:
       - wa2-group6
+    volumes:
+      - ./common/src/main/resources/rsa.pubkey:/src/main/resources/rsa.pubkey
     depends_on:
       - eureka-server
       - catalogue-service
@@ -139,6 +143,8 @@ services:
     container_name: wallet-service
     networks:
       - wa2-group6
+    volumes:
+      - ./common/src/main/resources/rsa.pubkey:/src/main/resources/rsa.pubkey
     depends_on:
       - eureka-server
       - catalogue-service
@@ -154,8 +160,13 @@ services:
     image: wa2-group6-user-service
     hostname: user-service
     container_name: user-service
+    ports:
+      - 8081:8080
     networks:
       - wa2-group6
+    volumes:
+      - ./common/src/main/resources/rsa.pubkey:/src/main/resources/rsa.pubkey
+      - ./user-service/user-server/src/main/resources/rsa.key:/src/main/resources/rsa.key
     depends_on:
       - eureka-server
       - catalogue-service
@@ -173,6 +184,8 @@ services:
     container_name: order-service
     networks:
       - wa2-group6
+    volumes:
+      - ./common/src/main/resources/rsa.pubkey:/src/main/resources/rsa.pubkey
     depends_on:
       - eureka-server
       - catalogue-service

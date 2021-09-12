@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.validation.BindingResult
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import java.io.File
 import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 
@@ -31,9 +32,6 @@ class AuthController(val userDetailsServiceImpl: UserDetailsServiceImpl) {
 
     @Autowired
     lateinit var authenticationManager: AuthenticationManager
-
-    @Value("classpath:rsa.key")
-    lateinit var privateKeyFile: Resource
 
 
     @PostMapping("/register")
@@ -70,7 +68,9 @@ class AuthController(val userDetailsServiceImpl: UserDetailsServiceImpl) {
             UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password)
         )
 
-        val jwtToken = jwtUtils.generateJwtToken(authentication, privateKeyFile.file)
+        val privateKeyFile = File("src/main/resources/rsa.key")
+        val jwtToken = jwtUtils.generateJwtToken(authentication, privateKeyFile)
+
 
         response.setHeader(
             jwtUtils.jwtHeaderName,
