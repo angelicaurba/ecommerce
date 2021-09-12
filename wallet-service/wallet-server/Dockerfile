@@ -3,7 +3,7 @@ VOLUME /tmp
 ARG JAR_FILE=build/libs/*SNAPSHOT.jar
 COPY ${JAR_FILE} walletservice.jar
 
-EXPOSE 8200
+EXPOSE 8080
 
 ## RUN addgroup -S app && adduser -S app -G app
 ## USER app

@@ -3,7 +3,7 @@ VOLUME /tmp
 ARG JAR_FILE=build/libs/*SNAPSHOT.jar
 COPY ${JAR_FILE} mailserver.jar
 
-EXPOSE 8500
+EXPOSE 8080
 
 ## RUN addgroup -S app && adduser -S app -G app
 ## USER app
