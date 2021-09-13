@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull
 class MailDTO(
     @field:NotNull(message = "userId must be present")
     val userId: String,
-    val userEmail: String?,
+    var userEmail: String?,
     @field:NotNull(message = "subject must be present")
     val subject: String,
     @field:NotNull(message = "mailBody must be present")

@@ -55,6 +55,9 @@ docker-compose down
 docker-compose build
 docker-compose up -d
 
+docker image prune -f
+docker volume prune -f
+
 until docker exec -i mysql sh -c "exec mysql -uroot --password=admin " < ./databases/init.sql
   do
     sleep 5
