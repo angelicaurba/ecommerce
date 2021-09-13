@@ -26,6 +26,7 @@ dependencies {
     implementation("org.springframework.kafka:spring-kafka")
 
     // TODO dovrebbe andare nel common ma non riesce a prenderlo
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.security:spring-security-core")
 
     //adding internal modules dependency for dtos
