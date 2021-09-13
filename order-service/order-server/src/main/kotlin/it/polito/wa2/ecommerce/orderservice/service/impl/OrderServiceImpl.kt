@@ -23,6 +23,7 @@ import it.polito.wa2.ecommerce.orderservice.client.order.response.OrderDTO
 import it.polito.wa2.ecommerce.orderservice.client.order.response.Status
 import it.polito.wa2.ecommerce.orderservice.domain.Order
 import it.polito.wa2.ecommerce.orderservice.domain.toEntity
+import it.polito.wa2.ecommerce.orderservice.exception.OrderNotFoundException
 import it.polito.wa2.ecommerce.orderservice.repository.OrderRepository
 import it.polito.wa2.ecommerce.orderservice.service.OrderService
 import it.polito.wa2.ecommerce.orderservice.repository.PurchaseItemRepository
@@ -79,9 +80,12 @@ class OrderServiceImpl: OrderService {
             orderRequest.buyerId,
             orderRequest.address,
             orderRequest.buyerWalletId,
-            orderRequest.deliveryItems.map { it.toEntity() }.toSet(),
             Status.PENDING
         )
+
+        orderRequest.deliveryItems.map { it.toEntity() }.forEach {
+            purchaseItemRepository.save(it)
+        }
 
         val addedOrder = orderRepository.save(newOrder)
         val orderMessage = WarehouseOrderRequestNewDTO(
@@ -90,8 +94,8 @@ class OrderServiceImpl: OrderService {
             addedOrder.buyerWalletId,
             addedOrder.deliveryItems.map { it.toDTO() }
         )
-        // TODO create constant to define for topic
-        messageService.publish(orderMessage, "new order", "order-request")
+
+        messageService.publish(orderMessage, "NewOrder", orderRequestTopic)
 
         return addedOrder.toDTO()
 
@@ -125,8 +129,7 @@ class OrderServiceImpl: OrderService {
             orderId,
             order.deliveryItems.extractProductInWarehouse { ItemDTO(it.productId, it.amount) }
         )
-        // TODO consider adding a constant
-        messageService.publish(cancelMessage, "cancel order", "order-request")
+        messageService.publish(cancelMessage, "OrderCancel", orderRequestTopic)
     }
 
     override fun processOrderCompletion(orderStatus: OrderStatus, id: String, eventType: EventTypeOrderStatus) {
@@ -135,12 +138,12 @@ class OrderServiceImpl: OrderService {
             return
 
         val orderId = orderStatus.orderID.parseID()
-        val order = orderRepository.findByIdOrNull(orderId) ?: throw RuntimeException("Cannot find oder n. $orderId") //TODO exceptions?
+        val order = orderRepository.findByIdOrNull(orderId) ?: throw OrderNotFoundException(orderId)
         when(orderStatus.responseStatus) {
             ResponseStatus.COMPLETED -> {
 
                 // - set status to ISSUED
-                order.updateStatus(Status.ISSUED) // TODO add function to verify status correctness
+                order.updateStatus(Status.ISSUED)
 
                 // - send email
                 val mail: MailDTO = MailDTO(

@@ -7,11 +7,8 @@ import it.polito.wa2.ecommerce.orderservice.client.order.request.ItemsInWarehous
 import it.polito.wa2.ecommerce.orderservice.client.order.response.OrderDTO
 import it.polito.wa2.ecommerce.orderservice.client.order.response.Status
 import it.polito.wa2.ecommerce.orderservice.utils.extractProductInWarehouse
+import javax.persistence.*
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.OneToMany
-import javax.persistence.Table
 import javax.validation.constraints.NotNull
 
 @Table(name = "orders")
@@ -23,12 +20,14 @@ class Order(
     var address: String,
     @Column @field:NotNull
     var buyerWalletId: String,
-    @field:NotNull @OneToMany(mappedBy = "order")
-    var deliveryItems: Set<PurchaseItem>,
+
     @Column
     var status: Status
 
 ) : EntityBase<Long>() {
+
+    @field:NotNull @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    var deliveryItems: Set<PurchaseItem> = emptySet()
     fun toDTO(): OrderDTO{
         return OrderDTO(
             buyerId,
