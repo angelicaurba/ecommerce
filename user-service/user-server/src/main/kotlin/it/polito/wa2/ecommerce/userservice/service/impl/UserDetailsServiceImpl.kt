@@ -3,6 +3,7 @@ package it.polito.wa2.ecommerce.userservice.service.impl
 import it.polito.wa2.ecommerce.common.security.JwtUtils
 import it.polito.wa2.ecommerce.common.Rolename
 import it.polito.wa2.ecommerce.common.constants.mailTopic
+import it.polito.wa2.ecommerce.common.constants.walletCreationTopic
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.common.parseID
@@ -14,6 +15,7 @@ import it.polito.wa2.ecommerce.userservice.domain.User
 import it.polito.wa2.ecommerce.userservice.repository.UserRepository
 import it.polito.wa2.ecommerce.userservice.service.NotificationService
 import it.polito.wa2.ecommerce.userservice.client.RegistrationRequest
+import it.polito.wa2.ecommerce.walletservice.client.wallet.request.CustomerWalletCreationRequestDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
@@ -203,5 +205,15 @@ class UserDetailsServiceImpl: UserDetailsService {
         addRoleByUsername(Rolename.CUSTOMER, username)
 
         notificationService.deleteToken(verificationToken)
+
+        // Create wallet when the user is created
+        val customerWalletRequest = CustomerWalletCreationRequestDTO(
+            verificationToken.user!!.getId().toString()
+        )
+        messageService.publish(
+            customerWalletRequest,
+            "Customer wallet creation",
+            walletCreationTopic
+        )
     }
 }
