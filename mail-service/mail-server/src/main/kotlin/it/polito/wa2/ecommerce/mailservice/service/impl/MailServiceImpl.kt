@@ -1,5 +1,6 @@
 package it.polito.wa2.ecommerce.mailservice.service.impl
 
+import it.polito.wa2.ecommerce.common.connection.Request
 import it.polito.wa2.ecommerce.common.saga.service.ProcessingLogService
 import it.polito.wa2.ecommerce.mailservice.client.MailDTO
 import it.polito.wa2.ecommerce.mailservice.service.MailService
@@ -25,6 +26,9 @@ class MailServiceImpl: MailService{
     @Value("\${spring.mail.username}")
     lateinit var fromMail : String
 
+    @Autowired
+    lateinit var request: Request
+
     override fun sendMail(mail: MailDTO, id: String){
         val uuid = UUID.fromString(id)
 
@@ -33,8 +37,8 @@ class MailServiceImpl: MailService{
         }
 
         if (mail.userEmail == null){
-            // mail.userEmail = call user-service API to retrieve the email from mail.userId
-            // TODO implement request to user service (eureka)
+            val uri = "http://user-service/users/${mail.userId}/email"
+            mail.userEmail = request.doGet(uri, String::class.java)
         }
 
         val mailMessage = SimpleMailMessage()

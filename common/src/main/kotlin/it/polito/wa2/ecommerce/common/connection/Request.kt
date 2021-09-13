@@ -13,7 +13,7 @@ class Request {
     lateinit var webClientBuilder: WebClient.Builder
 
     fun <T> doGet(uri: String, className: Class<T>): T{
-        var returnValue: T? = null
+        val returnValue: T?
 
         try {
             returnValue = webClientBuilder.build()
