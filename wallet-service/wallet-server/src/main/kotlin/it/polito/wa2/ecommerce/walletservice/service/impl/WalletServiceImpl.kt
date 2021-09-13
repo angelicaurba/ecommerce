@@ -31,11 +31,12 @@ class WalletServiceImpl : WalletService {
         return getWalletOrThrowException(id.parseID()).toDTO()
     }
 
-    override fun addWallet(walletCreationRequest: WalletCreationRequestDTO): WalletDTO {
+    override fun addWallet(walletCreationRequest: WalletCreationRequestDTO, verifySecurity:Boolean): WalletDTO {
         val wallet = walletCreationRequest.toEntity()
 
         if (walletCreationRequest is WarehouseWalletCreationRequestDTO) {
-            identityVerifier.verifyIsAdmin()
+            if (verifySecurity)
+                identityVerifier.verifyIsAdmin()
             if (walletRepository.findByWalletTypeAndOwner(
                     WalletType.WAREHOUSE,
                     walletCreationRequest.warehouseID
@@ -45,7 +46,8 @@ class WalletServiceImpl : WalletService {
 
         } else {
             //Customer wallet
-            identityVerifier.verifyUserIdentityOrIsAdmin(wallet.owner.parseID())
+            if(verifySecurity)
+                identityVerifier.verifyUserIdentityOrIsAdmin(wallet.owner.parseID())
         }
         return walletRepository.save(wallet).toDTO()
     }

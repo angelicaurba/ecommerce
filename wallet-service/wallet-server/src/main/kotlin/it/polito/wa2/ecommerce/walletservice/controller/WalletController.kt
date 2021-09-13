@@ -8,6 +8,7 @@ import it.polito.wa2.ecommerce.walletservice.client.transaction.request.Recharge
 import it.polito.wa2.ecommerce.walletservice.client.transaction.TransactionDTO
 import it.polito.wa2.ecommerce.walletservice.client.wallet.request.WalletCreationRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.wallet.WalletDTO
+import it.polito.wa2.ecommerce.walletservice.client.wallet.request.CustomerWalletCreationRequestDTO
 import it.polito.wa2.ecommerce.walletservice.service.TransactionService
 import it.polito.wa2.ecommerce.walletservice.service.WalletService
 import org.springframework.beans.factory.annotation.Autowired
@@ -41,7 +42,7 @@ class WalletController {
     }
 
     @PostMapping("/")
-    fun createWallet(@RequestBody @Valid walletCreationRequest: WalletCreationRequestDTO,
+    fun createWallet(@RequestBody @Valid walletCreationRequest: CustomerWalletCreationRequestDTO,
                      bindingResult: BindingResult
     ): WalletDTO {
         if(bindingResult.hasErrors())
