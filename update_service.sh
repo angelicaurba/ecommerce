@@ -23,7 +23,11 @@ fi
 
 service=$1
 
-./gradlew :$service-service:$service-server:bootJar
+if [ "$service" = "catalogue" ]; then
+  ./gradlew :$service-service:bootJar
+ else
+  ./gradlew :$service-service:$service-server:bootJar
+fi
 docker rm -f $service-service
 docker-compose build $service-service
 docker-compose up -d $service-service
