@@ -1,12 +1,15 @@
 package it.polito.wa2.ecommerce.orderservice.client.order.messages
 
 import it.polito.wa2.ecommerce.common.saga.domain.Emittable
+import javax.validation.constraints.NotNull
 
 //Message to be delivered once the order processing has been completed
 
 //TODO change to OrderStatusDTO
 data class OrderStatus(
+    @field:NotNull
     val orderID: String,
+    @field:NotNull
     val responseStatus: ResponseStatus,
     val errorMessage: String?
 ):Emittable {
