@@ -10,9 +10,11 @@ import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
+import org.springframework.kafka.annotation.EnableKafka
 import java.math.BigDecimal
 import java.util.*
 
+@EnableKafka
 @SpringBootApplication(scanBasePackages = ["it.polito.wa2.ecommerce"])
 class WalletServerApplication {
     @Bean
