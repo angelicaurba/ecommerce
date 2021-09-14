@@ -60,8 +60,6 @@ class OrderServerApplication {
 
             purchaseItemRepository.save(p7)
 
-            println(orderRepository.findAll().map { it.toDTO() })
-
 
         }
     }
