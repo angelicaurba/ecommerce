@@ -3,12 +3,7 @@ package it.polito.wa2.ecommerce.orderservice.domain
 import it.polito.wa2.ecommerce.common.EntityBase
 import it.polito.wa2.ecommerce.orderservice.client.item.PurchaseItemDTO
 import java.math.BigDecimal
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
-import javax.persistence.Table
-import javax.persistence.UniqueConstraint
+import javax.persistence.*
 import javax.validation.constraints.*
 
 @Entity
@@ -27,7 +22,7 @@ class PurchaseItem (
     var warehouseId: String?,
 
 ) : EntityBase<Long>(){
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     var order: Order? = null
 

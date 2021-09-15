@@ -4,6 +4,8 @@ import it.polito.wa2.ecommerce.common.EntityBase
 import it.polito.wa2.ecommerce.walletservice.client.transaction.TransactionDTO
 import org.springframework.data.annotation.CreatedDate
 import java.math.BigDecimal
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.util.*
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -40,7 +42,7 @@ class Transaction (
             fromWallet?.getId().toString(),
             toWallet!!.getId().toString(),
             amount,
-            timestamp, //TODO convert to date for frontend?
+            LocalDateTime.ofEpochSecond(timestamp/1000, ((timestamp%1000)*1_000_000).toInt(), ZoneOffset.UTC),
             "$type: $operationReference"
         )
     }

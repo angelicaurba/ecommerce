@@ -8,6 +8,7 @@ import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.messaging.handler.annotation.Header
 import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.stereotype.Component
+import javax.validation.Valid
 
 @Component
 class OrderDetailsConsumer{
@@ -15,8 +16,8 @@ class OrderDetailsConsumer{
     @Autowired
     lateinit var orderService: OrderService
 
-    @KafkaListener( topics= [orderDetailsTopic])
-    fun listen(@Payload orderDetailsDTO: OrderDetailsDTO,
+    @KafkaListener( topics= [orderDetailsTopic], containerFactory = "orderDetailsListenerFactory")
+    fun listen(@Payload @Valid orderDetailsDTO: OrderDetailsDTO,
                @Header("id") id: String,
                @Header("eventType") eventType:String
     ){

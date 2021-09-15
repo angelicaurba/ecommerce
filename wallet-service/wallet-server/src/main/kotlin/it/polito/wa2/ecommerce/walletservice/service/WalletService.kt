@@ -7,6 +7,6 @@ import it.polito.wa2.ecommerce.walletservice.domain.Wallet
 interface WalletService {
 
     fun getWalletById(id:String): WalletDTO
-    fun addWallet(walletCreationRequest: WalletCreationRequestDTO): WalletDTO
+    fun addWallet(walletCreationRequest: WalletCreationRequestDTO, verifySecurity:Boolean = true): WalletDTO
     fun getWalletOrThrowException(walletId: Long): Wallet
 }
