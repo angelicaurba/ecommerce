@@ -11,5 +11,6 @@ data class CommentDTO(
     val body: String,
     val stars: Int,
     val creationDate: Date,
-    val productId: String
+    val productId: String,
+    val authorUsername: String
 )

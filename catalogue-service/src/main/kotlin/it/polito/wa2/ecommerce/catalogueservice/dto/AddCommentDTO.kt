@@ -16,13 +16,14 @@ data class AddCommentDTO(
     @field:NotNull
     val productId: String
 ){
-    fun toEntity(): Comment {
+    fun toEntity(authorUsername: String): Comment {
         return Comment(
             null,
             title,
             body,
             stars,
-            productId
+            productId,
+            authorUsername
         )
     }
 }
