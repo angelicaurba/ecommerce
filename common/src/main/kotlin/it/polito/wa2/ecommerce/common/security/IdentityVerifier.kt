@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component
 @Component
 class IdentityVerifier {
     fun verifyUserIdentityOrIsAdmin(ownerId: Long){
-        val principal = SecurityContextHolder.getContext().authentication.principal as UserDetailsDTO
-        if(principal.authorities.contains(Rolename.ADMIN))
+        val principal = SecurityContextHolder.getContext().authentication.principal as JwtTokenDetails
+        if(principal.roles.contains(Rolename.ADMIN))
             return
 
         if (principal.id.parseID()!=ownerId)
@@ -19,8 +19,8 @@ class IdentityVerifier {
     }
 
     fun verifyIsAdmin(){
-        val principal = SecurityContextHolder.getContext().authentication.principal as UserDetailsDTO
-        if(principal.authorities.contains(Rolename.ADMIN))
+        val principal = SecurityContextHolder.getContext().authentication.principal as JwtTokenDetails
+        if(principal.roles.contains(Rolename.ADMIN))
             return
     }
 }
