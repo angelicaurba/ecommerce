@@ -18,16 +18,16 @@ extra["springCloudVersion"] = "2020.0.3"
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
     implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j")
     implementation("org.springframework.cloud:spring-cloud-starter-gateway")
     implementation("org.springframework.cloud:spring-cloud-starter-loadbalancer")
-//    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.security:spring-security-core")
 
@@ -35,8 +35,12 @@ dependencies {
     testImplementation("io.projectreactor:reactor-test")
 
     //adding internal modules dependency
-    implementation(project(":common")){exclude( group="org.springframework.boot",module="spring-boot-starter-data-jpa")}
-    implementation(project(":order-service:order-client")){exclude( group="org.springframework.boot",module="spring-boot-starter-data-jpa")}
+    implementation(project(":common")){exclude( group="org.springframework.boot",module="spring-boot-starter-data-jpa");
+        exclude(group="org.springframework.boot", module="spring-boot-starter-web")}
+    implementation(project(":order-service:order-client")){exclude( group="org.springframework.boot",module="spring-boot-starter-data-jpa");
+        exclude(group="org.springframework.boot", module="spring-boot-starter-web")}
+    implementation(project(":warehouse-service:warehouse-client")){exclude( group="org.springframework.boot",module="spring-boot-starter-data-jpa");
+        exclude(group="org.springframework.boot", module="spring-boot-starter-web")}
 }
 
 dependencyManagement {
