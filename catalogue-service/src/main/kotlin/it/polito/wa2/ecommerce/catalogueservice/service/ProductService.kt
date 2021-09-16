@@ -19,4 +19,5 @@ interface ProductService {
     fun deleteProduct(productId: String)
     fun getProductByIdOrThrowException(productId: String): Product
     fun isProductPresent(productId: String): Boolean
+    fun getWarehousesContainingProduct(productId: String): List<String>
 }

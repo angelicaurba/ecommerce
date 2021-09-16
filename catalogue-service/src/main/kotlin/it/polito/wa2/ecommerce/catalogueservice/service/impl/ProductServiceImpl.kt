@@ -7,6 +7,7 @@ import it.polito.wa2.ecommerce.catalogueservice.dto.ProductRequestDTO
 import it.polito.wa2.ecommerce.catalogueservice.exceptions.ProductNotFoundException
 import it.polito.wa2.ecommerce.catalogueservice.repository.ProductRepository
 import it.polito.wa2.ecommerce.catalogueservice.service.ProductService
+import it.polito.wa2.ecommerce.common.connection.Request
 import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.common.getPageable
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,6 +23,9 @@ class ProductServiceImpl : ProductService {
 
     @Autowired
     lateinit var productRepository: ProductRepository
+
+    @Autowired
+    lateinit var request: Request
 
     override fun getProductsByCategory(category: Category, pageIdx: Int, pageSize: Int): List<ProductDTO> {
         val page = getPageable(pageIdx, pageSize)
@@ -83,7 +87,6 @@ class ProductServiceImpl : ProductService {
     @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     override fun deleteProduct(productId: String) {
         val product = getProductByIdOrThrowException(productId)
-        // TODO gestire il fatto che il warehouse dovrebbe cancellare degli stock ?
         productRepository.delete(product)
     }
 
@@ -97,6 +100,11 @@ class ProductServiceImpl : ProductService {
 
     override fun isProductPresent(productId: String): Boolean {
         return productRepository.findById(productId).isPresent
+    }
+
+    override fun getWarehousesContainingProduct(productId: String): List<String> {
+        getProductByIdOrThrowException(productId)
+        return request.doGet("/warehouses?productID=$productId", (emptyList<String>())::class.java)
     }
 
 }
