@@ -1,6 +1,6 @@
 package it.polito.wa2.ecommerce.userservice.service.impl
 
-import it.polito.wa2.ecommerce.common.security.JwtUtils
+import it.polito.wa2.ecommerce.common.security.utils.JwtUtils
 import it.polito.wa2.ecommerce.common.Rolename
 import it.polito.wa2.ecommerce.common.constants.mailTopic
 import it.polito.wa2.ecommerce.common.constants.walletCreationTopic

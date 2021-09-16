@@ -2,6 +2,7 @@ package it.polito.wa2.ecommerce.common.security
 
 import it.polito.wa2.ecommerce.common.constants.JWT_HEADER_NAME
 import it.polito.wa2.ecommerce.common.constants.JWT_HEADER_START
+import it.polito.wa2.ecommerce.common.security.utils.JwtUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder

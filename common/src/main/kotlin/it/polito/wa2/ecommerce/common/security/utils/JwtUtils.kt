@@ -1,15 +1,14 @@
-package it.polito.wa2.ecommerce.common.security
+package it.polito.wa2.ecommerce.common.security.utils
 
 import io.jsonwebtoken.*
 import it.polito.wa2.ecommerce.common.Rolename
 import it.polito.wa2.ecommerce.common.constants.*
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.core.io.Resource
+import it.polito.wa2.ecommerce.common.security.JwtTokenDetails
+import it.polito.wa2.ecommerce.common.security.UserDetailsDTO
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
 import java.io.File
 import java.io.IOException
-import java.nio.file.Files
 import java.security.*
 import java.security.spec.InvalidKeySpecException
 import java.security.spec.PKCS8EncodedKeySpec

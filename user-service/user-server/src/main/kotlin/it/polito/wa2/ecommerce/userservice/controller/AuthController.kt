@@ -3,7 +3,7 @@ package it.polito.wa2.ecommerce.userservice.controller
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.userservice.client.LoginRequest
 import it.polito.wa2.ecommerce.common.security.UserDetailsDTO
-import it.polito.wa2.ecommerce.common.security.JwtUtils
+import it.polito.wa2.ecommerce.common.security.utils.JwtUtils
 import it.polito.wa2.ecommerce.userservice.service.impl.UserDetailsServiceImpl
 import it.polito.wa2.ecommerce.userservice.client.RegistrationRequest
 import org.springframework.beans.factory.annotation.Autowired
