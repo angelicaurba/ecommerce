@@ -33,7 +33,6 @@ class JwtServerAuthenticationConverter(private val jwtUtils: JwtUtils) : ServerA
                 else
                     null
             }
-        println("########################### result $result")
         return Mono.justOrEmpty(result)
             .map { UsernamePasswordAuthenticationToken(it, null, it.roles) }
     }

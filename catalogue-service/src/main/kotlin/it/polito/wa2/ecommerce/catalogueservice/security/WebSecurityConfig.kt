@@ -47,26 +47,30 @@ class WebfluxSecurityConfig {
             .csrf().disable()
             .httpBasic().disable()
             .formLogin().disable()
-            .addFilterAt(
-            authenticationWebFilter,
-            SecurityWebFiltersOrder.AUTHENTICATION)
             .exceptionHandling()
-            .authenticationEntryPoint{swe: ServerWebExchange, e : Exception ->
-                val body = ErrorMessageDTO(e, HttpStatus.UNAUTHORIZED, swe.request.path.toString())
-                Mono.fromRunnable{
-                    swe.response.statusCode = HttpStatus.UNAUTHORIZED
-                    swe.response.writeWith(
-                        Jackson2JsonEncoder().encode(
-                            Mono.just(body),
-                            swe.response.bufferFactory(),
-                            ResolvableType.forInstance(body),
-                            MediaType.APPLICATION_JSON,
-                            Hints.from(Hints.LOG_PREFIX_HINT, swe.logPrefix)
-                        )
-                    )
-                }
-            }
+            .authenticationEntryPoint(handler)
+            .accessDeniedHandler(handler)
+            .and()
+            .addFilterAt(
+                authenticationWebFilter,
+                SecurityWebFiltersOrder.AUTHENTICATION)
 
         return http.build()
     }
+}
+
+private val handler = {
+        swe: ServerWebExchange, e : Exception ->
+    val body = ErrorMessageDTO(e, HttpStatus.UNAUTHORIZED, swe.request.path.toString())
+        swe.response.statusCode = HttpStatus.UNAUTHORIZED
+        swe.response.headers.contentType = MediaType.APPLICATION_JSON
+        swe.response.writeWith(
+            Jackson2JsonEncoder().encode(
+                Mono.just(body),
+                swe.response.bufferFactory(),
+                ResolvableType.forInstance(body),
+                MediaType.APPLICATION_JSON,
+                Hints.from(Hints.LOG_PREFIX_HINT, swe.logPrefix)
+            )
+        )
 }

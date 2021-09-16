@@ -2,8 +2,6 @@ package it.polito.wa2.ecommerce.catalogueservice.gateway
 
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig
 import io.github.resilience4j.timelimiter.TimeLimiterConfig
-import it.polito.wa2.ecommerce.catalogueservice.AddPriceToItem
-import it.polito.wa2.ecommerce.catalogueservice.CheckProductId
 import it.polito.wa2.ecommerce.catalogueservice.service.ProductService
 import it.polito.wa2.ecommerce.orderservice.client.item.ItemDTO
 import it.polito.wa2.ecommerce.orderservice.client.item.PurchaseItemDTO
@@ -85,7 +83,6 @@ class GatewayConfig {
                     .uri("lb://warehouse-service")
             }
             .route("check productId for addStock") {
-                print("check productid for addstock")
                 it.path(true,
                     "/warehouses/{warehouseID}/products")
                     .and().method(HttpMethod.POST)
@@ -100,7 +97,6 @@ class GatewayConfig {
                     .uri("lb://warehouse-service")
             }
             .route("warehouse") {
-                print("warehouse")
                 it.path(true, "/warehouses/**")
                     .filters { f ->
                         f.circuitBreaker { c ->
