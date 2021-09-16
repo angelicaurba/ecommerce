@@ -1,9 +1,7 @@
 package it.polito.wa2.ecommerce.catalogueservice.service.impl
 
 import it.polito.wa2.ecommerce.catalogueservice.domain.Photo
-import it.polito.wa2.ecommerce.catalogueservice.exceptions.ProductNotFoundException
 import it.polito.wa2.ecommerce.catalogueservice.repository.PhotoRepository
-import it.polito.wa2.ecommerce.catalogueservice.repository.ProductRepository
 import it.polito.wa2.ecommerce.catalogueservice.service.PhotoService
 import it.polito.wa2.ecommerce.catalogueservice.service.ProductService
 import it.polito.wa2.ecommerce.common.exceptions.NotFoundException
