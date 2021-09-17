@@ -1,6 +1,5 @@
 package it.polito.wa2.ecommerce.warehouseservice.controller
 
-import it.polito.wa2.ecommerce.catalogueservice.controller.DEFAULT_PAGE_SIZE
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.warehouseservice.client.StockDTO
 import it.polito.wa2.ecommerce.warehouseservice.client.StockRequestDTO
@@ -16,6 +15,8 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotNull
+
+const val DEFAULT_PAGE_SIZE = "10"
 
 @RestController
 @RequestMapping("/warehouses")
