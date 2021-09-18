@@ -5,8 +5,7 @@ import javax.validation.constraints.NotNull
 
 //Message to be delivered once the order processing has been completed
 
-//TODO change to OrderStatusDTO
-data class OrderStatus(
+data class OrderStatusDTO(
     @field:NotNull
     val orderID: String,
     @field:NotNull

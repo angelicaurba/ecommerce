@@ -2,7 +2,7 @@ package it.polito.wa2.ecommerce.userservice.client
 
 import javax.validation.constraints.*
 
-data class RegistrationRequest(
+data class RegistrationRequestDTO(
     @field:Size(max = 30, message = "username should have a maximum of 30 characters")
     @field:NotNull(message = "username must be present")
     val username: String,
