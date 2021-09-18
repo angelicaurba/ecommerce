@@ -77,7 +77,7 @@ class WarehouseController {
         @PathVariable("warehouseID") warehouseId: String,
         @RequestBody @Valid @NotNull warehouseRequest: WarehouseRequestDTO
     ) : WarehouseDTO {
-            return warehouseService.updateWarehouseFields(warehouseId, warehouseRequest)
+        return warehouseService.updateWarehouseFields(warehouseId, warehouseRequest)
     }
 
     @DeleteMapping("/{warehouseID}")
@@ -118,6 +118,8 @@ class WarehouseController {
     ) : StockDTO {
         if (bindingResult.hasErrors())
             throw BadRequestException(bindingResult.fieldErrors.joinToString())
+        if ( warehouseID != stockRequest.warehouseID )
+            throw BadRequestException("WarehouseId contains error")
         return stockService.addStock(warehouseID, stockRequest)
     }
 
@@ -128,7 +130,8 @@ class WarehouseController {
         @PathVariable("productID") productID: String,
         @RequestBody @Valid @NotNull stockRequestDTO: StockRequestDTO
     ) : StockDTO {
-        // TODO be careful when creating a stock (warehouseID, productID should exist)
+        if ( warehouseId != stockRequestDTO.warehouseID || productID != stockRequestDTO.productID )
+            throw BadRequestException("WarehouseId or productId contains error")
         return stockService.updateOrCreateStock(warehouseId, productID, stockRequestDTO)
     }
 
@@ -140,6 +143,8 @@ class WarehouseController {
         @PathVariable("productID") productID: String,
         @RequestBody @Valid @NotNull stockRequestDTO: StockRequestDTO
     ) : StockDTO {
+        if ( warehouseId != stockRequestDTO.warehouseID || productID != stockRequestDTO.productID )
+            throw BadRequestException("WarehouseId or productId contains error")
         return stockService.updateStockFields(warehouseId, productID, stockRequestDTO)
     }
 

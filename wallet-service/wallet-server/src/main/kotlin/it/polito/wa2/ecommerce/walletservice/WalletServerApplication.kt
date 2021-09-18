@@ -38,33 +38,42 @@ class WalletServerApplication {
             transactionRepository.deleteAll()
             walletRepository.deleteAll()
 
-            // TODO ogni warehouse deve avere esattamente un wallet
-            // TODO ogni utente deve avere almeno un wallet
-
-            //Id: "1"
             val w1 = walletRepository.save(
-                Wallet("1", WalletType.CUSTOMER, BigDecimal("0.00"))
-            ) //TODO update ids
+                Wallet("1", WalletType.CUSTOMER, BigDecimal("88.00"))
+            )
 
-            //Id: "2"
             val w2 = walletRepository.save(
-                Wallet("2", WalletType.WAREHOUSE, BigDecimal("50.00"))
+                Wallet("2", WalletType.CUSTOMER, BigDecimal("0.00"))
             )
 
-            //Id:"3"
             val w3 = walletRepository.save(
-                Wallet("2", WalletType.CUSTOMER, BigDecimal("100.00"))
+                Wallet("3", WalletType.CUSTOMER, BigDecimal("30.00"))
             )
 
+            val w4 = walletRepository.save(
+                Wallet("1", WalletType.WAREHOUSE, BigDecimal("1522.00"))
+            )
 
-            //Id:"4"
-            val t1 = Transaction(null, w3, TransactionType.RECHARGE, BigDecimal("150.00"), UUID.randomUUID().toString())
+            val w5 = walletRepository.save(
+                Wallet("2", WalletType.WAREHOUSE, BigDecimal("3000.00"))
+            )
 
-            //Id:"5"
-            val t2 = Transaction(w3, w2, TransactionType.ORDER_PAYMENT, BigDecimal("50.00"), "1") //TODO Set an order id
+            val w6 = walletRepository.save(
+                Wallet("2", WalletType.CUSTOMER, BigDecimal("90.00"))
+            )
 
-            transactionRepository.save(t1)
-            transactionRepository.save(t2)
+            val transactions = listOf(
+                Transaction(null, w1, TransactionType.RECHARGE, BigDecimal("3100.00"), UUID.randomUUID().toString()),
+                Transaction(w1, w5, TransactionType.ORDER_PAYMENT, BigDecimal("3000.00"), "1"),
+                Transaction(w1, w4, TransactionType.ORDER_PAYMENT, BigDecimal("12.00"), "1"),
+                Transaction(null, w3, TransactionType.RECHARGE, BigDecimal("30.00"), UUID.randomUUID().toString()),
+                Transaction(w3, w5, TransactionType.ORDER_PAYMENT, BigDecimal("20.00"), "7"),
+                Transaction(w5, w3, TransactionType.ORDER_REFUND, BigDecimal("20.00"), "7"),
+                Transaction(null, w6, TransactionType.RECHARGE, BigDecimal("1600.00"), UUID.randomUUID().toString()),
+                Transaction(w6, w4, TransactionType.ORDER_PAYMENT, BigDecimal("1510.00"), "4")
+            )
+
+            transactionRepository.saveAll(transactions)
 
 
         }
