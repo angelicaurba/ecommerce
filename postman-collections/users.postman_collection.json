@@ -2,23 +2,392 @@
 	"info": {
 		"_postman_id": "e2d88357-1bae-47bf-863f-f325b0b80876",
 		"name": "users",
-		"description": "user-service, \"users\" route: presents and modifies user information\r\n\r\nRoutes:\r\n- GET /users/{userId}\r\n- GET /users/{userId}/email\r\n- GET /users/{userId}/roles\r\n- PATCH /users/{userId}/roles\r\n- PUT /users/{userId}/password",
+		"description": "user-service, \"users\" route: presents and modifies user information\r\n\r\nRoutes:\r\n- GET /users/{userId}\r\n- GET /users/{userId}/email\r\n- GET /users/{userId}/roles\r\n- PATCH /users/{userId}/roles\r\n- PUT /users/{userId}/password\r\n\r\nVariables:\r\n- JwtUser1: JWT token for user 1\r\n- JwtUser2: JWT token for user 2\r\n- JwtUser3: JWT token for user 3",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "/{userId}",
-			"item": [],
+			"item": [
+				{
+					"name": "notAuthenticated",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/users/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "anotherUserAuthenticated",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{JwtUser2}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/users/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "adminAuthenticated",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{JwtUser3}}"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/users/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sameUserAuthenticated",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{JwtUser1}}"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/users/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "negativeId",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{JwtUser3}}"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/users/-1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"-1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "notExistentId",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{JwtUser3}}"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/users/42",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"42"
+							]
+						}
+					},
+					"response": []
+				}
+			],
 			"description": "GET /users/{userId}\r\nGet user's information"
 		},
 		{
 			"name": "/{userId}/email",
-			"item": [],
+			"item": [
+				{
+					"name": "notAuthenticated",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/users/1/email",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1",
+								"email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "adminAuthenticated",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{JwtUser3}}"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/users/1/email",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1",
+								"email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sameUserAuthenticated",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{JwtUser1}}"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/users/1/email",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1",
+								"email"
+							]
+						}
+					},
+					"response": []
+				}
+			],
 			"description": "GET /users/{userId}/email\r\nGet user's email (not reachable)"
 		},
 		{
 			"name": "/{userId}/roles (GET)",
-			"item": [],
+			"item": [
+				{
+					"name": "notAuthenticated",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/users/1/roles",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "anotherUserAuthenticated",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{JwtUser2}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/users/1/roles",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "adminAuthenticated",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{JwtUser3}}"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/users/1/roles",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sameUserAuthenticated",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{JwtUser1}}"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/users/1/roles",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "negativeId",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{JwtUser3}}"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/users/-1/roles",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"-1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "notExixtentId",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{JwtUser3}}"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/users/42/roles",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"42",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				}
+			],
 			"description": "GET /users/{userId}/roles\r\nGet user's roles",
 			"event": [
 				{
@@ -42,14 +411,518 @@
 			]
 		},
 		{
-			"name": "/{userId}/roles (PATCH)",
-			"item": [],
-			"description": "PATCH /users/{userId}/roles\r\nUpgrades a customer to admin"
+			"name": "/{userId}/password",
+			"item": [
+				{
+					"name": "notAuthenticated",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"oldPassword\": \"customer1\",\r\n    \"newPassword\": \"customer11\",\r\n    \"confirmNewPassword\": \"customer11\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/1/password",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1",
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "anotherUserAuthenticated",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{JwtUser2}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"oldPassword\": \"customer1\",\r\n    \"newPassword\": \"customer11\",\r\n    \"confirmNewPassword\": \"customer11\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/1/password",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1",
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AdminAuthenticated",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{JwtUser3}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"oldPassword\": \"customer1\",\r\n    \"newPassword\": \"customer11\",\r\n    \"confirmNewPassword\": \"customer11\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/1/password",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1",
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "negativeId",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{JwtUser1}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"oldPassword\": \"customer1\",\r\n    \"newPassword\": \"customer11\",\r\n    \"confirmNewPassword\": \"customer11\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/-1/password",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"-1",
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "notExistentId",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{JwtUser1}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"oldPassword\": \"customer1\",\r\n    \"newPassword\": \"customer11\",\r\n    \"confirmNewPassword\": \"customer11\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/42/password",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"42",
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "oldPasswordTooShort",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{JwtUser1}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"oldPassword\": \"pass\",\r\n    \"newPassword\": \"customer11\",\r\n    \"confirmNewPassword\": \"customer11\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/1/password",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1",
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "newPasswordTooShort",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{JwtUser1}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"oldPassword\": \"customer1\",\r\n    \"newPassword\": \"pass\",\r\n    \"confirmNewPassword\": \"pass\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/1/password",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1",
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "wrongOldPassword",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{JwtUser1}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"oldPassword\": \"customer2\",\r\n    \"newPassword\": \"customer11\",\r\n    \"confirmNewPassword\": \"customer11\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/1/password",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1",
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "wrongNewPassword",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{JwtUser1}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"oldPassword\": \"customer1\",\r\n    \"newPassword\": \"customer11\",\r\n    \"confirmNewPassword\": \"customer111111\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/1/password",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1",
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "correctOperation",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{JwtUser1}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"oldPassword\": \"customer1\",\r\n    \"newPassword\": \"customer11\",\r\n    \"confirmNewPassword\": \"customer11\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/1/password",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1",
+								"password"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "PUT /users/{userId}/password\r\nChanges user's password"
 		},
 		{
-			"name": "/{userId}/password",
-			"item": [],
-			"description": "PUT /users/{userId}/password\r\nChanges user's password"
+			"name": "/{userId}/roles (PATCH)",
+			"item": [
+				{
+					"name": "notAuthenticated",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/users/1/roles",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "userAuthenticated",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{JwtUser1}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/users/1/roles",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "adminAuthenticated",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{JwtUser3}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/users/1/roles",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "negativeId",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{JwtUser3}}"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/users/-1/roles",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"-1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "notExistentId",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{JwtUser3}}"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/users/-1/roles",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"-1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "PATCH /users/{userId}/roles\r\nUpgrades a customer to admin"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "JwtUser1",
+			"value": "Bearer eyJhbGciOiJSUzI1NiJ9.eyJqdGkiOiIxIiwic3ViIjoiY3VzdG9tZXIxIiwiaWF0IjoxNjMxOTkyMzU5LCJleHAiOjE2MzE5OTQxNTksInJvbGVzIjpbIkNVU1RPTUVSIl19.HnyLamQ7x2Rj7JCaJGctN8p6mUyf4WnFtJaVGUjA9BoJ6_95Dkn66xiOnCoRp90RoF2Ss9UPDGyfOOB1Xp6r7WuWwdWx4ty8x_dsT4_f5zgbSSohegjeYcI1e6QTSoMJUPitNxYFbtE9Ho294x7NkFzYFhEjpsU8OZ2qdQDh0V7FZLiCsmJy6cf6m5_qGcC83TffhN1g3AZTHpGcgoTexlIqE0uZkox3u1EpTqLq_LyZoXGM5tfYfN2godt0ocH0jsQ6EFHgXi0Nwqtixzsj9zsUZp3L-mpQ43z98LLq38UrD6PCfUyg-9yGyhEeog11wkIleweHOxG22ccuLCSqvA"
+		},
+		{
+			"key": "JwtUser2",
+			"value": "Bearer eyJhbGciOiJSUzI1NiJ9.eyJqdGkiOiIyIiwic3ViIjoiY3VzdG9tZXIyIiwiaWF0IjoxNjMxOTkyNDI2LCJleHAiOjE2MzE5OTQyMjYsInJvbGVzIjpbIkNVU1RPTUVSIl19.m5TuVJ1qjxpSc5NK4dRLz-_9XI8dX3HIktv88PCA7dnbfcw34nhRlucpKWuaLPS05sCW1k0EU8uSgXSqaOaJFIpgeAUmpNWhWlyHaT91-GN4fffk36oJhrObUqLqq14gPZz2lHCAmGYkv1m26KGQvk4Ks5yr4Mixlrnn_a4DuICXapCgX3ZeDdR-PGCStkvK6QTQuR3BIDmgwlrhnO8Yvd4B7lAVWYAJIdkSsN7gNys40qW8FwUc-iEBNAKjEd418_A5LBTS0O_BQEFM2YuvA8ujE-pNJfobmWpgBtHJUrUeeEmD5IeVul-h8OgaNbWPZy1RhsO2bLQLrY5Rllqc3A"
+		},
+		{
+			"key": "JwtUser3",
+			"value": "Bearer eyJhbGciOiJSUzI1NiJ9.eyJqdGkiOiIzIiwic3ViIjoiYWRtaW5BY2NvdW50IiwiaWF0IjoxNjMxOTkyNDU1LCJleHAiOjE2MzE5OTQyNTUsInJvbGVzIjpbIkNVU1RPTUVSIiwiQURNSU4iXX0.u9BYa-DpPoDGMdynumC1ybG_gHxSxl_TF1X0L2qeURKazBWwZ0RtxZWE7IyhkgBNUC54AR6YQTKUgU5ZFKuA3y-39rT_oh9WLkee3gMM04djIdwD8g7D45-R4feD71WtJBmmiPRJIlHp0SjOyLtlg8OTs5MFswCH2DUey-CRUgmV218Bo5Z-7NdmNY2Q7uJRopewem33i74qJuAdO1rqoV3NXQ7W-AS5f8wxGSPFZKGAcHjihmRJOav4gxD3iWN0R6GQUnwnlIS_RPHdRcoYv2HPdxLD-IL-LwmAFrZQ83o75lANN6BOAQ4QJZdfIxWinBkXj1dXab33uxorqcv55A"
 		}
 	]
 }
