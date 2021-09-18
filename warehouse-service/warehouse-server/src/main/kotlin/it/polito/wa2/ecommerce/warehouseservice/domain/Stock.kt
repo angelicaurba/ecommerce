@@ -2,25 +2,30 @@ package it.polito.wa2.ecommerce.warehouseservice.domain
 
 import it.polito.wa2.ecommerce.warehouseservice.client.StockDTO
 import it.polito.wa2.ecommerce.common.EntityBase
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.ManyToOne
+import javax.persistence.*
+import javax.validation.constraints.Min
 import javax.validation.constraints.NotNull
+import javax.validation.constraints.Size
 
 @Entity
+@Table(uniqueConstraints = [UniqueConstraint(columnNames = ["warehouse_id", "product"])])
 class Stock (
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @Column(name = "warehouse_id")
     var warehouse: Warehouse,
 
     @field:NotNull
-    @Column(unique=true)
+    @field:Size(min = 1, max = 26)
+    @Column
     var product: String,
 
     @field:NotNull
+    @field:Min(0)
     @Column
     var quantity: Long,
 
     @field:NotNull
+    @field:Min(0)
     @Column
     var alarm: Long
 ) : EntityBase<String>(){

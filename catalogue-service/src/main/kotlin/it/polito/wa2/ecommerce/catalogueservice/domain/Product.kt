@@ -1,11 +1,8 @@
 package it.polito.wa2.ecommerce.catalogueservice.domain
 
 import it.polito.wa2.ecommerce.catalogueservice.dto.ProductDTO
-import org.bson.types.ObjectId
-import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
-import org.springframework.data.mongodb.core.mapping.Field
 import java.math.BigDecimal
 import java.util.*
 import javax.validation.constraints.DecimalMin
@@ -25,8 +22,8 @@ data class Product(
     @field:NotNull
     var category: Category,
     @field:NotNull
-    @field:DecimalMin("0.00", inclusive= true)
-    @field:Digits(fraction=2, integer = 10)
+    @field:DecimalMin("0.00", inclusive = true)
+    @field:Digits(fraction = 2, integer = 10)
     var price: BigDecimal,
     @field:NotNull
     @field:Min(0)
@@ -36,8 +33,8 @@ data class Product(
     var numRatings: Long,
     @field:NotNull
     var creationDate: Date = Date()
-    ){
-    fun toDTO(): ProductDTO{
+) {
+    fun toDTO(): ProductDTO {
         return ProductDTO(
             id!!,
             name,
@@ -53,6 +50,6 @@ data class Product(
     }
 }
 
-enum class Category{
+enum class Category {
     HOME, FOOD, TECH, GAMES, CLOTHES, MUSIC, BOOKS, OTHER
 }

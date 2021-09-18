@@ -2,6 +2,7 @@ package it.polito.wa2.ecommerce.orderservice.client.order.request
 
 import it.polito.wa2.ecommerce.orderservice.client.item.ItemDTO
 import org.jetbrains.annotations.NotNull
+import javax.validation.constraints.Size
 
 data class OrderRequestDTO<T: ItemDTO>(
     @field:NotNull
@@ -10,6 +11,6 @@ data class OrderRequestDTO<T: ItemDTO>(
     val buyerWalletId: String,
     @field:NotNull
     val address: String,
-    @field:NotNull
+    @field:NotNull @field:Size(min=1)
     val deliveryItems: List<T>
 )

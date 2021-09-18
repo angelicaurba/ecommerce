@@ -18,7 +18,7 @@ class Warehouse (
     var address: String,
 
     @field:NotNull
-    @Column(unique=true)
+    @Column
     var adminID: String
 
 ): EntityBase<String>(){

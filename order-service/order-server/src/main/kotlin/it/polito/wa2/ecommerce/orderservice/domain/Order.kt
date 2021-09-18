@@ -21,7 +21,7 @@ class Order(
     @Column @field:NotNull
     var buyerWalletId: String,
 
-    @Column
+    @Column @field:NotNull
     var status: Status
 
 ) : EntityBase<Long>() {
