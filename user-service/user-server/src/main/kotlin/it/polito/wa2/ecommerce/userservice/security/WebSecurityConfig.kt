@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.web.AuthenticationEntryPoint
+import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 
@@ -22,7 +24,11 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
     @Autowired
     lateinit var userDetailsService: UserDetailsService
     @Autowired
-    lateinit var authenticationJwtTokenFiletr: JwtAuthenticationTokenFilter
+    lateinit var authenticationJwtTokenFilter: JwtAuthenticationTokenFilter
+    @Autowired
+    lateinit var authenticationEntryPoint: AuthenticationEntryPoint
+    @Autowired
+    lateinit var accessDeniedHandler: AccessDeniedHandler
 
     override fun configure (auth: AuthenticationManagerBuilder) {
         auth
@@ -31,9 +37,6 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
     }
 
     override fun configure(http: HttpSecurity) {
-        // TODO compare with previous project's configuration, when the microservice environment is complete
-
-        http.csrf().disable() // disable csrf
 
         http
             .authorizeRequests()
@@ -48,7 +51,17 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
             .anyRequest()
             .authenticated()
 
-        http.addFilterBefore(authenticationJwtTokenFiletr,
+        http
+            .cors().disable()
+            .csrf().disable()
+            .httpBasic().disable()
+            .formLogin().disable()
+            .sessionManagement().disable()
+            .exceptionHandling()
+            .authenticationEntryPoint(authenticationEntryPoint)
+            .accessDeniedHandler(accessDeniedHandler)
+
+        http.addFilterBefore(authenticationJwtTokenFilter,
             UsernamePasswordAuthenticationFilter::class.java)
     }
 

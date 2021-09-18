@@ -35,14 +35,41 @@ class WebfluxSecurityConfig {
         authenticationWebFilter.setServerAuthenticationConverter(jwtAuthenticationConverter)
 
         http
+                // catalogue
             .authorizeExchange()
-            .pathMatchers(HttpMethod.GET)
+            .pathMatchers(HttpMethod.GET, "/products/**")
             .permitAll()
             .and()
             .authorizeExchange()
-            .anyExchange()
+            .pathMatchers("/products/**")
             .authenticated()
+                // order
             .and()
+            .authorizeExchange()
+            .pathMatchers("/orders/**")
+            .authenticated()
+                // user
+            .and()
+            .authorizeExchange()
+            .pathMatchers("/auth/**")
+            .permitAll()
+            .and()
+            .authorizeExchange()
+            .pathMatchers("/users/**")
+            .authenticated()
+                // wallet
+            .and()
+            .authorizeExchange()
+            .pathMatchers("/wallets/**")
+            .authenticated()
+                // warehouse
+            .and()
+            .authorizeExchange()
+            .pathMatchers("/warehouses/**")
+            .authenticated()
+
+
+        http
             .cors().disable()
             .csrf().disable()
             .httpBasic().disable()
@@ -50,7 +77,8 @@ class WebfluxSecurityConfig {
             .exceptionHandling()
             .authenticationEntryPoint(handler)
             .accessDeniedHandler(handler)
-            .and()
+
+        http
             .addFilterAt(
                 authenticationWebFilter,
                 SecurityWebFiltersOrder.AUTHENTICATION)
