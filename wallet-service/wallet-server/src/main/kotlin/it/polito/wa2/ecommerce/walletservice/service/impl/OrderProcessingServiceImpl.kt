@@ -5,7 +5,7 @@ import it.polito.wa2.ecommerce.common.parseID
 import it.polito.wa2.ecommerce.common.saga.service.MessageService
 import it.polito.wa2.ecommerce.common.saga.service.ProcessingLogService
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.EventTypeOrderStatus
-import it.polito.wa2.ecommerce.orderservice.client.order.messages.OrderStatus
+import it.polito.wa2.ecommerce.orderservice.client.order.messages.OrderStatusDTO
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.ResponseStatus
 import it.polito.wa2.ecommerce.walletservice.client.order.request.WalletOrderPaymentRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.order.request.WalletOrderRequestDTO
@@ -55,12 +55,12 @@ class OrderProcessingServiceImpl: OrderProcessingService {
         if(processingLogService.isProcessed(uuid))
             return
 
-        var status: OrderStatus? = null
+        var status: OrderStatusDTO? = null
         try {
             status = self.processOrderRequest(orderRequestDTO)
         }
         catch (e:Exception){
-            status = OrderStatus(
+            status = OrderStatusDTO(
                 orderRequestDTO.orderId,
                 ResponseStatus.FAILED,
                 e.message)
@@ -78,11 +78,11 @@ class OrderProcessingServiceImpl: OrderProcessingService {
     }
 
 
-    override fun processOrderRequest(orderRequestDTO: WalletOrderRequestDTO): OrderStatus? {
+    override fun processOrderRequest(orderRequestDTO: WalletOrderRequestDTO): OrderStatusDTO? {
         val orderId = orderRequestDTO.orderId
         val walletFrom =
             walletRepository.findByIdAndWalletType(orderRequestDTO.walletFrom.parseID(), WalletType.CUSTOMER)
-                ?: return OrderStatus(
+                ?: return OrderStatusDTO(
                     orderId,
                     ResponseStatus.FAILED,
                     "Cannot find required wallet"
@@ -106,7 +106,7 @@ class OrderProcessingServiceImpl: OrderProcessingService {
                 transactionService.processTransaction(transaction)
             }
 
-            return OrderStatus(
+            return OrderStatusDTO(
                 orderId,
                 ResponseStatus.COMPLETED,
                 null

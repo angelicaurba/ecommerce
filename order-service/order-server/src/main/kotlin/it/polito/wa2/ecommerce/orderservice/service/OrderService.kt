@@ -5,7 +5,7 @@ import it.polito.wa2.ecommerce.orderservice.client.order.request.OrderRequestDTO
 import it.polito.wa2.ecommerce.orderservice.client.item.PurchaseItemDTO
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.EventTypeOrderStatus
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.OrderDetailsDTO
-import it.polito.wa2.ecommerce.orderservice.client.order.messages.OrderStatus
+import it.polito.wa2.ecommerce.orderservice.client.order.messages.OrderStatusDTO
 import it.polito.wa2.ecommerce.orderservice.client.order.response.OrderDTO
 
 interface OrderService {
@@ -14,6 +14,6 @@ interface OrderService {
     fun addOrder(orderRequest: OrderRequestDTO<PurchaseItemDTO>): OrderDTO
     fun updateStatus(orderId: String, updateOrderRequest: UpdateOrderRequestDTO): OrderDTO
     fun cancelOrder(orderId: String)
-    fun processOrderCompletion(orderStatus: OrderStatus, id: String, eventType: EventTypeOrderStatus)
+    fun processOrderCompletion(orderStatusDTO: OrderStatusDTO, id: String, eventType: EventTypeOrderStatus)
     fun process(orderDetailsDTO: OrderDetailsDTO, id: String)
 }

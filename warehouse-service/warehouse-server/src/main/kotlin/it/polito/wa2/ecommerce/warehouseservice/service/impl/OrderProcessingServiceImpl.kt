@@ -3,13 +3,11 @@ package it.polito.wa2.ecommerce.warehouseservice.service.impl
 import it.polito.wa2.ecommerce.common.constants.orderDetailsTopic
 import it.polito.wa2.ecommerce.common.constants.orderStatusTopic
 import it.polito.wa2.ecommerce.common.constants.paymentTopic
-import it.polito.wa2.ecommerce.common.constants.warehouseService
 import it.polito.wa2.ecommerce.common.saga.service.MessageService
 import it.polito.wa2.ecommerce.common.saga.service.ProcessingLogService
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.*
 import it.polito.wa2.ecommerce.walletservice.client.order.request.WalletOrderPaymentRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.order.request.WalletOrderRequestDTO
-import it.polito.wa2.ecommerce.walletservice.client.transaction.request.OrderTransactionRequestDTO
 import it.polito.wa2.ecommerce.warehouseservice.client.order.request.WarehouseOrderRequestCancelDTO
 import it.polito.wa2.ecommerce.warehouseservice.client.order.request.WarehouseOrderRequestDTO
 import it.polito.wa2.ecommerce.warehouseservice.client.order.request.WarehouseOrderRequestNewDTO
@@ -42,7 +40,7 @@ class OrderProcessingServiceImpl: OrderProcessingService {
 
         var orderDetails: OrderDetailsDTO? = null
         var paymentRequest: WalletOrderRequestDTO? = null
-        var orderStatus: OrderStatus? = null
+        var orderStatusDTO: OrderStatusDTO? = null
 
         try {
 
@@ -71,7 +69,7 @@ class OrderProcessingServiceImpl: OrderProcessingService {
 
         }
         catch (e:Exception){
-            orderStatus = OrderStatus(
+            orderStatusDTO = OrderStatusDTO(
                 orderRequestDTO.orderId,
                 ResponseStatus.FAILED,
                 e.message)
@@ -79,7 +77,7 @@ class OrderProcessingServiceImpl: OrderProcessingService {
         finally {
             processingLogService.process(uuid)
 
-            orderStatus?.also {
+            orderStatusDTO?.also {
                 messageService.publish(it,
                     EventTypeOrderStatus.OrderItemsNotAvailable.toString(),
                     orderStatusTopic)

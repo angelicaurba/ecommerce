@@ -4,8 +4,8 @@ import it.polito.wa2.ecommerce.common.security.utils.JwtUtils
 import it.polito.wa2.ecommerce.common.Rolename
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.common.parseID
-import it.polito.wa2.ecommerce.userservice.client.AddRolesRequest
-import it.polito.wa2.ecommerce.userservice.client.PasswordChangeRequest
+import it.polito.wa2.ecommerce.userservice.client.AddRolesRequestDTO
+import it.polito.wa2.ecommerce.userservice.client.PasswordChangeRequestDTO
 import it.polito.wa2.ecommerce.common.security.UserDetailsDTO
 import it.polito.wa2.ecommerce.userservice.service.impl.UserDetailsServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
@@ -49,7 +49,7 @@ class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun changePassword(
         @PathVariable userId: String,
-        @RequestBody @Valid request: PasswordChangeRequest, bindingResult: BindingResult
+        @RequestBody @Valid request: PasswordChangeRequestDTO, bindingResult: BindingResult
         ){
         if (bindingResult.hasErrors()) {
             throw BadRequestException(bindingResult.fieldErrors.joinToString())
@@ -69,7 +69,7 @@ class UserController {
     @PatchMapping("/{userId}/roles")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun addRoles(@PathVariable userId: String,
-        @RequestBody @Valid request: AddRolesRequest, bindingResult: BindingResult,){
+                 @RequestBody @Valid request: AddRolesRequestDTO, bindingResult: BindingResult,){
         if (bindingResult.hasErrors()) {
             throw BadRequestException(bindingResult.fieldErrors.joinToString())
         }

@@ -1,14 +1,12 @@
 package it.polito.wa2.ecommerce.userservice.controller
 
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
-import it.polito.wa2.ecommerce.userservice.client.LoginRequest
+import it.polito.wa2.ecommerce.userservice.client.LoginRequestDTO
 import it.polito.wa2.ecommerce.common.security.UserDetailsDTO
 import it.polito.wa2.ecommerce.common.security.utils.JwtUtils
 import it.polito.wa2.ecommerce.userservice.service.impl.UserDetailsServiceImpl
-import it.polito.wa2.ecommerce.userservice.client.RegistrationRequest
+import it.polito.wa2.ecommerce.userservice.client.RegistrationRequestDTO
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.core.io.Resource
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -37,14 +35,14 @@ class AuthController(val userDetailsServiceImpl: UserDetailsServiceImpl) {
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun registerUser(
-        @RequestBody @Valid registrationRequest: RegistrationRequest,
+        @RequestBody @Valid registrationRequestDTO: RegistrationRequestDTO,
         bindingResult: BindingResult
     ) {
         if (bindingResult.hasErrors()) {
             throw BadRequestException(bindingResult.fieldErrors.joinToString())
         }
 
-        userDetailsServiceImpl.createUser(registrationRequest)
+        userDetailsServiceImpl.createUser(registrationRequestDTO)
     }
 
     @GetMapping("/registrationConfirm")
@@ -56,7 +54,7 @@ class AuthController(val userDetailsServiceImpl: UserDetailsServiceImpl) {
     @PostMapping("/signin")
     @ResponseStatus(HttpStatus.OK)
     fun signin(
-        @RequestBody @Valid loginRequest: LoginRequest, bindingResult: BindingResult,
+        @RequestBody @Valid loginRequestDTO: LoginRequestDTO, bindingResult: BindingResult,
         response: HttpServletResponse
     ): UserDetails {
         if (bindingResult.hasErrors()) {
@@ -64,7 +62,7 @@ class AuthController(val userDetailsServiceImpl: UserDetailsServiceImpl) {
         }
         
         val authentication: Authentication = authenticationManager.authenticate(
-            UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password)
+            UsernamePasswordAuthenticationToken(loginRequestDTO.username, loginRequestDTO.password)
         )
 
         val privateKeyFile = File("src/main/resources/rsa.key")

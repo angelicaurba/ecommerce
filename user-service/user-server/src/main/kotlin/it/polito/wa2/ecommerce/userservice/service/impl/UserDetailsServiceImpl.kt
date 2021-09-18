@@ -3,7 +3,6 @@ package it.polito.wa2.ecommerce.userservice.service.impl
 import it.polito.wa2.ecommerce.common.security.utils.JwtUtils
 import it.polito.wa2.ecommerce.common.Rolename
 import it.polito.wa2.ecommerce.common.constants.mailTopic
-import it.polito.wa2.ecommerce.common.constants.walletCreationTopic
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.common.parseID
@@ -14,7 +13,7 @@ import it.polito.wa2.ecommerce.mailservice.client.MailDTO
 import it.polito.wa2.ecommerce.userservice.domain.User
 import it.polito.wa2.ecommerce.userservice.repository.UserRepository
 import it.polito.wa2.ecommerce.userservice.service.NotificationService
-import it.polito.wa2.ecommerce.userservice.client.RegistrationRequest
+import it.polito.wa2.ecommerce.userservice.client.RegistrationRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.wallet.request.CustomerWalletCreationRequestDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
@@ -57,25 +56,25 @@ class UserDetailsServiceImpl: UserDetailsService {
         throw ForbiddenException("Only an admin or the user related to this information are authorized.")
     }
 
-    fun createUser(registrationRequest: RegistrationRequest){
-        if (userRepository.findByUsername(registrationRequest.username) != null) {
+    fun createUser(registrationRequestDTO: RegistrationRequestDTO){
+        if (userRepository.findByUsername(registrationRequestDTO.username) != null) {
             throw BadRequestException("Username already in use")
         }
-        if(userRepository.findByEmail(registrationRequest.email) != null) {
+        if(userRepository.findByEmail(registrationRequestDTO.email) != null) {
             throw BadRequestException("Email already in use")
         }
-        if (registrationRequest.password != registrationRequest.confirmPassword) {
+        if (registrationRequestDTO.password != registrationRequestDTO.confirmPassword) {
             throw BadRequestException("Passwords do not match")
         }
 
         val user = User(
-            registrationRequest.username,
-            passwordEncoder.encode(registrationRequest.password),
-            registrationRequest.email,
+            registrationRequestDTO.username,
+            passwordEncoder.encode(registrationRequestDTO.password),
+            registrationRequestDTO.email,
             Rolename.CUSTOMER.toString(),
-            registrationRequest.name,
-            registrationRequest.surname,
-            registrationRequest.deliveryAddress,
+            registrationRequestDTO.name,
+            registrationRequestDTO.surname,
+            registrationRequestDTO.deliveryAddress,
             false
         )
 
@@ -210,10 +209,10 @@ class UserDetailsServiceImpl: UserDetailsService {
         val customerWalletRequest = CustomerWalletCreationRequestDTO(
             verificationToken.user!!.getId().toString()
         )
-        messageService.publish(
-            customerWalletRequest,
-            "Customer wallet creation",
-            walletCreationTopic
-        )
+//        messageService.publish(
+//            customerWalletRequest,
+//            "Customer wallet creation",
+//            walletCreationTopic
+//        )
     }
 }

@@ -23,7 +23,6 @@ class WalletCreationRequestConsumer{
                @Header("id") id: String,
                @Header("eventType") eventType:String
     ){
-//        throw RuntimeException("test")
         println("Processing message $id ($eventType) : $walletCreationRequestDTO")
         walletService.addWallet(walletCreationRequestDTO, verifySecurity = false)
 

@@ -17,7 +17,7 @@ import it.polito.wa2.ecommerce.orderservice.client.UpdateOrderRequestDTO
 import it.polito.wa2.ecommerce.orderservice.client.item.ItemDTO
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.EventTypeOrderStatus
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.OrderDetailsDTO
-import it.polito.wa2.ecommerce.orderservice.client.order.messages.OrderStatus
+import it.polito.wa2.ecommerce.orderservice.client.order.messages.OrderStatusDTO
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.ResponseStatus
 import it.polito.wa2.ecommerce.orderservice.client.order.response.OrderDTO
 import it.polito.wa2.ecommerce.orderservice.client.order.response.Status
@@ -132,14 +132,14 @@ class OrderServiceImpl: OrderService {
         messageService.publish(cancelMessage, "OrderCancel", orderRequestTopic)
     }
 
-    override fun processOrderCompletion(orderStatus: OrderStatus, id: String, eventType: EventTypeOrderStatus) {
+    override fun processOrderCompletion(orderStatusDTO: OrderStatusDTO, id: String, eventType: EventTypeOrderStatus) {
         val eventID = UUID.fromString(id)
         if(processingLogService.isProcessed(eventID))
             return
 
-        val orderId = orderStatus.orderID.parseID()
+        val orderId = orderStatusDTO.orderID.parseID()
         val order = orderRepository.findByIdOrNull(orderId) ?: throw OrderNotFoundException(orderId)
-        when(orderStatus.responseStatus) {
+        when(orderStatusDTO.responseStatus) {
             ResponseStatus.COMPLETED -> {
 
                 // - set status to ISSUED
@@ -171,7 +171,7 @@ class OrderServiceImpl: OrderService {
                 val mail: MailDTO = MailDTO(
                     order.buyerId, null,
                     "Your order has failed issued: $orderId",
-                    "The order was not issued.\nError message: ${orderStatus.errorMessage}"
+                    "The order was not issued.\nError message: ${orderStatusDTO.errorMessage}"
                 )
                 messageService.publish(mail, "OrderIssued", mailTopic)
                 orderRepository.save(order)

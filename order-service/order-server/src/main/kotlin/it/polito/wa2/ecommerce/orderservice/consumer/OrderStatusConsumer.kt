@@ -2,7 +2,7 @@ package it.polito.wa2.ecommerce.orderservice.consumer
 
 import it.polito.wa2.ecommerce.common.constants.orderStatusTopic
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.EventTypeOrderStatus
-import it.polito.wa2.ecommerce.orderservice.client.order.messages.OrderStatus
+import it.polito.wa2.ecommerce.orderservice.client.order.messages.OrderStatusDTO
 import it.polito.wa2.ecommerce.orderservice.service.OrderService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.kafka.annotation.KafkaListener
@@ -18,12 +18,12 @@ class OrderStatusConsumer {
     lateinit var orderService: OrderService
 
     @KafkaListener(topics=[orderStatusTopic], containerFactory = "orderStatusListenerFactory")
-    fun listen(@Payload @Valid orderStatus: OrderStatus,
+    fun listen(@Payload @Valid orderStatusDTO: OrderStatusDTO,
                @Header("id") id: String,
                @Header("eventType") eventType: EventTypeOrderStatus
     ){
-        println("Processing message $id ($eventType) : $orderStatus")
-        orderService.processOrderCompletion(orderStatus, id, eventType)
+        println("Processing message $id ($eventType) : $orderStatusDTO")
+        orderService.processOrderCompletion(orderStatusDTO, id, eventType)
 
 
     }
