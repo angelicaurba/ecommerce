@@ -160,8 +160,6 @@ services:
     image: wa2-group6-user-service
     hostname: user-service
     container_name: user-service
-    ports:
-      - 8081:8080
     networks:
       - wa2-group6
     volumes:
