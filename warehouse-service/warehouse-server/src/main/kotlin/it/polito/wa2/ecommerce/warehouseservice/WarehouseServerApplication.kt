@@ -7,11 +7,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 import org.springframework.context.annotation.Bean
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import java.math.BigDecimal
 import java.util.*
 
-@SpringBootApplication(scanBasePackages = ["it.polito.wa2.ecommerce"])
-@EnableEurekaClient
+@SpringBootApplication(scanBasePackages = [
+    "it.polito.wa2.ecommerce.warehouseservice",
+    "it.polito.wa2.ecommerce.common.exceptions",
+    "it.polito.wa2.ecommerce.common.saga",
+    "it.polito.wa2.ecommerce.common.security"
+])
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 class WarehouseServerApplication {
     @Bean
     fun populateDB(

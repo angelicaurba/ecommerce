@@ -9,13 +9,21 @@ import it.polito.wa2.ecommerce.walletservice.repository.WalletRepository
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 import org.springframework.context.annotation.Bean
 import org.springframework.kafka.annotation.EnableKafka
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import java.math.BigDecimal
 import java.util.*
 
 @EnableKafka
-@SpringBootApplication(scanBasePackages = ["it.polito.wa2.ecommerce"])
+@SpringBootApplication(scanBasePackages = [
+    "it.polito.wa2.ecommerce.walletservice",
+    "it.polito.wa2.ecommerce.common.saga",
+    "it.polito.wa2.ecommerce.common.security",
+    "it.polito.wa2.ecommerce.common.exceptions"
+])
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 class WalletServerApplication {
     @Bean
     fun populateDB(

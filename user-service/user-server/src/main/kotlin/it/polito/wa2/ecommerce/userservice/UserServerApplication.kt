@@ -21,8 +21,12 @@ const val tokenClearPeriod: Long = 3600000
 // 1000 * 60 * 60 * 1 = 3600000 = 1 hour
 
 
-@SpringBootApplication(scanBasePackages = ["it.polito.wa2.ecommerce"])
-@EnableEurekaClient
+@SpringBootApplication(scanBasePackages = [
+    "it.polito.wa2.ecommerce.userservice",
+    "it.polito.wa2.ecommerce.common.exceptions",
+    "it.polito.wa2.ecommerce.common.security",
+    "it.polito.wa2.ecommerce.common.saga"
+])
 @EnableScheduling
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class UserServerApplication{

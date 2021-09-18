@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 import org.springframework.context.annotation.Bean
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.math.BigDecimal
@@ -24,11 +25,11 @@ import java.util.*
     scanBasePackages = [
         "it.polito.wa2.ecommerce.catalogueservice",
         "it.polito.wa2.ecommerce.common.security.utils",
-        "it.polito.wa2.ecommerce.common.connection",
-        "it.polito.wa2.ecommerce.common.exceptions"
+        "it.polito.wa2.ecommerce.common.connection"
     ]
 )
 @EnableEurekaClient
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 class CatalogueServiceApplication {
 
     @Bean

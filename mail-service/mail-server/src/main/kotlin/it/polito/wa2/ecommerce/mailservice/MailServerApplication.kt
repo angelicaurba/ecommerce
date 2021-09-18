@@ -11,10 +11,12 @@ import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import java.util.*
 
-@SpringBootApplication(scanBasePackages = ["it.polito.wa2.ecommerce"])
+@SpringBootApplication(scanBasePackages = [
+    "it.polito.wa2.ecommerce.mailservice",
+    "it.polito.wa2.ecommerce.common.connection",
+    "it.polito.wa2.ecommerce.common.saga"])
 @EnableEurekaClient
 @EnableScheduling
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 class MailServerApplication{
 
     @Value("\${spring.mail.host}")
