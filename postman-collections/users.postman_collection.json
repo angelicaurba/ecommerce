@@ -1,0 +1,55 @@
+{
+	"info": {
+		"_postman_id": "e2d88357-1bae-47bf-863f-f325b0b80876",
+		"name": "users",
+		"description": "user-service, \"users\" route: presents and modifies user information\r\n\r\nRoutes:\r\n- GET /users/{userId}\r\n- GET /users/{userId}/email\r\n- GET /users/{userId}/roles\r\n- PATCH /users/{userId}/roles\r\n- PUT /users/{userId}/password",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/{userId}",
+			"item": [],
+			"description": "GET /users/{userId}\r\nGet user's information"
+		},
+		{
+			"name": "/{userId}/email",
+			"item": [],
+			"description": "GET /users/{userId}/email\r\nGet user's email (not reachable)"
+		},
+		{
+			"name": "/{userId}/roles (GET)",
+			"item": [],
+			"description": "GET /users/{userId}/roles\r\nGet user's roles",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "/{userId}/roles (PATCH)",
+			"item": [],
+			"description": "PATCH /users/{userId}/roles\r\nUpgrades a customer to admin"
+		},
+		{
+			"name": "/{userId}/password",
+			"item": [],
+			"description": "PUT /users/{userId}/password\r\nChanges user's password"
+		}
+	]
+}
