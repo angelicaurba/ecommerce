@@ -33,6 +33,7 @@ dependencies {
     implementation (project(":warehouse-service:warehouse-client"))
     implementation (project(":wallet-service:wallet-client"))
     implementation (project(":order-service:order-client"))
+    implementation (project(":mail-service:mail-client"))
     implementation(project(":common"))
 
     runtimeOnly("mysql:mysql-connector-java")

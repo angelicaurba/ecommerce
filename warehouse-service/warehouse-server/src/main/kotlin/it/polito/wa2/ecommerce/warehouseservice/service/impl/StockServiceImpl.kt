@@ -1,7 +1,10 @@
 package it.polito.wa2.ecommerce.warehouseservice.service.impl
 
+import it.polito.wa2.ecommerce.common.constants.mailTopic
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.common.getPageable
+import it.polito.wa2.ecommerce.common.saga.service.MessageService
+import it.polito.wa2.ecommerce.mailservice.client.MailDTO
 import it.polito.wa2.ecommerce.orderservice.client.item.ItemDTO
 import it.polito.wa2.ecommerce.orderservice.client.item.PurchaseItemDTO
 import it.polito.wa2.ecommerce.orderservice.client.order.messages.ProductWarehouseDTO
@@ -27,8 +30,28 @@ class StockServiceImpl: StockService {
 
     @Autowired lateinit var warehouseService: WarehouseServiceImpl
 
+    @Autowired lateinit var messageService: MessageService
+
     private fun sendNotification(stock: Stock) {
-        // TODO call mail service to send email
+
+        val mailSubject = "Alarm notification"
+
+        val mailBody = "Hi admin,\n" +
+                "in the warehouse ${stock.warehouse.name} " +
+                "the quantity of a product ${stock.product} is below the alarm level."
+
+        val message = MailDTO(
+            stock.warehouse.adminID,
+            null,
+            mailSubject,
+            mailBody
+        )
+
+        messageService.publish(
+            message,
+            "SendEmail",
+            mailTopic
+        )
     }
 
     private fun updateStockQuantity(stock: Stock, newQuantity: Long): Stock {
