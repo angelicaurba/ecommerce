@@ -10,7 +10,8 @@ import it.polito.wa2.ecommerce.mailservice.client.MailDTO
 import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.common.exceptions.NotFoundException
 import it.polito.wa2.ecommerce.common.getPageable
-import it.polito.wa2.ecommerce.common.security.UserDetailsDTO
+import it.polito.wa2.ecommerce.common.security.IdentityVerifier
+import it.polito.wa2.ecommerce.common.security.JwtTokenDetails
 import it.polito.wa2.ecommerce.orderservice.client.order.request.OrderRequestDTO
 import it.polito.wa2.ecommerce.orderservice.client.item.PurchaseItemDTO
 import it.polito.wa2.ecommerce.orderservice.client.UpdateOrderRequestDTO
@@ -53,28 +54,29 @@ class OrderServiceImpl: OrderService {
     @Autowired
     lateinit var messageService: MessageService
 
+    @Autowired
+    lateinit var identityVerifier: IdentityVerifier
+
     override fun getAllOrders(pageIdx: Int, pageSize: Int): List<OrderDTO> {
-        val principal = SecurityContextHolder.getContext().authentication.principal as UserDetailsDTO
+        val principal = SecurityContextHolder.getContext().authentication.principal as JwtTokenDetails
         val page = getPageable(pageIdx, pageSize)
 
-        return if(principal.authorities.contains(Rolename.ADMIN))
+        return if(principal.roles.contains(Rolename.ADMIN))
             orderRepository.findAll(page).toList().map { it.toDTO() }
         else
             orderRepository.findAllByBuyerId(principal.id, page).toList().map { it.toDTO() }
     }
 
     override fun getOrderById(orderId: String): OrderDTO {
-        val principal = SecurityContextHolder.getContext().authentication.principal as UserDetailsDTO
+        val principal = SecurityContextHolder.getContext().authentication.principal as JwtTokenDetails
         val order = getOrderOrThrowException(orderId)
-        if(principal.authorities.contains(Rolename.ADMIN) || principal.id == order.buyerId )
-            return order.toDTO()
-        else throw ForbiddenException()
+        identityVerifier.verifyUserIdentityOrIsAdmin(principal.id.parseID())
+        return order.toDTO()
     }
 
     override fun addOrder(orderRequest: OrderRequestDTO<PurchaseItemDTO>): OrderDTO {
-        val principal = SecurityContextHolder.getContext().authentication.principal as UserDetailsDTO
-        if(!principal.authorities.contains(Rolename.ADMIN) || principal.id != orderRequest.buyerId)
-            throw ForbiddenException()
+        val principal = SecurityContextHolder.getContext().authentication.principal as JwtTokenDetails
+        identityVerifier.verifyUserIdentityOrIsAdmin(principal.id.parseID())
 
         val newOrder = Order(
             orderRequest.buyerId,
@@ -103,9 +105,8 @@ class OrderServiceImpl: OrderService {
 
     override fun updateStatus(orderId: String, updateOrderRequest: UpdateOrderRequestDTO): OrderDTO {
 
-        val principal = SecurityContextHolder.getContext().authentication.principal as UserDetailsDTO
-        if(!principal.authorities.contains(Rolename.ADMIN))
-            throw ForbiddenException()
+        val principal = SecurityContextHolder.getContext().authentication.principal as JwtTokenDetails
+        identityVerifier.verifyUserIdentityOrIsAdmin(principal.id.parseID())
 
         if(updateOrderRequest.status == Status.CANCELED)
             throw ForbiddenException()
@@ -118,9 +119,8 @@ class OrderServiceImpl: OrderService {
     override fun cancelOrder(orderId: String) {
 
         val order = getOrderOrThrowException(orderId)
-        val principal = SecurityContextHolder.getContext().authentication.principal as UserDetailsDTO
-        if(!principal.authorities.contains(Rolename.ADMIN) || principal.id != order.buyerId)
-            throw ForbiddenException()
+        val principal = SecurityContextHolder.getContext().authentication.principal as JwtTokenDetails
+        identityVerifier.verifyUserIdentityOrIsAdmin(principal.id.parseID())
 
         order.updateStatus(Status.CANCELED)
         orderRepository.save(order)
