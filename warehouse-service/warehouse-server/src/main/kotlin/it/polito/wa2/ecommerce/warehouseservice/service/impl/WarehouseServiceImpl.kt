@@ -45,12 +45,12 @@ class WarehouseServiceImpl : WarehouseService {
             warehouse.adminID = warehouseRequest.adminID!!
 
              return warehouseRepository.save(warehouse).toDTO()
-        } else // TODO should we use that warehouseId?
+        } else
             return addWarehouse(warehouseRequest, warehouseId)
     }
 
     override fun addWarehouse(warehouseRequest: WarehouseRequestDTO, warehouseId: String?): WarehouseDTO {
-        // TODO handle warehouseId
+        // TODO handle warehouseId : save + query custom to update id
         val newWarehouse = Warehouse(
             warehouseRequest.name!!,
             warehouseRequest.address!!,

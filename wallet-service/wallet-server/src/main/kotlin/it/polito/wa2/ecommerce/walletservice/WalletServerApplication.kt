@@ -34,6 +34,9 @@ class WalletServerApplication {
             transactionRepository.deleteAll()
             walletRepository.deleteAll()
 
+            // TODO ogni warehouse deve avere esattamente un wallet
+            // TODO ogni utente deve avere almeno un wallet
+
             //Id: "1"
             val w1 = walletRepository.save(
                 Wallet("1", WalletType.CUSTOMER, BigDecimal("0.00"))

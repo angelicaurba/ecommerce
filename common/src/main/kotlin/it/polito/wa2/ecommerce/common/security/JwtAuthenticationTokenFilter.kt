@@ -57,7 +57,6 @@ class JwtAuthenticationTokenFilter: OncePerRequestFilter() {
 
         }
         catch (e: Throwable){
-            // TODO make this exception handler compatible with controllerAdvisor (if it's not already compatible)
             println("GOT EXCEPTION; ${e.javaClass} ${e.message}")
         }
 

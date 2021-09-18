@@ -54,7 +54,6 @@ class WalletServiceImpl : WalletService {
 
 
     override fun getWalletOrThrowException(walletId: Long): Wallet {
-        //TODO is it ok to throw notFound before ownership check?
         val wallet = walletRepository.findByIdOrNull(walletId) ?: throw WalletNotFound(walletId)
         identityVerifier.verifyUserIdentityOrIsAdmin(wallet.owner.parseID())
         return wallet

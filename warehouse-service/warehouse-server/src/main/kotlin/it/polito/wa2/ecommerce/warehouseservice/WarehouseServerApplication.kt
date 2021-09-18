@@ -29,6 +29,8 @@ class WarehouseServerApplication {
             warehouseRepository.deleteAll()
 
             // TODO populate db
+            // devono esserci esattamente due warehouse (id 1 e 2) e ownerid 3
+            // dev'esserci almeno il prodotto 4 nel warehouse 2 con amount >= 1
         }
     }
 }

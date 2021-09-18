@@ -75,7 +75,7 @@ class StockServiceImpl: StockService {
 
             return stockRepository.save(stock).toDTO()
         } else
-            return addStock(warehouseId, stockRequestDTO) // TODO which warehouseId should we pass?
+            return addStock(warehouseId, stockRequestDTO)
     }
 
 
@@ -118,9 +118,9 @@ class StockServiceImpl: StockService {
     }
 
     override fun getWarehouseHavingProducts(productList: List<PurchaseItemDTO>): List<ProductWarehouseDTO> {
-        // TODO check quantity int or Long?")
-
         val list = mutableListOf<ProductWarehouseDTO>()
+
+        // TODO the price is for each item
 
         productList.forEach{
             val stocks = stockRepository.findAllByProductAndQuantityIsGreaterThanEqual(it.productId, it.amount)
@@ -134,13 +134,15 @@ class StockServiceImpl: StockService {
 
     override fun updateAndRetrieveAmount(productList: List<PurchaseItemDTO>): List<OrderTransactionRequestDTO> {
 
+        // TODO raggruppare in un'unica transazione i prodotti dallo stesso warehouse
+
         val list = mutableListOf<OrderTransactionRequestDTO>()
 
         productList.forEach{
             val stocks = stockRepository.findAllByProductAndQuantityIsGreaterThanEqual(it.productId, it.amount)
             if (stocks.isEmpty())
                 throw  Exception("Items not available") // TODO define exception
-            val chosenStock = stocks.first()
+            val chosenStock = stocks.first() // TODO ordinare per (disponibilità-alarm) e prendere il primo
             updateStockQuantity(chosenStock, chosenStock.quantity - it.amount)
             list.add(OrderTransactionRequestDTO(chosenStock.warehouse.getId()!!,it.price))
         }

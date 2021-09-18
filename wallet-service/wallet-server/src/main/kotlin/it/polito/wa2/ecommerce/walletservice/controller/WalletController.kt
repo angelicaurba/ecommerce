@@ -19,7 +19,6 @@ import javax.validation.Valid
 import javax.validation.constraints.Min
 
 const val DEFAULT_PAGE_SIZE = "10"
-//TODO add validation messages (see previous lab)
 
 @RestController
 @RequestMapping("/wallets")
