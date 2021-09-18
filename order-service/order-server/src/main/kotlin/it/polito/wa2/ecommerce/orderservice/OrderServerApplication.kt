@@ -8,10 +8,18 @@ import it.polito.wa2.ecommerce.orderservice.repository.PurchaseItemRepository
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 import org.springframework.context.annotation.Bean
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import java.math.BigDecimal
 
-@SpringBootApplication(scanBasePackages = ["it.polito.wa2.ecommerce"])
+@SpringBootApplication(scanBasePackages = [
+    "it.polito.wa2.ecommerce.orderservice",
+    "it.polito.wa2.ecommerce.common.saga",
+    "it.polito.wa2.ecommerce.common.exceptions",
+    "it.polito.wa2.ecommerce.common.security"
+])
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 class OrderServerApplication {
 
     @Bean
