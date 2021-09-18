@@ -1,5 +1,6 @@
 package it.polito.wa2.ecommerce.mailservice
 
+import it.polito.wa2.ecommerce.common.CommonApplication
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -14,7 +15,10 @@ import java.util.*
 @SpringBootApplication(scanBasePackages = [
     "it.polito.wa2.ecommerce.mailservice",
     "it.polito.wa2.ecommerce.common.connection",
-    "it.polito.wa2.ecommerce.common.saga"])
+    "it.polito.wa2.ecommerce.common.saga"],
+    scanBasePackageClasses = [
+        CommonApplication::class
+    ])
 @EnableEurekaClient
 @EnableScheduling
 class MailServerApplication{

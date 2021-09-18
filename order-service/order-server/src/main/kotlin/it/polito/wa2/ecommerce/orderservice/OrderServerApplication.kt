@@ -1,5 +1,6 @@
 package it.polito.wa2.ecommerce.orderservice
 
+import it.polito.wa2.ecommerce.common.CommonApplication
 import it.polito.wa2.ecommerce.orderservice.client.order.response.Status
 import it.polito.wa2.ecommerce.orderservice.domain.Order
 import it.polito.wa2.ecommerce.orderservice.domain.PurchaseItem
@@ -18,7 +19,10 @@ import java.math.BigDecimal
     "it.polito.wa2.ecommerce.common.saga",
     "it.polito.wa2.ecommerce.common.exceptions",
     "it.polito.wa2.ecommerce.common.security"
-])
+],
+    scanBasePackageClasses = [
+        CommonApplication::class
+    ])
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class OrderServerApplication {
 

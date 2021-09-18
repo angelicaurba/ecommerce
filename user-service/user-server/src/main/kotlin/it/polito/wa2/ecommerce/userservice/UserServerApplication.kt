@@ -1,5 +1,6 @@
 package it.polito.wa2.ecommerce.userservice
 
+import it.polito.wa2.ecommerce.common.CommonApplication
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 import it.polito.wa2.ecommerce.userservice.domain.User
 import it.polito.wa2.ecommerce.userservice.repository.EmailVerificationTokenRepository
@@ -26,7 +27,10 @@ const val tokenClearPeriod: Long = 3600000
     "it.polito.wa2.ecommerce.common.exceptions",
     "it.polito.wa2.ecommerce.common.security",
     "it.polito.wa2.ecommerce.common.saga"
-])
+],
+    scanBasePackageClasses = [
+        CommonApplication::class
+    ])
 @EnableScheduling
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class UserServerApplication{

@@ -1,5 +1,6 @@
 package it.polito.wa2.ecommerce.warehouseservice
 
+import it.polito.wa2.ecommerce.common.CommonApplication
 import it.polito.wa2.ecommerce.warehouseservice.repository.StockRepository
 import it.polito.wa2.ecommerce.warehouseservice.repository.WarehouseRepository
 import org.springframework.boot.CommandLineRunner
@@ -16,7 +17,10 @@ import java.util.*
     "it.polito.wa2.ecommerce.common.exceptions",
     "it.polito.wa2.ecommerce.common.saga",
     "it.polito.wa2.ecommerce.common.security"
-])
+],
+    scanBasePackageClasses = [
+        CommonApplication::class
+    ])
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class WarehouseServerApplication {
     @Bean

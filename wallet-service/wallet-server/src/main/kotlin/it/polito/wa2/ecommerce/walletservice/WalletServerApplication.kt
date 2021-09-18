@@ -1,5 +1,6 @@
 package it.polito.wa2.ecommerce.walletservice
 
+import it.polito.wa2.ecommerce.common.CommonApplication
 import it.polito.wa2.ecommerce.walletservice.domain.Transaction
 import it.polito.wa2.ecommerce.walletservice.domain.TransactionType
 import it.polito.wa2.ecommerce.walletservice.domain.Wallet
@@ -22,7 +23,10 @@ import java.util.*
     "it.polito.wa2.ecommerce.common.saga",
     "it.polito.wa2.ecommerce.common.security",
     "it.polito.wa2.ecommerce.common.exceptions"
-])
+],
+    scanBasePackageClasses = [
+        CommonApplication::class
+    ])
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class WalletServerApplication {
     @Bean
