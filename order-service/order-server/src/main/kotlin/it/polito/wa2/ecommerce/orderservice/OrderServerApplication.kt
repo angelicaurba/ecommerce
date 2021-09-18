@@ -28,45 +28,46 @@ class OrderServerApplication {
         purchaseItemRepository: PurchaseItemRepository
     ): CommandLineRunner {
         return CommandLineRunner {
-            //TODO update infos + make coherent with wallet and warehouse
+          
             val o1 = orderRepository.save(
                 Order(
-                    "1", "Somewhere over the rainbow", "2",
+                    "1", "Somewhere over the rainbow", "1",
                     Status.ISSUED
                 )
             )
 
-            val p2 = PurchaseItem("2", 2, BigDecimal("1500.00"), "5").also { it.order = o1 }
-            p2.order = o1
+            val p2 = PurchaseItem("2", 2, BigDecimal("1500.00"), "2").also { it.order = o1 }
+            val p3 = PurchaseItem("3", 1, BigDecimal("12.00"), "1").also { it.order = o1 }
             purchaseItemRepository.save(p2)
+            purchaseItemRepository.save(p3)
 
-            val o3 = orderRepository.save(
+            val o4 = orderRepository.save(
                 Order(
-                    "2", "Somewhere over the rainbow - Nowhere Country", "3",
+                    "2", "Somewhere over the rainbow - Nowhere Country", "6",
                     Status.DELIVERED
                 )
             )
 
-            val p4 = PurchaseItem("2", 1, BigDecimal("10.00"), "1")
-            val p5 = PurchaseItem("1", 1, BigDecimal("1500.00"), "3")
+            val p5 = PurchaseItem("2", 1, BigDecimal("10.00"), "1")
+            val p6 = PurchaseItem("1", 1, BigDecimal("1500.00"), "1")
 
-            p4.order = o3
-            p5.order = o3
-            purchaseItemRepository.save(p4)
+            p5.order = o4
+            p6.order = o4
             purchaseItemRepository.save(p5)
+            purchaseItemRepository.save(p6)
 
-            val o6 = orderRepository.save(
+            val o7 = orderRepository.save(
                 Order(
                     "3", "Somewhere over the rainbow - Nowhere Country", "3",
                     Status.CANCELED
                 )
             )
 
-            val p7 = PurchaseItem("4", 1, BigDecimal("20.00"), "1")
+            val p8 = PurchaseItem("4", 1, BigDecimal("20.00"), "2")
 
-            p7.order = o6
+            p8.order = o7
 
-            purchaseItemRepository.save(p7)
+            purchaseItemRepository.save(p8)
 
 
         }
