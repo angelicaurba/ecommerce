@@ -11,7 +11,7 @@ import javax.validation.constraints.Size
 @Table(uniqueConstraints = [UniqueConstraint(columnNames = ["warehouse_id", "product"])])
 class Stock (
     @ManyToOne(optional = false)
-    @Column(name = "warehouse_id")
+    @JoinColumn(name = "warehouse_id")
     var warehouse: Warehouse,
 
     @field:NotNull
