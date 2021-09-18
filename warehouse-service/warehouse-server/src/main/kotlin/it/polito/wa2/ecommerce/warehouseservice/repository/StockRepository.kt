@@ -16,5 +16,9 @@ interface StockRepository : PagingAndSortingRepository<Stock, String> {
     @Transactional(readOnly = true)
     fun findByWarehouseAndProduct(warehouse: Warehouse, product: String): Stock?
 
+    @Transactional(readOnly = true)
+    fun findAllByProduct(product: String): List<Stock>
+
+    fun findAllByProductAndQuantityIsGreaterThanEqual(product: String, quantity: Int): List<Stock>
 
 }

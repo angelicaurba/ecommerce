@@ -49,18 +49,18 @@ class OrderProcessingServiceImpl: OrderProcessingService {
             if (orderRequestDTO is WarehouseOrderRequestNewDTO) {
 
                 // List<ProductWarehouseDTO>
-                val productWarehouseDTO = stockService.getWarehouseHavingProducts(orderRequestDTO.productList)
+                val productsWarehouseDTO = stockService.getWarehouseHavingProducts(orderRequestDTO.productList)
 
                 // if it not throw exception, continue
                 // List<OrderTransactionRequestDTO>
-                val orderTransactionRequestDTO = stockService.updateAndRetrieveAmount(orderRequestDTO.productList)
+                val orderTransactionsRequestDTO = stockService.updateAndRetrieveAmount(orderRequestDTO.productList)
 
-                orderDetails = OrderDetailsDTO(orderRequestDTO.orderId, productWarehouseDTO)
+                orderDetails = OrderDetailsDTO(orderRequestDTO.orderId, productsWarehouseDTO)
                 paymentRequest = WalletOrderPaymentRequestDTO(
                     orderRequestDTO.buyerWalletId,
                     orderRequestDTO.buyerId,
                     orderRequestDTO.orderId,
-                    orderTransactionRequestDTO
+                    orderTransactionsRequestDTO
                     )
 
             } else if (orderRequestDTO is WarehouseOrderRequestCancelDTO) {

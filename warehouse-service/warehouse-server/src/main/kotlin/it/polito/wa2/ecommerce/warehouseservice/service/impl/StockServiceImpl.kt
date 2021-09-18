@@ -10,6 +10,7 @@ import it.polito.wa2.ecommerce.warehouseservice.client.StockDTO
 import it.polito.wa2.ecommerce.warehouseservice.client.StockRequestDTO
 import it.polito.wa2.ecommerce.warehouseservice.client.WarehouseDTO
 import it.polito.wa2.ecommerce.warehouseservice.domain.Stock
+import it.polito.wa2.ecommerce.warehouseservice.domain.Warehouse
 import it.polito.wa2.ecommerce.warehouseservice.exception.StockNotFound
 import it.polito.wa2.ecommerce.warehouseservice.repository.StockRepository
 import it.polito.wa2.ecommerce.warehouseservice.service.StockService
@@ -25,27 +26,39 @@ class StockServiceImpl: StockService {
 
     @Autowired lateinit var warehouseService: WarehouseServiceImpl
 
-    override fun updateStockFields(warehouseId: String, productID: String, stockRequest: StockRequestDTO): StockDTO {
-        // TODO check if quantity is less than alarm here, product should exist
+    private fun sendNotification(stock: Stock) {
+        // TODO call mail service to send email
+    }
+
+    private fun updateStockQuantity(stock: Stock, newQuantity: Long): Stock {
+        stock.quantity = newQuantity
+        if (newQuantity <= stock.alarm)
+            sendNotification(stock)
+        return stock
+    }
+
+    override fun updateStockFields(warehouseId: String, productID: String, stockRequestDTO: StockRequestDTO): StockDTO {
+        // TODO check product should exist
         var stock = getStockOrThrowException(warehouseId,productID)
 
-        stockRequest.warehouseID?.also {
-            val warehouse = warehouseService.getWarehouseOrThrowException(stockRequest.warehouseID!!)
+        stockRequestDTO.warehouseID?.also {
+            val warehouse = warehouseService.getWarehouseOrThrowException(stockRequestDTO.warehouseID!!)
             stock.warehouse = warehouse }
-        stockRequest.productID?.also { stock.product = it }
-        stockRequest.quantity?.also { stock.quantity = it }
-        stockRequest.alarm?.also { stock.alarm = it }
+        stockRequestDTO.productID?.also { stock.product = it }
+        stockRequestDTO.alarm?.also { stock.alarm = it }
+        stockRequestDTO.quantity?.also { it ->  stock = updateStockQuantity(stock,it) }
+
         return stockRepository.save(stock).toDTO()
     }
 
     override fun updateOrCreateStock(
         warehouseId: String,
-        productId: String,
+        productID: String,
         stockRequestDTO: StockRequestDTO
     ): StockDTO {
-        // TODO check if quantity is less than alarm here, product should exist
+        // TODO check product should exist
         var warehouse = warehouseService.getWarehouseOrThrowException(warehouseId)
-        val stock = stockRepository.findByWarehouseAndProduct(warehouse,productId)
+        var stock = stockRepository.findByWarehouseAndProduct(warehouse,productID)
 
         if ( stock != null ){
 
@@ -55,8 +68,10 @@ class StockServiceImpl: StockService {
             }
 
             stock.product = stockRequestDTO.productID!!
-            stock.quantity = stockRequestDTO.quantity!!
             stock.alarm = stockRequestDTO.alarm!!
+
+            // stock.quantity = stockRequestDTO.quantity!!
+            stock = updateStockQuantity(stock,stockRequestDTO.quantity!!)
 
             return stockRepository.save(stock).toDTO()
         } else
@@ -98,21 +113,49 @@ class StockServiceImpl: StockService {
     override fun getAllWarehousesHavingProduct(productID: String, pageIdx: Int, pageSize: Int): List<WarehouseDTO> {
         val page = getPageable(pageIdx, pageSize)
         // return warehouseRepository.
-        TODO("Not yet implemented")
-
+        // TODO page missing for controller and i need ALL for orderService"
+        return stockRepository.findAllByProduct(productID).map { it -> it.warehouse }.toList().map { it.toDTO() }
     }
 
     override fun getWarehouseHavingProducts(productList: List<PurchaseItemDTO>): List<ProductWarehouseDTO> {
-        TODO("Not yet implemented")
-        // here : throw Exception("Items not available") //  define exception
+        // TODO check quantity int or Long?")
+
+        val list = mutableListOf<ProductWarehouseDTO>()
+
+        productList.forEach{
+            val stocks = stockRepository.findAllByProductAndQuantityIsGreaterThanEqual(it.productId, it.amount)
+            if (stocks.isEmpty())
+                throw  Exception("Items not available") // TODO define exception
+            list.add(ProductWarehouseDTO(stocks.first().warehouse.getId()!!,stocks.first().product))
+        }
+
+        return list
     }
 
     override fun updateAndRetrieveAmount(productList: List<PurchaseItemDTO>): List<OrderTransactionRequestDTO> {
-        TODO("Not yet implemented")
+
+        val list = mutableListOf<OrderTransactionRequestDTO>()
+
+        productList.forEach{
+            val stocks = stockRepository.findAllByProductAndQuantityIsGreaterThanEqual(it.productId, it.amount)
+            if (stocks.isEmpty())
+                throw  Exception("Items not available") // TODO define exception
+            val chosenStock = stocks.first()
+            updateStockQuantity(chosenStock, chosenStock.quantity - it.amount)
+            list.add(OrderTransactionRequestDTO(chosenStock.warehouse.getId()!!,it.price))
+        }
+
+        return list
     }
 
     override fun cancelRequestUpdate(productList: List<ItemsInWarehouseDTO<ItemDTO>>) {
-        TODO("Not yet implemented")
+
+        productList.forEach{ itemsInWarehouse ->
+            itemsInWarehouse.purchaseItems.forEach{ item ->
+                val stock = getStockOrThrowException(itemsInWarehouse.warehouseId!!, item.productId)
+                updateStockQuantity(stock, stock.quantity + item.amount)
+            }
+        }
     }
 
 
