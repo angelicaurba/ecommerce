@@ -1,9 +1,6 @@
-package it.polito.wa2.ecommerce.common
+package it.polito.wa2.ecommerce.common.exceptions
 
-import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
-import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
-import it.polito.wa2.ecommerce.common.exceptions.NotFoundException
-import it.polito.wa2.ecommerce.common.exceptions.ServiceUnavailable
+import it.polito.wa2.ecommerce.common.ErrorMessageDTO
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.MissingRequestValueException
 import org.springframework.web.bind.annotation.ExceptionHandler
