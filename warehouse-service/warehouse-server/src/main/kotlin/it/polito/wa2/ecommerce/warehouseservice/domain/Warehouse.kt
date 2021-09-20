@@ -21,7 +21,7 @@ class Warehouse (
     @Column
     var adminID: String
 
-): EntityBase<String>(){
+): EntityBase<Long>(){
     fun toDTO(): WarehouseDTO {
         return WarehouseDTO(getId().toString(), name, address, adminID)
     }

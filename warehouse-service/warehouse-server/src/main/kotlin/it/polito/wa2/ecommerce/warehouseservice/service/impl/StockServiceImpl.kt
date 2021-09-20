@@ -20,6 +20,7 @@ import it.polito.wa2.ecommerce.warehouseservice.repository.StockRepository
 import it.polito.wa2.ecommerce.warehouseservice.service.StockService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
 import javax.transaction.Transactional
 
 @Service
@@ -158,7 +159,7 @@ class StockServiceImpl: StockService {
             val stocks = stockRepository.findAllByProductAndQuantityIsGreaterThanEqual(it.productId, it.amount.toLong())
             if (stocks.isEmpty())
                 throw  ItemsNotAvailable(it.productId, it.amount)
-            list.add(ProductWarehouseDTO(stocks.first().warehouse.getId()!!,stocks.first().product))
+            list.add(ProductWarehouseDTO(stocks.first().warehouse.getId()!!.toString(),stocks.first().product))
         }
 
         return list
@@ -166,7 +167,7 @@ class StockServiceImpl: StockService {
 
     override fun updateAndRetrieveAmount(productList: List<PurchaseItemDTO>): List<OrderTransactionRequestDTO> {
 
-        // TODO raggruppare in un'unica transazione i prodotti dallo stesso warehouse
+
 
         val list = mutableListOf<OrderTransactionRequestDTO>()
 
@@ -174,10 +175,14 @@ class StockServiceImpl: StockService {
             val stocks = stockRepository.findAllByProductAndQuantityIsGreaterThanEqual(it.productId, it.amount.toLong())
             if (stocks.isEmpty())
                 throw  ItemsNotAvailable(it.productId, it.amount)
-            val chosenStock = stocks.first() // TODO ordinare per (disponibilità-alarm) e prendere il primo
+            val chosenStock = stocks.sortedBy { stock -> stock.quantity - stock.alarm }.last() // TODO check
             updateStockQuantity(chosenStock, chosenStock.quantity - it.amount)
-            // TODO the price is for each item
-            list.add(OrderTransactionRequestDTO(chosenStock.warehouse.getId()!!,it.price))
+
+            val price = it.price * BigDecimal(it.amount) // TODO check
+            // TODO raggruppare in un'unica transazione i prodotti dallo stesso warehouse
+            // val orderTransactionRequestDTO = list.find { it -> it.warehouseTo ==  }
+
+            list.add(OrderTransactionRequestDTO(chosenStock.warehouse.getId()!!.toString() ,price))
         }
 
         return list

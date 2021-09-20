@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Service
-@Transactional(propagation = Propagation.NESTED)
+@Transactional // (propagation = Propagation.NESTED)
 class OrderProcessingServiceImpl: OrderProcessingService {
 
     @Autowired

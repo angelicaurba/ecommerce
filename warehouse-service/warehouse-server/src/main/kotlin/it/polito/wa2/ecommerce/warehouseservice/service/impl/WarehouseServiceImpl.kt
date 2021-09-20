@@ -19,7 +19,7 @@ class WarehouseServiceImpl : WarehouseService {
     @Autowired lateinit var warehouseRepository: WarehouseRepository
 
     fun getWarehouseOrThrowException(warehouseId: String) : Warehouse {
-        return warehouseRepository.findByIdOrNull(warehouseId) ?: throw WarehouseNotFound(warehouseId)
+        return warehouseRepository.findByIdOrNull(warehouseId.toLong()) ?: throw WarehouseNotFound(warehouseId)
     }
 
     override fun deleteWarehouseById(warehouseId: String) {
@@ -38,8 +38,8 @@ class WarehouseServiceImpl : WarehouseService {
     }
 
     override fun updateOrCreateWarehouse(warehouseId: String, warehouseRequest: WarehouseRequestDTO): WarehouseDTO {
-        if ( warehouseRepository.findById(warehouseId).isPresent ){
-            val warehouse : Warehouse = warehouseRepository.findById(warehouseId).get()
+        if ( warehouseRepository.findById(warehouseId.toLong()).isPresent ){
+            val warehouse : Warehouse = warehouseRepository.findById(warehouseId.toLong()).get()
             warehouse.name = warehouseRequest.name!!
             warehouse.address = warehouseRequest.address!!
             warehouse.adminID = warehouseRequest.adminID!!
@@ -56,6 +56,12 @@ class WarehouseServiceImpl : WarehouseService {
             warehouseRequest.address!!,
             warehouseRequest.adminID!!
         )
+
+        if (warehouseId != null) {
+            warehouseRepository.save(newWarehouse)
+        }
+
+
         return warehouseRepository.save(newWarehouse).toDTO()
     }
 

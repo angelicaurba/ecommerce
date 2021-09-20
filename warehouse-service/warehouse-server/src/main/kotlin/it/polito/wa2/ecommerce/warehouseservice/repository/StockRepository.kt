@@ -8,8 +8,8 @@ import org.springframework.data.repository.PagingAndSortingRepository
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
-@Repository
-interface StockRepository : PagingAndSortingRepository<Stock, String> {
+
+interface StockRepository : PagingAndSortingRepository<Stock, Long> {
 
     @Transactional(readOnly = true)
     fun findAllByWarehouse(warehouse: Warehouse, page: Pageable): List<Stock>

@@ -8,15 +8,15 @@ import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
 @Entity
-@Table(uniqueConstraints = [UniqueConstraint(columnNames = ["warehouse_id", "product"])])
+@Table(uniqueConstraints = [UniqueConstraint(columnNames = ["warehouse_id", "prodotto"])])
 class Stock (
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "warehouse_id")
     var warehouse: Warehouse,
 
     @field:NotNull
     @field:Size(min = 1, max = 26)
-    @Column
+    @Column(name = "prodotto")
     var product: String,
 
     @field:NotNull
@@ -28,7 +28,7 @@ class Stock (
     @field:Min(0)
     @Column
     var alarm: Long
-) : EntityBase<String>(){
+) : EntityBase<Long>(){
 
     fun toDTO(): StockDTO {
         return StockDTO(getId().toString(),warehouse.getId().toString(), product, quantity, alarm)
