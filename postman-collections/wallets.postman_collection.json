@@ -1,0 +1,611 @@
+{
+	"info": {
+		"_postman_id": "eec578db-3051-4a07-a4c1-09df8bf010f6",
+		"name": "Wallets",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get wallets not owner",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/wallets/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wallets",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get wallets owner",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/wallets/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wallets",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add warehouse wallet user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"walletType\": \"WAREHOUSE\",\r\n    \"warehouseID\": \"1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/wallets/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wallets",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add warehouse wallet admin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"walletType\": \"WAREHOUSE\",\r\n    \"warehouseID\": \"1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/wallets/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wallets",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add customer wallet",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"walletType\": \"CUSTOMER\",\r\n    \"customerID\": \"1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/wallets/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wallets",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add customer wallet wrong customer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"walletType\": \"CUSTOMER\",\r\n    \"customerID\": \"2\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/wallets/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wallets",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all transcations",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/wallets/1/transactions",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wallets",
+						"1",
+						"transactions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all transcations ADMIN",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token3}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/wallets/1/transactions",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wallets",
+						"1",
+						"transactions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all transcations not owner",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/wallets/1/transactions",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wallets",
+						"1",
+						"transactions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all transcations small page",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/wallets/1/transactions?pageSize=1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wallets",
+						"1",
+						"transactions"
+					],
+					"query": [
+						{
+							"key": "pageSize",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all transcations small page SECOND",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"walletType\": \"CUSTOMER\",\r\n    \"customerID\": \"2\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/wallets/1/transactions?pageSize=1&pageIndex=2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wallets",
+						"1",
+						"transactions"
+					],
+					"query": [
+						{
+							"key": "pageSize",
+							"value": "1"
+						},
+						{
+							"key": "pageIndex",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "recharge reject by user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"amount\":\"100.00\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/wallets/1/recharges",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wallets",
+						"1",
+						"recharges"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "recharge admin OK",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token3}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"amount\":\"100.00\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/wallets/1/recharges",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wallets",
+						"1",
+						"recharges"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all time filter",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							" pm.collectionVariables.set(\"time\", (new Date().valueOf())  - 20000);\r",
+							"\r",
+							" console.log((new Date().valueOf())  - 20000)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/wallets/1/transactions?from=0&to={{time}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wallets",
+						"1",
+						"transactions"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "0"
+						},
+						{
+							"key": "to",
+							"value": "{{time}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get single transaction OK",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/wallets/1/transactions/7",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wallets",
+						"1",
+						"transactions",
+						"7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get single transaction not owner",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/wallets/1/transactions/7",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wallets",
+						"1",
+						"transactions",
+						"7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get single transaction wrong owner",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token3}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/wallets/3/transactions/7",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wallets",
+						"3",
+						"transactions",
+						"7"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token1}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// for customer 1",
+					"pm.sendRequest({",
+					"url: 'http://localhost:8080/auth/signin',",
+					"method: 'POST',",
+					"header: {\"Content-Type\": \"application/json\"},",
+					"body: { ",
+					"    mode: 'raw',",
+					"    raw:JSON.stringify({",
+					"        \"username\":\"customer1\",",
+					"        \"password\":\"customer1\"",
+					"        })",
+					"    }  ",
+					"}, ",
+					"function (err, response) { ",
+					"   pm.collectionVariables.set(\"token1\", response.headers.get(\"Authorization\").split(\" \")[1]);",
+					"    }  ",
+					");",
+					"",
+					"// for customer 2",
+					"pm.sendRequest({",
+					"url: 'http://localhost:8080/auth/signin',",
+					"method: 'POST',",
+					"header: {\"Content-Type\": \"application/json\"},",
+					"body: { ",
+					"    mode: 'raw',",
+					"    raw:JSON.stringify({",
+					"        \"username\":\"customer2\",",
+					"        \"password\":\"customer2\"",
+					"        })",
+					"    }  ",
+					"}, ",
+					"function (err, response) { ",
+					"   pm.collectionVariables.set(\"token2\", response.headers.get(\"Authorization\").split(\" \")[1]);",
+					"    } ",
+					");",
+					"",
+					"// for admin",
+					"pm.sendRequest({",
+					"url: 'http://localhost:8080/auth/signin',",
+					"method: 'POST',",
+					"header: {\"Content-Type\": \"application/json\"},",
+					"body: { ",
+					"    mode: 'raw',",
+					"    raw:JSON.stringify({",
+					"        \"username\":\"adminAccount\",",
+					"        \"password\":\"adminAccount\"",
+					"        })",
+					"    }  ",
+					"}, ",
+					"function (err, response) { ",
+					"    pm.collectionVariables.set(\"token3\", response.headers.get(\"Authorization\").split(\" \")[1]);",
+					"    } ",
+					");"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token1",
+			"value": ""
+		},
+		{
+			"key": "token3",
+			"value": ""
+		},
+		{
+			"key": "token2",
+			"value": ""
+		},
+		{
+			"key": "time",
+			"value": ""
+		}
+	]
+}
