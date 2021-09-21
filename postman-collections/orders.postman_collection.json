@@ -530,7 +530,7 @@
 					"    }  ",
 					"}, ",
 					"function (err, response) { ",
-					"   pm.collectionVariables.set(\"token1\", response.headers.get(\"Authorization\"));",
+					"   pm.collectionVariables.set(\"token1\", response.headers.get(\"Authorization\").split(\" \")[1]);",
 					"    }  ",
 					");",
 					"",
@@ -548,7 +548,7 @@
 					"    }  ",
 					"}, ",
 					"function (err, response) { ",
-					"   pm.collectionVariables.set(\"token2\", response.headers.get(\"Authorization\"));",
+					"   pm.collectionVariables.set(\"token2\", response.headers.get(\"Authorization\").split(\" \")[1]);",
 					"    } ",
 					");",
 					"",
@@ -566,7 +566,7 @@
 					"    }  ",
 					"}, ",
 					"function (err, response) { ",
-					"    pm.collectionVariables.set(\"token3\", response.headers.get(\"Authorization\"));",
+					"    pm.collectionVariables.set(\"token3\", response.headers.get(\"Authorization\").split(\" \")[1]);",
 					"    } ",
 					");"
 				]
