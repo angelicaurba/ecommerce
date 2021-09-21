@@ -23,7 +23,7 @@ class JwtAuthenticationManager : ReactiveAuthenticationManager {
 class JwtServerAuthenticationConverter(private val jwtUtils: JwtUtils) : ServerAuthenticationConverter {
     override fun convert(exchange: ServerWebExchange?): Mono<Authentication> {
         val result = exchange?.request?.headers?.get(JWT_HEADER_NAME)
-            ?.first {
+            ?.firstOrNull {
                 it.startsWith(JWT_HEADER_START)
             }
             ?.let {
