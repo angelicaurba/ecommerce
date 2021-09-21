@@ -30,6 +30,10 @@ class MailServiceImpl: MailService{
     lateinit var request: Request
 
     override fun sendMail(mail: MailDTO, id: String){
+
+        println("########################## id $id")
+        println("########################## id ${mail.userEmail}")
+        println("########################## id ${mail}")
         val uuid = UUID.fromString(id)
 
         if(processingLogService.isProcessed(uuid)){
