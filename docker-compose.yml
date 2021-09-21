@@ -5,6 +5,7 @@ services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper
+    restart: unless-stopped
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -16,6 +17,7 @@ services:
   kafka:
     image: confluentinc/cp-kafka:latest
     container_name: kafka
+    restart: unless-stopped
     depends_on:
       - zookeeper
     ports:
@@ -38,6 +40,7 @@ services:
     #    image:  custom-connect
     image: debezium/connect:1.6
     container_name: kafka-connect
+    restart: unless-stopped
     depends_on:
       - kafka
       - mysql
@@ -56,7 +59,7 @@ services:
 
 
   mysql:
-    restart: always
+    restart: unless-stopped
     image: mysql
     container_name: mysql
     ports:
@@ -71,7 +74,7 @@ services:
 
   mongo:
     image: mongo
-    restart: always
+    restart: unless-stopped
     container_name: mongo
     ports:
       - 27017:27017
@@ -86,6 +89,7 @@ services:
     image: wa2-group6-eureka-server
     hostname: eureka-server
     container_name: eureka-server
+    restart: unless-stopped
     ports:
       - 8761:8761
     networks:
@@ -100,6 +104,7 @@ services:
     image: wa2-group6-catalogue-service
     hostname: catalogue-service
     container_name: catalogue-service
+    restart: unless-stopped
     ports:
       - 8080:8080
     networks:
@@ -122,6 +127,7 @@ services:
     image: wa2-group6-warehouse-service
     hostname: warehouse-service
     container_name: warehouse-service
+    restart: unless-stopped
     networks:
       - wa2-group6
     volumes:
@@ -141,6 +147,7 @@ services:
     image: wa2-group6-wallet-service
     hostname: wallet-service
     container_name: wallet-service
+    restart: unless-stopped
     networks:
       - wa2-group6
     volumes:
@@ -160,6 +167,7 @@ services:
     image: wa2-group6-user-service
     hostname: user-service
     container_name: user-service
+    restart: unless-stopped
     networks:
       - wa2-group6
     volumes:
@@ -180,6 +188,7 @@ services:
     image: wa2-group6-order-service
     hostname: order-service
     container_name: order-service
+    restart: unless-stopped
     networks:
       - wa2-group6
     volumes:
@@ -199,6 +208,7 @@ services:
     image: wa2-group6-mail-service
     hostname: mail-service
     container_name: mail-service
+    restart: unless-stopped
     networks:
       - wa2-group6
     depends_on:

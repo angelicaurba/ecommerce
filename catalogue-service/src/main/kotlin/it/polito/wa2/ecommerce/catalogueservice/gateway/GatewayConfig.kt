@@ -51,6 +51,12 @@ class GatewayConfig {
                         f.circuitBreaker { c -> c.setFallbackUri("forward:/failure") }
                     }
                     .uri("lb://user-service")
+            }.route("users") {
+                it.path(true, "/users/**")
+                    .filters { f ->
+                        f.circuitBreaker { c -> c.setFallbackUri("forward:/failure") }
+                    }
+                    .uri("lb://user-service")
             }.route("send order") {
                 it.path(true, "/orders/**")
                     .and().method(HttpMethod.POST)
