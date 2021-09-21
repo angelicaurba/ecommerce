@@ -25,7 +25,7 @@ abstract class EntityBase<T: Serializable> {
 
     override fun equals(other: Any?): Boolean {
         if(other == null) return false
-        if(other == this) return true
+        if(other === this) return true
         if(javaClass != ProxyUtils.getUserClass(other)) return false
 
         other as EntityBase<*>

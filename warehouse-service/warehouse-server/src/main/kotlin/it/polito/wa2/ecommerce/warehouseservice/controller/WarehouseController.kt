@@ -75,7 +75,7 @@ class WarehouseController {
     @ResponseStatus(HttpStatus.OK)
     fun updateWarehouseFields(
         @PathVariable("warehouseID") warehouseId: String,
-        @RequestBody @Valid @NotNull warehouseRequest: WarehouseRequestDTO
+        @RequestBody @NotNull warehouseRequest: WarehouseRequestDTO
     ) : WarehouseDTO {
         return warehouseService.updateWarehouseFields(warehouseId, warehouseRequest)
     }

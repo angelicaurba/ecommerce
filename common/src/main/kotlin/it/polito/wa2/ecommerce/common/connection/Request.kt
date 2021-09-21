@@ -13,6 +13,7 @@ class Request {
     lateinit var webClientBuilder: WebClient.Builder
 
     fun <T> doGet(uri: String, className: Class<T>): T{
+        println("########################## id $uri")
         val returnValue: T?
 
         try {
@@ -27,7 +28,7 @@ class Request {
             println(e.message)
             throw ServiceUnavailable("Error during connection with other server")
         }
-
+        println("########################## id ${returnValue}")
         return returnValue ?: throw ServiceUnavailable("No response from other server")
     }
 

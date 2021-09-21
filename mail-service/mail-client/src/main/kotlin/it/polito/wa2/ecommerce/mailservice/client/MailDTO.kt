@@ -5,7 +5,7 @@ import javax.validation.constraints.Email
 import javax.validation.constraints.NotNull
 
 
-class MailDTO(
+data class MailDTO(
     @field:NotNull(message = "userId must be present")
     val userId: String,
     @field:Email(message = "userEmail must be a valid email")

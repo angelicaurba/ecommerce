@@ -27,9 +27,10 @@ class Order(
 ) : EntityBase<Long>() {
 
     @field:NotNull @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
-    var deliveryItems: Set<PurchaseItem> = emptySet()
+    var deliveryItems: MutableSet<PurchaseItem> = mutableSetOf()
     fun toDTO(): OrderDTO{
         return OrderDTO(
+            getId().toString(),
             buyerId,
             address,
             buyerWalletId,
@@ -48,7 +49,7 @@ class Order(
             Status.ISSUED -> if(status != Status.PENDING) throw exception
             Status.DELIVERING -> if(status != Status.ISSUED) throw exception
             Status.DELIVERED -> if(status != Status.DELIVERING) throw exception
-            Status.FAILED -> if(status != Status.FAILED) throw exception
+            Status.FAILED -> if(status != Status.PENDING) throw exception
             Status.CANCELED -> if(status != Status.ISSUED) throw exception
         }
 
