@@ -4,6 +4,7 @@ import it.polito.wa2.ecommerce.orderservice.client.item.PurchaseItemDTO
 import it.polito.wa2.ecommerce.orderservice.client.order.request.ItemsInWarehouseDTO
 
 data class OrderDTO(
+    val id : String,
     val buyerId: String,
     val address: String,
     val buyerWalletId: String,

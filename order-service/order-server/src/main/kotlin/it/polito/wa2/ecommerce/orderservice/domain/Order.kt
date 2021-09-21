@@ -30,6 +30,7 @@ class Order(
     var deliveryItems: MutableSet<PurchaseItem> = mutableSetOf()
     fun toDTO(): OrderDTO{
         return OrderDTO(
+            getId().toString(),
             buyerId,
             address,
             buyerWalletId,

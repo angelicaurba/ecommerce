@@ -92,7 +92,7 @@ class OrderServiceImpl: OrderService {
             it.order = addedOrder
             addedOrder.deliveryItems.add(purchaseItemRepository.save(it))
         }
-        
+
         val orderMessage = WarehouseOrderRequestNewDTO(
             addedOrder.getId().toString(),
             addedOrder.buyerId,
