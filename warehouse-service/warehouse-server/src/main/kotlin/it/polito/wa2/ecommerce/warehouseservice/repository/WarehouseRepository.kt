@@ -9,12 +9,10 @@ import org.springframework.transaction.annotation.Transactional
 
 @Repository
 interface WarehouseRepository : PagingAndSortingRepository<Warehouse,Long>{
-  /*  @Query("update Warehouse set id =:newID where id = :oldID")
+    @Query(value = "update warehouse set id = :newID where id = :oldID", nativeQuery = true)
     @Transactional(readOnly = false)
     fun updateID(
         @Param("newID") newID: Long,
         @Param("oldID") oldID: Long
     )
-
-   */
 }
