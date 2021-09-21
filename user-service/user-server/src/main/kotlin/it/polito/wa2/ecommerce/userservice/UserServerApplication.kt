@@ -52,7 +52,7 @@ class UserServerApplication{
             val user1 = User(
                 "customer1",
                 "{bcrypt}\$2a\$10\$Cjn8j9vyjUYNsnMU4d0upeEHR2vdzB0P0cuVoTrrRIttVTGVKJn6W",
-                "mail@mail.mail",
+                "xp1wt682b@relay.firefox.com",
                 "CUSTOMER",
                 "Andrea",
                 "Bruno",
@@ -62,7 +62,7 @@ class UserServerApplication{
             val user2 = User(
                 "customer2",
                 "{bcrypt}\$2a\$10\$DeWA2pb7T3quohYitK6PUOsyctiMjUCWELykFhhNrjWbQFY0Qbebe",
-                "boh@boh.boh",
+                "k2wzfo02v@relay.firefox.com",
                 "CUSTOMER",
                 "Andrea2",
                 "Bruno2",
@@ -72,7 +72,7 @@ class UserServerApplication{
             val user3 = User(
                 "adminAccount",
                 "{bcrypt}\$2a\$10\$.dGWqRYiFDMrsgo6LsutFutRgO4TiGbcV6zaW/EXnJXvVEjb/qXoC",
-                "admin@admin.admin",
+                "00n0jabuu@relay.firefox.com",
                 "CUSTOMER ADMIN",
                 "Admin",
                 "Root",
