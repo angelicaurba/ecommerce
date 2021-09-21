@@ -88,7 +88,7 @@ class OrderServiceImpl: OrderService {
 
         orderRequest.deliveryItems.map { it.toEntity() }.forEach {
             it.order = newOrder
-            newOrder.deliveryItems.add(it)
+            newOrder.deliveryItems.add(purchaseItemRepository.save(it))
         }
 
         val addedOrder = orderRepository.save(newOrder)
