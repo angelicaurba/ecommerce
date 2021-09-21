@@ -80,7 +80,7 @@ class OrderProcessingServiceImpl: OrderProcessingService {
 
     override fun processOrderRequest(orderRequestDTO: WalletOrderRequestDTO): OrderStatusDTO? {
         val orderId = orderRequestDTO.orderId
-        val walletFrom =
+        val userWallet =
             walletRepository.findByIdAndWalletType(orderRequestDTO.walletFrom.parseID(), WalletType.CUSTOMER)
                 ?: return OrderStatusDTO(
                     orderId,
@@ -95,7 +95,7 @@ class OrderProcessingServiceImpl: OrderProcessingService {
                             " ${transactionRequest.warehouseTo}")
 
                 val transaction = Transaction(
-                    walletFrom,
+                    userWallet,
                     warehouseWallet,
                     TransactionType.ORDER_PAYMENT,
                     transactionRequest.amount,
@@ -114,12 +114,12 @@ class OrderProcessingServiceImpl: OrderProcessingService {
         } else if (orderRequestDTO is WalletOrderRefundRequestDTO) {
             //REFUND
             val previousTransactions =
-                transactionRepository.findByFromWalletAndOperationReferenceAndType(walletFrom, orderId)
+                transactionRepository.findByFromWalletAndOperationReferenceAndType(userWallet, orderId)
             for (previousTransaction in previousTransactions) {
 
                 val transaction = Transaction(
                     walletService.getWalletOrThrowException(previousTransaction.toWallet!!.getId()!!),
-                    walletFrom,
+                    userWallet,
                     TransactionType.ORDER_REFUND,
                     previousTransaction.amount,
                     orderId
