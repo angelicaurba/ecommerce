@@ -85,11 +85,13 @@ class OrderServiceImpl: OrderService {
             Status.PENDING
         )
 
+        val addedOrder = orderRepository.save(newOrder)
+
         orderRequest.deliveryItems.map { it.toEntity() }.forEach {
+            it.order = addedOrder
             purchaseItemRepository.save(it)
         }
 
-        val addedOrder = orderRepository.save(newOrder)
         val orderMessage = WarehouseOrderRequestNewDTO(
             addedOrder.getId().toString(),
             addedOrder.buyerId,
