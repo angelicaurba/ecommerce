@@ -58,12 +58,12 @@ class WarehouseServiceImpl : WarehouseService {
             warehouseRequest.address!!,
             warehouseRequest.adminID!!
         )
-        /*
+
         if (warehouseId != null) {
             val oldID = warehouseRepository.save(newWarehouse).getId()
-            warehouseRepository.updateID(warehouseId,oldID)
+            warehouseRepository.updateID(warehouseId.parseID(),oldID!!)
             return getWarehouseOrThrowException(warehouseId).toDTO()
-        } else */
+        } else
             return warehouseRepository.save(newWarehouse).toDTO()
     }
 
