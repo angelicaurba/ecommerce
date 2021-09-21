@@ -23,6 +23,7 @@ class User(
 
     @field:Email(message = "email should be valid")
     @field:NotNull(message = "email must be present")
+    @field:Size(max = 30, message = "email should have a maximum of 30 characters")
     @Column(nullable=false, unique = true)
     val email: String,
 
