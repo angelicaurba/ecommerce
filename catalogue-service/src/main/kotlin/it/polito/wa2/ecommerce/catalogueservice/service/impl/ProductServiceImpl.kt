@@ -8,6 +8,7 @@ import it.polito.wa2.ecommerce.catalogueservice.exceptions.ProductNotFoundExcept
 import it.polito.wa2.ecommerce.catalogueservice.repository.ProductRepository
 import it.polito.wa2.ecommerce.catalogueservice.service.ProductService
 import it.polito.wa2.ecommerce.common.connection.Request
+import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.common.getPageable
 import org.springframework.beans.factory.annotation.Autowired
@@ -73,7 +74,7 @@ class ProductServiceImpl : ProductService {
         val product = getProductByIdOrThrowException(productId)
         productRequest.price?.also {
             if (it < BigDecimal("0.00"))
-                throw ForbiddenException("Negative price update not allowed")
+                throw BadRequestException("Negative price update not allowed")
         }
 
         productRequest.name?.also { product.name = it }
