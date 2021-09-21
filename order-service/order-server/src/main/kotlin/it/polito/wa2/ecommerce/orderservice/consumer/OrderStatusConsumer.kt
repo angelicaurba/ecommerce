@@ -20,10 +20,10 @@ class OrderStatusConsumer {
     @KafkaListener(topics=[orderStatusTopic], containerFactory = "orderStatusListenerFactory")
     fun listen(@Payload @Valid orderStatusDTO: OrderStatusDTO,
                @Header("id") id: String,
-               @Header("eventType") eventType: EventTypeOrderStatus
+               @Header("eventType") eventType: String
     ){
         println("Processing message $id ($eventType) : $orderStatusDTO")
-        orderService.processOrderCompletion(orderStatusDTO, id, eventType)
+        orderService.processOrderCompletion(orderStatusDTO, id, EventTypeOrderStatus.valueOf(eventType))
 
 
     }
