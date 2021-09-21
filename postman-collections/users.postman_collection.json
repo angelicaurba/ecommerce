@@ -911,7 +911,7 @@
 					"    }  ",
 					"}, ",
 					"function (err, response) { ",
-					"   pm.collectionVariables.set(\"token1\", response.headers.get(\"Authorization\"));",
+					"   pm.collectionVariables.set(\"JwtUser1\", response.headers.get(\"Authorization\"));",
 					"    }  ",
 					");",
 					"",
@@ -929,7 +929,7 @@
 					"    }  ",
 					"}, ",
 					"function (err, response) { ",
-					"   pm.collectionVariables.set(\"token2\", response.headers.get(\"Authorization\"));",
+					"   pm.collectionVariables.set(\"JwtUser2\", response.headers.get(\"Authorization\"));",
 					"    } ",
 					");",
 					"",
@@ -947,7 +947,7 @@
 					"    }  ",
 					"}, ",
 					"function (err, response) { ",
-					"    pm.collectionVariables.set(\"token3\", response.headers.get(\"Authorization\"));",
+					"    pm.collectionVariables.set(\"JwtUser3\", response.headers.get(\"Authorization\"));",
 					"    } ",
 					");"
 				]
