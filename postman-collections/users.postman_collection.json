@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "5b9eed79-7a8e-4521-b9ef-7acb1ff29e54",
 		"name": "users",
-		"description": "user-service, \"users\" route: presents and modifies user information\r\n\r\nRoutes:\r\n- GET /users/{userId}\r\n- GET /users/{userId}/email\r\n- GET /users/{userId}/roles\r\n- PATCH /users/{userId}/roles\r\n- PUT /users/{userId}/password\r\n\r\nVariables:\r\n- JwtUser1: JWT token for user 1\r\n- JwtUser2: JWT token for user 2\r\n- JwtUser3: JWT token for user 3",
+		"description": "user-service, \"users\" route: presents and modifies user information\r\n\r\nRoutes:\r\n- GET /users/{userId}\r\n- GET /users/{userId}/email\r\n- GET /users/{userId}/roles\r\n- PATCH /users/{userId}/roles\r\n- PUT /users/{userId}/password\r\n\r\nVariables:\r\n- JwtUser1: JWT token for user 1\r\n- JwtUser2: JWT token for user 2\r\n- JwtUser3: JWT token for user 3\r\n- JwtUser1_b: JWT token for user 1 when the password is changed",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -520,12 +520,12 @@
 							{
 								"key": "Authorization",
 								"type": "text",
-								"value": "{{JwtUser1}}"
+								"value": "{{JwtUser1_b}}"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"oldPassword\": \"customer1\",\r\n    \"newPassword\": \"customer11\",\r\n    \"confirmNewPassword\": \"customer11\"\r\n}",
+							"raw": "{\r\n    \"oldPassword\": \"customer11\",\r\n    \"newPassword\": \"customer1\",\r\n    \"confirmNewPassword\": \"customer1\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -555,12 +555,12 @@
 							{
 								"key": "Authorization",
 								"type": "text",
-								"value": "{{JwtUser1}}"
+								"value": "{{JwtUser1_b}}"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"oldPassword\": \"customer1\",\r\n    \"newPassword\": \"customer11\",\r\n    \"confirmNewPassword\": \"customer11\"\r\n}",
+							"raw": "{\r\n    \"oldPassword\": \"customer11\",\r\n    \"newPassword\": \"customer1\",\r\n    \"confirmNewPassword\": \"customer1\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -590,12 +590,12 @@
 							{
 								"key": "Authorization",
 								"type": "text",
-								"value": "{{JwtUser1}}"
+								"value": "{{JwtUser1_b}}"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"oldPassword\": \"pass\",\r\n    \"newPassword\": \"customer11\",\r\n    \"confirmNewPassword\": \"customer11\"\r\n}",
+							"raw": "{\r\n    \"oldPassword\": \"pass\",\r\n    \"newPassword\": \"customer1\",\r\n    \"confirmNewPassword\": \"customer1\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -625,12 +625,12 @@
 							{
 								"key": "Authorization",
 								"type": "text",
-								"value": "{{JwtUser1}}"
+								"value": "{{JwtUser1_b}}"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"oldPassword\": \"customer1\",\r\n    \"newPassword\": \"pass\",\r\n    \"confirmNewPassword\": \"pass\"\r\n}",
+							"raw": "{\r\n    \"oldPassword\": \"customer11\",\r\n    \"newPassword\": \"pass\",\r\n    \"confirmNewPassword\": \"pass\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -660,12 +660,12 @@
 							{
 								"key": "Authorization",
 								"type": "text",
-								"value": "{{JwtUser1}}"
+								"value": "{{JwtUser1_b}}"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"oldPassword\": \"customer2\",\r\n    \"newPassword\": \"customer11\",\r\n    \"confirmNewPassword\": \"customer11\"\r\n}",
+							"raw": "{\r\n    \"oldPassword\": \"customer2\",\r\n    \"newPassword\": \"customer1\",\r\n    \"confirmNewPassword\": \"customer1\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -695,12 +695,12 @@
 							{
 								"key": "Authorization",
 								"type": "text",
-								"value": "{{JwtUser1}}"
+								"value": "{{JwtUser1_b}}"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"oldPassword\": \"customer1\",\r\n    \"newPassword\": \"customer11\",\r\n    \"confirmNewPassword\": \"customer111111\"\r\n}",
+							"raw": "{\r\n    \"oldPassword\": \"customer11\",\r\n    \"newPassword\": \"customer1\",\r\n    \"confirmNewPassword\": \"customer111111\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -730,12 +730,12 @@
 							{
 								"key": "Authorization",
 								"type": "text",
-								"value": "{{JwtUser1}}"
+								"value": "{{JwtUser1_b}}"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"oldPassword\": \"customer1\",\r\n    \"newPassword\": \"customer11\",\r\n    \"confirmNewPassword\": \"customer11\"\r\n}",
+							"raw": "{\r\n    \"oldPassword\": \"customer11\",\r\n    \"newPassword\": \"customer1\",\r\n    \"confirmNewPassword\": \"customer1\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -768,58 +768,15 @@
 					"request": {
 						"method": "PATCH",
 						"header": [],
-						"url": {
-							"raw": "localhost:8080/users/1/roles",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"users",
-								"1",
-								"roles"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "userAuthenticated",
-					"request": {
-						"method": "PATCH",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{JwtUser1}}",
-								"type": "text"
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roles\": [\r\n        \"ADMIN\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
 							}
-						],
-						"url": {
-							"raw": "localhost:8080/users/1/roles",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"users",
-								"1",
-								"roles"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "adminAuthenticated",
-					"request": {
-						"method": "PATCH",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{JwtUser3}}",
-								"type": "text"
-							}
-						],
+						},
 						"url": {
 							"raw": "localhost:8080/users/1/roles",
 							"host": [
@@ -846,6 +803,15 @@
 								"value": "{{JwtUser3}}"
 							}
 						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roles\": [\r\n        \"ADMIN\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "localhost:8080/users/-1/roles",
 							"host": [
@@ -872,6 +838,15 @@
 								"value": "{{JwtUser3}}"
 							}
 						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roles\": [\r\n        \"ADMIN\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "localhost:8080/users/-1/roles",
 							"host": [
@@ -881,6 +856,146 @@
 							"path": [
 								"users",
 								"-1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "wrongFormat",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{JwtUser3}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roles\": \"123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/1/roles",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "nonExistentRole",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{JwtUser3}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roles\": [\r\n        \"ADMINISTRATOR\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/1/roles",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "userAuthenticated",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{JwtUser1}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roles\": [\r\n        \"ADMIN\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/1/roles",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "adminAuthenticated",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{JwtUser3}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roles\": [\r\n        \"ADMIN\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/1/roles",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1",
 								"roles"
 							]
 						}
@@ -949,6 +1064,24 @@
 					"function (err, response) { ",
 					"    pm.collectionVariables.set(\"JwtUser3\", response.headers.get(\"Authorization\"));",
 					"    } ",
+					");",
+					"",
+					"// for customer 1, password changed",
+					"pm.sendRequest({",
+					"url: 'http://localhost:8080/auth/signin',",
+					"method: 'POST',",
+					"header: {\"Content-Type\": \"application/json\"},",
+					"body: { ",
+					"    mode: 'raw',",
+					"    raw:JSON.stringify({",
+					"        \"username\":\"customer11\",",
+					"        \"password\":\"customer11\"",
+					"        })",
+					"    }  ",
+					"}, ",
+					"function (err, response) { ",
+					"   pm.collectionVariables.set(\"JwtUser1_b\", response.headers.get(\"Authorization\"));",
+					"    }  ",
 					");"
 				]
 			}
@@ -966,15 +1099,19 @@
 	"variable": [
 		{
 			"key": "JwtUser1",
-			"value": "Bearer eyJhbGciOiJSUzI1NiJ9.eyJqdGkiOiIxIiwic3ViIjoiY3VzdG9tZXIxIiwiaWF0IjoxNjMxOTkyMzU5LCJleHAiOjE2MzE5OTQxNTksInJvbGVzIjpbIkNVU1RPTUVSIl19.HnyLamQ7x2Rj7JCaJGctN8p6mUyf4WnFtJaVGUjA9BoJ6_95Dkn66xiOnCoRp90RoF2Ss9UPDGyfOOB1Xp6r7WuWwdWx4ty8x_dsT4_f5zgbSSohegjeYcI1e6QTSoMJUPitNxYFbtE9Ho294x7NkFzYFhEjpsU8OZ2qdQDh0V7FZLiCsmJy6cf6m5_qGcC83TffhN1g3AZTHpGcgoTexlIqE0uZkox3u1EpTqLq_LyZoXGM5tfYfN2godt0ocH0jsQ6EFHgXi0Nwqtixzsj9zsUZp3L-mpQ43z98LLq38UrD6PCfUyg-9yGyhEeog11wkIleweHOxG22ccuLCSqvA"
+			"value": ""
 		},
 		{
 			"key": "JwtUser2",
-			"value": "Bearer eyJhbGciOiJSUzI1NiJ9.eyJqdGkiOiIyIiwic3ViIjoiY3VzdG9tZXIyIiwiaWF0IjoxNjMxOTkyNDI2LCJleHAiOjE2MzE5OTQyMjYsInJvbGVzIjpbIkNVU1RPTUVSIl19.m5TuVJ1qjxpSc5NK4dRLz-_9XI8dX3HIktv88PCA7dnbfcw34nhRlucpKWuaLPS05sCW1k0EU8uSgXSqaOaJFIpgeAUmpNWhWlyHaT91-GN4fffk36oJhrObUqLqq14gPZz2lHCAmGYkv1m26KGQvk4Ks5yr4Mixlrnn_a4DuICXapCgX3ZeDdR-PGCStkvK6QTQuR3BIDmgwlrhnO8Yvd4B7lAVWYAJIdkSsN7gNys40qW8FwUc-iEBNAKjEd418_A5LBTS0O_BQEFM2YuvA8ujE-pNJfobmWpgBtHJUrUeeEmD5IeVul-h8OgaNbWPZy1RhsO2bLQLrY5Rllqc3A"
+			"value": ""
 		},
 		{
 			"key": "JwtUser3",
-			"value": "Bearer eyJhbGciOiJSUzI1NiJ9.eyJqdGkiOiIzIiwic3ViIjoiYWRtaW5BY2NvdW50IiwiaWF0IjoxNjMxOTkyNDU1LCJleHAiOjE2MzE5OTQyNTUsInJvbGVzIjpbIkNVU1RPTUVSIiwiQURNSU4iXX0.u9BYa-DpPoDGMdynumC1ybG_gHxSxl_TF1X0L2qeURKazBWwZ0RtxZWE7IyhkgBNUC54AR6YQTKUgU5ZFKuA3y-39rT_oh9WLkee3gMM04djIdwD8g7D45-R4feD71WtJBmmiPRJIlHp0SjOyLtlg8OTs5MFswCH2DUey-CRUgmV218Bo5Z-7NdmNY2Q7uJRopewem33i74qJuAdO1rqoV3NXQ7W-AS5f8wxGSPFZKGAcHjihmRJOav4gxD3iWN0R6GQUnwnlIS_RPHdRcoYv2HPdxLD-IL-LwmAFrZQ83o75lANN6BOAQ4QJZdfIxWinBkXj1dXab33uxorqcv55A"
+			"value": ""
+		},
+		{
+			"key": "JwtUser1_b",
+			"value": ""
 		}
 	]
 }
