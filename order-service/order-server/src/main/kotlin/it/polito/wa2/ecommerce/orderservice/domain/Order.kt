@@ -49,7 +49,7 @@ class Order(
             Status.ISSUED -> if(status != Status.PENDING) throw exception
             Status.DELIVERING -> if(status != Status.ISSUED) throw exception
             Status.DELIVERED -> if(status != Status.DELIVERING) throw exception
-            Status.FAILED -> if(status != Status.FAILED) throw exception
+            Status.FAILED -> if(status != Status.PENDING) throw exception
             Status.CANCELED -> if(status != Status.ISSUED) throw exception
         }
 
