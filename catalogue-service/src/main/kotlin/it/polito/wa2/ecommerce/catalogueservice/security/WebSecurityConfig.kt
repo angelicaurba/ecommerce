@@ -48,10 +48,10 @@ class WebfluxSecurityConfig {
             .authorizeExchange()
             .pathMatchers("/orders/**")
             .authenticated()
-                //mail
+                // email
             .and()
             .authorizeExchange()
-            .pathMatchers("/users/**/mail")
+            .pathMatchers("/users/**/email")
             .denyAll()
                 // user
             .and()
