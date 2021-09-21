@@ -173,13 +173,13 @@ class StockServiceImpl: StockService {
             val stocks = stockRepository.findAllByProductAndQuantityIsGreaterThanEqual(it.productId, it.amount.toLong())
             if (stocks.isEmpty())
                 throw  ItemsNotAvailable(it.productId, it.amount)
-            val chosenStock = stocks.sortedBy { stock -> stock.quantity - stock.alarm }.last() // TODO check
+            val chosenStock = stocks.maxByOrNull { stock -> stock.quantity - stock.alarm }!!
             updateStockQuantity(chosenStock, chosenStock.quantity - it.amount)
 
-            var price = it.price * BigDecimal(it.amount) // TODO check
-            // TODO raggruppare in un'unica transazione i prodotti dallo stesso warehouse
+            var price = it.price * BigDecimal(it.amount)
+            
             val orderTransactionRequestDTO = list.find { o -> o.warehouseTo == chosenStock.warehouse.getId().toString()}
-            price += orderTransactionRequestDTO?.amount!!
+            orderTransactionRequestDTO?.also {  price += it.amount }
             list.remove(orderTransactionRequestDTO)
             list.add(OrderTransactionRequestDTO(chosenStock.warehouse.getId()!!.toString() ,price))
         }
