@@ -1,6 +1,7 @@
 package it.polito.wa2.ecommerce.warehouseservice.service.impl
 
 import it.polito.wa2.ecommerce.common.getPageable
+import it.polito.wa2.ecommerce.common.parseID
 import it.polito.wa2.ecommerce.warehouseservice.client.WarehouseDTO
 import it.polito.wa2.ecommerce.warehouseservice.client.WarehouseRequestDTO
 import it.polito.wa2.ecommerce.warehouseservice.domain.Warehouse
@@ -19,7 +20,7 @@ class WarehouseServiceImpl : WarehouseService {
     @Autowired lateinit var warehouseRepository: WarehouseRepository
 
     fun getWarehouseOrThrowException(warehouseId: String) : Warehouse {
-        return warehouseRepository.findByIdOrNull(warehouseId.toLong()) ?: throw WarehouseNotFound(warehouseId)
+        return warehouseRepository.findByIdOrNull(warehouseId.parseID()) ?: throw WarehouseNotFound(warehouseId)
     }
 
     override fun deleteWarehouseById(warehouseId: String) {
@@ -38,8 +39,9 @@ class WarehouseServiceImpl : WarehouseService {
     }
 
     override fun updateOrCreateWarehouse(warehouseId: String, warehouseRequest: WarehouseRequestDTO): WarehouseDTO {
-        if ( warehouseRepository.findById(warehouseId.toLong()).isPresent ){
-            val warehouse : Warehouse = warehouseRepository.findById(warehouseId.toLong()).get()
+
+        if ( warehouseRepository.findById(warehouseId.parseID()).isPresent ){
+            val warehouse : Warehouse = warehouseRepository.findById(warehouseId.parseID()).get()
             warehouse.name = warehouseRequest.name!!
             warehouse.address = warehouseRequest.address!!
             warehouse.adminID = warehouseRequest.adminID!!
@@ -56,13 +58,13 @@ class WarehouseServiceImpl : WarehouseService {
             warehouseRequest.address!!,
             warehouseRequest.adminID!!
         )
-
+        /*
         if (warehouseId != null) {
-            warehouseRepository.save(newWarehouse)
-        }
-
-
-        return warehouseRepository.save(newWarehouse).toDTO()
+            val oldID = warehouseRepository.save(newWarehouse).getId()
+            warehouseRepository.updateID(warehouseId,oldID)
+            return getWarehouseOrThrowException(warehouseId).toDTO()
+        } else */
+            return warehouseRepository.save(newWarehouse).toDTO()
     }
 
     override fun getWarehouseById(warehouseId: String): WarehouseDTO {
