@@ -20,11 +20,12 @@ import it.polito.wa2.ecommerce.warehouseservice.repository.StockRepository
 import it.polito.wa2.ecommerce.warehouseservice.service.StockService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
-import javax.transaction.Transactional
 
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRES_NEW)
 class StockServiceImpl: StockService {
 
     @Autowired lateinit var stockRepository: StockRepository
