@@ -27,7 +27,7 @@ class Order(
 ) : EntityBase<Long>() {
 
     @field:NotNull @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
-    var deliveryItems: Set<PurchaseItem> = emptySet()
+    var deliveryItems: MutableSet<PurchaseItem> = mutableSetOf()
     fun toDTO(): OrderDTO{
         return OrderDTO(
             buyerId,
