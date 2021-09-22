@@ -69,15 +69,13 @@ class OrderServiceImpl: OrderService {
     }
 
     override fun getOrderById(orderId: String): OrderDTO {
-        val principal = SecurityContextHolder.getContext().authentication.principal as JwtTokenDetails
         val order = getOrderOrThrowException(orderId)
-        identityVerifier.verifyUserIdentityOrIsAdmin(principal.id.parseID())
+        identityVerifier.verifyUserIdentityOrIsAdmin(order.buyerId.parseID())
         return order.toDTO()
     }
 
     override fun addOrder(orderRequest: OrderRequestDTO<PurchaseItemDTO>): OrderDTO {
-        val principal = SecurityContextHolder.getContext().authentication.principal as JwtTokenDetails
-        identityVerifier.verifyUserIdentityOrIsAdmin(principal.id.parseID())
+        identityVerifier.verifyUserIdentityOrIsAdmin(orderRequest.buyerId.parseID())
 
         val newOrder = Order(
             orderRequest.buyerId,
@@ -108,8 +106,7 @@ class OrderServiceImpl: OrderService {
 
     override fun updateStatus(orderId: String, updateOrderRequest: UpdateOrderRequestDTO): OrderDTO {
 
-        val principal = SecurityContextHolder.getContext().authentication.principal as JwtTokenDetails
-        identityVerifier.verifyUserIdentityOrIsAdmin(principal.id.parseID())
+        identityVerifier.verifyIsAdmin()
 
         if(updateOrderRequest.status == Status.CANCELED)
             throw ForbiddenException()
@@ -122,8 +119,7 @@ class OrderServiceImpl: OrderService {
     override fun cancelOrder(orderId: String) {
 
         val order = getOrderOrThrowException(orderId)
-        val principal = SecurityContextHolder.getContext().authentication.principal as JwtTokenDetails
-        identityVerifier.verifyUserIdentityOrIsAdmin(principal.id.parseID())
+        identityVerifier.verifyUserIdentityOrIsAdmin(order.buyerId.parseID())
 
         order.updateStatus(Status.CANCELED)
         orderRepository.save(order)

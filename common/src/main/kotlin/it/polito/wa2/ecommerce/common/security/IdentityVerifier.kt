@@ -22,5 +22,6 @@ class IdentityVerifier {
         val principal = SecurityContextHolder.getContext().authentication.principal as JwtTokenDetails
         if(principal.roles.contains(Rolename.ADMIN))
             return
+        else throw ForbiddenException()
     }
 }

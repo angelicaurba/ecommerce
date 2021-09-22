@@ -81,7 +81,7 @@ class OrderProcessingServiceImpl: OrderProcessingService {
     override fun processOrderRequest(orderRequestDTO: WalletOrderRequestDTO): OrderStatusDTO? {
         val orderId = orderRequestDTO.orderId
         val userWallet =
-            walletRepository.findByIdAndWalletType(orderRequestDTO.walletFrom.parseID(), WalletType.CUSTOMER)
+            walletRepository.findByIdAndOwnerAndWalletType(orderRequestDTO.walletFrom.parseID(), orderRequestDTO.userId, WalletType.CUSTOMER)
                 ?: return OrderStatusDTO(
                     orderId,
                     ResponseStatus.FAILED,
