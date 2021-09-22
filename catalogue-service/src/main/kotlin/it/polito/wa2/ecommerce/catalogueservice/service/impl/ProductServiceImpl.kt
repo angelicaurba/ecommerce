@@ -105,7 +105,7 @@ class ProductServiceImpl : ProductService {
 
     override fun getWarehousesContainingProduct(productId: String): List<String> {
         getProductByIdOrThrowException(productId)
-        return request.doGet("/warehouses?productID=$productId", (emptyList<String>())::class.java)
+        return request.doGet("http://warehouse-service/warehouses?productID=$productId", (emptyList<String>())::class.java)
     }
 
 }
