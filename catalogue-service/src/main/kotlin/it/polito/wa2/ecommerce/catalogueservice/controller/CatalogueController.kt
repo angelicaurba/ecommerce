@@ -121,7 +121,7 @@ class CatalogueController {
     }
 
     private fun isACategoryOrThrowBadRequest(category: String){
-        if (! Category.values().map{it.toString()}.contains(category) ) throw Exception()
+        if (! Category.values().map{it.toString()}.contains(category) )
             throw BadRequestException("Bad category")
     }
 
