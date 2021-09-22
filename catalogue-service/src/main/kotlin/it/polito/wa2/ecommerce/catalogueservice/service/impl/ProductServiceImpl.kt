@@ -11,6 +11,7 @@ import it.polito.wa2.ecommerce.common.connection.Request
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.common.getPageable
+import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
@@ -104,8 +105,10 @@ class ProductServiceImpl : ProductService {
     }
 
     override fun getWarehousesContainingProduct(productId: String): List<String> {
-        getProductByIdOrThrowException(productId)
-        return request.doGet("http://warehouse-service/warehouses?productID=$productId", (emptyList<String>())::class.java)
+        return runBlocking {
+            getProductByIdOrThrowException(productId)
+            request.doGet("http://warehouse-service/warehouses?productID=$productId", (emptyList<String>())::class.java)
+        }
     }
 
 }
