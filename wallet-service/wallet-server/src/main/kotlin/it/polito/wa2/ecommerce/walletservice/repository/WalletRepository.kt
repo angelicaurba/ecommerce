@@ -12,7 +12,7 @@ interface WalletRepository: PagingAndSortingRepository<Wallet, Long> {
     @Transactional(readOnly = true)
     fun findByWalletTypeAndOwner(walletType: WalletType, owner: String): Wallet?
     @Transactional(readOnly = true)
-    fun findByIdAndWalletType(id:Long, walletType: WalletType):Wallet?
+    fun findByIdAndOwnerAndWalletType(id:Long, owner: String, walletType: WalletType):Wallet?
 
 
 }
