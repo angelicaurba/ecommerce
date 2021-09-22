@@ -26,11 +26,10 @@ data class Comment(
     @field:NotNull
     val productId: String,
     @field:NotNull
-    val authorUsername: String
+    val authorUsername: String,
+    @field:NotNull
+    var creationDate: Date = Date()
 ){
-    @CreatedDate
-    lateinit var creationDate: Date
-
     fun toDTO():CommentDTO{
         return CommentDTO(
             title, body, stars, creationDate, productId, authorUsername

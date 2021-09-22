@@ -24,7 +24,7 @@ class CommentServiceImpl: CommentService {
     @Autowired lateinit var productRepository: ProductRepository
 
     override fun addComment(productId: String, comment: AddCommentDTO): ProductDTO {
-        val principal = ReactiveSecurityContextHolder.getContext().block()!!.authentication!!.principal as JwtTokenDetails
+        val principal = SecurityContextHolder.getContext().authentication.principal as JwtTokenDetails
         if(productId != comment.productId)
             throw BadRequestException("Product id of request url and request body should match")
         val product = productService.getProductByIdOrThrowException(productId)
