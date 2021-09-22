@@ -51,7 +51,7 @@ class WebfluxSecurityConfig {
                 // email
             .and()
             .authorizeExchange()
-            .pathMatchers("/users/**/email")
+            .pathMatchers("/users/*/email")
             .denyAll()
                 // user
             .and()
