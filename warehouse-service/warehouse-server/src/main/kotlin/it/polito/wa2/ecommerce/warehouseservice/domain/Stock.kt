@@ -10,7 +10,7 @@ import javax.validation.constraints.Size
 @Entity
 @Table(uniqueConstraints = [UniqueConstraint(columnNames = ["warehouse_id", "prodotto"])])
 class Stock (
-    @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "warehouse_id")
     var warehouse: Warehouse,
 
