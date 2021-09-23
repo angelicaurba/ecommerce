@@ -41,7 +41,7 @@ class WalletController {
     }
 
     @PostMapping("/")
-    fun createWallet(@RequestBody @Valid walletCreationRequest: CustomerWalletCreationRequestDTO,
+    fun createWallet(@RequestBody @Valid walletCreationRequest: WalletCreationRequestDTO,
                      bindingResult: BindingResult
     ): WalletDTO {
         if(bindingResult.hasErrors())

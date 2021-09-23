@@ -80,10 +80,22 @@ class UserServerApplication{
                 true
             )
 
+            val user4 = User(
+                "adminAccount2",
+                "{bcrypt}\$2a\$10\$.dGWqRYiFDMrsgo6LsutFutRgO4TiGbcV6zaW/EXnJXvVEjb/qXoC",
+                "r2cxzt2xv@relay.firefox.com",
+                "CUSTOMER ADMIN",
+                "Admin2",
+                "Root2",
+                "Root2 66",
+                true
+            )
+
 
             userRepository.save(user1)
             userRepository.save(user2)
             userRepository.save(user3)
+            userRepository.save(user4)
         }
     }
 

@@ -40,14 +40,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/wallets/",
+					"raw": "localhost:8080/wallets/1",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"wallets",
-						""
+						"1"
 					]
 				}
 			},
@@ -84,6 +84,16 @@
 		{
 			"name": "Add warehouse wallet admin",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token3}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -389,8 +399,7 @@
 					"script": {
 						"exec": [
 							" pm.collectionVariables.set(\"time\", (new Date().valueOf())  - 20000);\r",
-							"\r",
-							" console.log((new Date().valueOf())  - 20000)"
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -477,7 +486,7 @@
 			"response": []
 		},
 		{
-			"name": "Get single transaction wrong owner",
+			"name": "Get single transaction wrong wallet",
 			"request": {
 				"auth": {
 					"type": "bearer",

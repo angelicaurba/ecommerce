@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "3acdbc69-e0da-41d5-9807-5604a58c4a31",
+		"_postman_id": "578b87a4-bdcd-488a-be04-9bc2552c3b92",
 		"name": "Warehouse",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -8,16 +8,6 @@
 		{
 			"name": "all warehouses",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token3}}",
-							"type": "string"
-						}
-					]
-				},
 				"method": "GET",
 				"header": [],
 				"url": {
@@ -37,16 +27,31 @@
 		{
 			"name": "all warehouse with productID",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/warehouses/?productID=2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"warehouses",
+						""
+					],
+					"query": [
 						{
-							"key": "token",
-							"value": "{{token3}}",
-							"type": "string"
+							"key": "productID",
+							"value": "2"
 						}
 					]
-				},
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all warehouse with productID (con productID inesistente)",
+			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
@@ -70,53 +75,8 @@
 			"response": []
 		},
 		{
-			"name": "all warehouse with productID (con productID inesistente)",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token3}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/warehouses/?productID=3",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"warehouses",
-						""
-					],
-					"query": [
-						{
-							"key": "productID",
-							"value": "3"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "warehouse with known id",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token3}}",
-							"type": "string"
-						}
-					]
-				},
 				"method": "GET",
 				"header": [],
 				"url": {
@@ -136,16 +96,6 @@
 		{
 			"name": "warehouse with known id (id non esistente)",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token3}}",
-							"type": "string"
-						}
-					]
-				},
 				"method": "GET",
 				"header": [],
 				"url": {
@@ -165,16 +115,6 @@
 		{
 			"name": "warehouse",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token3}}",
-							"type": "string"
-						}
-					]
-				},
 				"method": "POST",
 				"header": [
 					{
@@ -210,16 +150,6 @@
 		{
 			"name": "warehouse (missing something in DTO, bad request)",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token3}}",
-							"type": "string"
-						}
-					]
-				},
 				"method": "POST",
 				"header": [
 					{
@@ -255,16 +185,6 @@
 		{
 			"name": "warehouse",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token3}}",
-							"type": "string"
-						}
-					]
-				},
 				"method": "PUT",
 				"header": [
 					{
@@ -300,16 +220,6 @@
 		{
 			"name": "warehouse (id non esistente)",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token3}}",
-							"type": "string"
-						}
-					]
-				},
 				"method": "PUT",
 				"header": [
 					{
@@ -343,18 +253,8 @@
 			"response": []
 		},
 		{
-			"name": "warehouse",
+			"name": "warehouse bad request",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token3}}",
-							"type": "string"
-						}
-					]
-				},
 				"method": "PUT",
 				"header": [
 					{
@@ -390,16 +290,6 @@
 		{
 			"name": "warehouse fields (change name)",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token3}}",
-							"type": "string"
-						}
-					]
-				},
 				"method": "PATCH",
 				"header": [
 					{
@@ -435,27 +325,17 @@
 		{
 			"name": "warehouse with known id",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token3}}",
-							"type": "string"
-						}
-					]
-				},
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/warehouses/5",
+					"raw": "localhost:8080/warehouses/1",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"warehouses",
-						"5"
+						"1"
 					]
 				}
 			},
@@ -464,16 +344,6 @@
 		{
 			"name": "all stocks of a warehouse",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token3}}",
-							"type": "string"
-						}
-					]
-				},
 				"method": "GET",
 				"header": [],
 				"url": {
@@ -494,16 +364,6 @@
 		{
 			"name": "all stocks of a warehouse (warehouse inesistente)",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token3}}",
-							"type": "string"
-						}
-					]
-				},
 				"method": "GET",
 				"header": [],
 				"url": {
@@ -524,16 +384,6 @@
 		{
 			"name": "stock of a product in a warehouse",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token3}}",
-							"type": "string"
-						}
-					]
-				},
 				"method": "GET",
 				"header": [],
 				"url": {
@@ -555,16 +405,6 @@
 		{
 			"name": "stock of a product in a warehouse",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token3}}",
-							"type": "string"
-						}
-					]
-				},
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -595,16 +435,6 @@
 		{
 			"name": "stock of a product in a warehouse",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token3}}",
-							"type": "string"
-						}
-					]
-				},
 				"method": "PUT",
 				"header": [
 					{
@@ -642,16 +472,6 @@
 		{
 			"name": "stock of a product in a warehouse (cambio alarm)",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token3}}",
-							"type": "string"
-						}
-					]
-				},
 				"method": "PATCH",
 				"header": [
 					{
@@ -689,16 +509,6 @@
 		{
 			"name": "stock of a product in a warehouse",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token3}}",
-							"type": "string"
-						}
-					]
-				},
 				"method": "DELETE",
 				"header": [],
 				"url": {
@@ -723,7 +533,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "{{token3}}",
+				"value": "{{token4}}",
 				"type": "string"
 			}
 		]
@@ -786,6 +596,24 @@
 					"function (err, response) { ",
 					"    pm.collectionVariables.set(\"token3\", response.headers.get(\"Authorization\").split(\" \")[1]);",
 					"    } ",
+					");",
+					"",
+					"// for admin",
+					"pm.sendRequest({",
+					"url: 'http://localhost:8080/auth/signin',",
+					"method: 'POST',",
+					"header: {\"Content-Type\": \"application/json\"},",
+					"body: { ",
+					"    mode: 'raw',",
+					"    raw:JSON.stringify({",
+					"        \"username\":\"adminAccount2\",",
+					"        \"password\":\"adminAccount\"",
+					"        })",
+					"    }  ",
+					"}, ",
+					"function (err, response) { ",
+					"    pm.collectionVariables.set(\"token4\", response.headers.get(\"Authorization\").split(\" \")[1]);",
+					"    } ",
 					");"
 				]
 			}
@@ -811,6 +639,10 @@
 		},
 		{
 			"key": "token3",
+			"value": ""
+		},
+		{
+			"key": "token4",
 			"value": ""
 		}
 	]

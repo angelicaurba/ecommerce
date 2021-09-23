@@ -62,6 +62,7 @@ class WalletServerApplication {
                 Wallet("2", WalletType.CUSTOMER, BigDecimal("90.00"))
             )
 
+
             val transactions = listOf(
                 Transaction(null, w1, TransactionType.RECHARGE, BigDecimal("3100.00"), UUID.randomUUID().toString()),
                 Transaction(w1, w5, TransactionType.ORDER_PAYMENT, BigDecimal("3000.00"), "1"),
@@ -74,6 +75,10 @@ class WalletServerApplication {
             )
 
             transactionRepository.saveAll(transactions)
+
+            walletRepository.save(
+                Wallet("4", WalletType.CUSTOMER, BigDecimal("0.00"))
+            )
 
 
         }
