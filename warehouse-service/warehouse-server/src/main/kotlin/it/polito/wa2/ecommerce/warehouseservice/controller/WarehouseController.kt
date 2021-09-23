@@ -141,7 +141,7 @@ class WarehouseController {
     fun updateStockFields(
         @PathVariable("warehouseID") warehouseId: String,
         @PathVariable("productID") productID: String,
-        @RequestBody @Valid @NotNull stockRequestDTO: StockRequestDTO
+        @RequestBody @NotNull stockRequestDTO: StockRequestDTO
     ) : StockDTO {
         if ( warehouseId != stockRequestDTO.warehouseID || productID != stockRequestDTO.productID )
             throw BadRequestException("WarehouseId or productId contains error")
