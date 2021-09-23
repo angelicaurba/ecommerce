@@ -35,15 +35,15 @@ data class Product(
     var creationDate: Date = Date()
 ) {
     fun toDTO(): ProductDTO {
+        val rating = if(numRatings == 0L) BigDecimal.valueOf(0).setScale(2) else BigDecimal.valueOf(numStars.toDouble()/numRatings.toDouble()).setScale(2)
         return ProductDTO(
             id!!,
             name,
             description,
-            " /products/$id/picture",
+            "/products/$id/picture",
             category,
             price,
-            numStars,
-            numRatings,
+            rating,
             creationDate,
             "/products/$id/comments"
         )

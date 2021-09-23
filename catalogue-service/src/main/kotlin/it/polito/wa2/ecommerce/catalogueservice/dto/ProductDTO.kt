@@ -11,8 +11,7 @@ data class ProductDTO(
     val photoUrl: String,
     val category: Category,
     val price: BigDecimal,
-    val numStars: Long,
-    val numRatings: Long,
+    val rating: BigDecimal,
     val creationDate: Date,
     val commentsUrl: String
 )
