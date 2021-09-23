@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.multipart.MultipartFile
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import javax.validation.Valid
 import javax.validation.constraints.Min
@@ -38,7 +38,7 @@ class CatalogueController {
                               @RequestParam("pageSize", defaultValue = DEFAULT_PAGE_SIZE) @Min(
                                   1
                               ) pageSize: Int
-    ): List<ProductDTO> {
+    ): Flux<ProductDTO> {
         if(category != null){
             isACategoryOrThrowBadRequest(category)
             return productService.getProductsByCategory(Category.valueOf(category), pageIdx, pageSize)
@@ -49,15 +49,15 @@ class CatalogueController {
 
     @GetMapping("/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    fun getProductById(@PathVariable("productId") productId: String): ProductDTO {
+    fun getProductById(@PathVariable("productId") productId: String): Mono<ProductDTO> {
         return productService.getProductById(productId)
     }
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
     fun addProduct(
-        @RequestBody @Valid productRequest: ProductRequestDTO
-    ): ProductDTO {
+        @RequestBody @Valid productRequest: Mono<ProductRequestDTO>
+    ): Mono<ProductDTO> {
         return productService.addProduct(productRequest)
     }
 
@@ -65,8 +65,8 @@ class CatalogueController {
     @ResponseStatus(HttpStatus.OK)
     fun updateOrCreateProduct(
         @PathVariable("productId") productId: String,
-        @RequestBody @Valid  productRequest: ProductRequestDTO
-    ): ProductDTO {
+        @RequestBody @Valid  productRequest: Mono<ProductRequestDTO>
+    ): Mono<ProductDTO> {
         return productService.updateOrCreateProduct(productId, productRequest)
     }
 
@@ -74,8 +74,8 @@ class CatalogueController {
     @ResponseStatus(HttpStatus.OK)
     fun updateProductFields(
         @PathVariable("productId") productId: String,
-        @RequestBody productRequest: ProductRequestDTO
-    ): ProductDTO {
+        @RequestBody productRequest: Mono<ProductRequestDTO>
+    ): Mono<ProductDTO> {
         return productService.updateProductFields(productId, productRequest)
     }
 
@@ -89,7 +89,7 @@ class CatalogueController {
 
     @GetMapping("/{productId}/picture")
     @ResponseStatus(HttpStatus.OK)
-    fun getPictureByProductId(@PathVariable("productId") productId: String): ResponseEntity<Any> {
+    fun getPictureByProductId(@PathVariable("productId") productId: String): Mono<ResponseEntity<Any>> {
         return photoService.getPictureByProductId(productId)
     }
 
@@ -98,28 +98,28 @@ class CatalogueController {
     fun updatePictureByProductId(
         @PathVariable("productId") productId: String,
         @RequestHeader("Content-Type") format: String,
-        @RequestBody file: Binary
+        @RequestBody file: Mono<Binary>
     ) {
         photoService.updatePictureByProductId(productId, format, file)
     }
 
     @GetMapping("/{productId}/warehouses")
     @ResponseStatus(HttpStatus.OK)
-    fun getWarehousesContainingProduct(@PathVariable("productId") productId:String): Mono<out List<String>>{
+    fun getWarehousesContainingProduct(@PathVariable("productId") productId:String): Flux<String>{
         return productService.getWarehousesContainingProduct(productId)
     }
 
     @PostMapping("/{productId}/comments")
     @ResponseStatus(HttpStatus.CREATED)
     fun addComment(@PathVariable("productId") productId: String,
-                   @RequestBody @Valid comment: AddCommentDTO
+                   @RequestBody @Valid comment: Mono<AddCommentDTO>
     ): Mono<ProductDTO> {
         return commentService.addComment(productId, comment)
     }
 
     @GetMapping("/{productId}/comments")
     @ResponseStatus(HttpStatus.OK)
-    fun getComments(@PathVariable("productId") productId: String): List<CommentDTO>{
+    fun getComments(@PathVariable("productId") productId: String): Flux<CommentDTO>{
         return commentService.getCommentsByProductId(productId)
     }
 
