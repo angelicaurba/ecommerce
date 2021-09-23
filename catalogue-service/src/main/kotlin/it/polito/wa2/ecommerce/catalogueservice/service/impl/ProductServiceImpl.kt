@@ -16,7 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import reactor.kotlin.core.publisher.toFlux
+import reactor.kotlin.core.publisher.toMono
 import java.math.BigDecimal
 
 
@@ -30,86 +33,98 @@ class ProductServiceImpl : ProductService {
     @Autowired
     lateinit var request: Request
 
-    override fun getProductsByCategory(category: Category, pageIdx: Int, pageSize: Int): List<ProductDTO> {
+    override fun getProductsByCategory(category: Category, pageIdx: Int, pageSize: Int): Flux<ProductDTO> {
         val page = getPageable(pageIdx, pageSize)
-        return productRepository.findByCategory(category, page).map { it.toDTO() }
+        return productRepository.findByCategory(category, page).map{ it.toDTO() }
     }
 
-    override fun getProducts(pageIdx: Int, pageSize: Int): List<ProductDTO> {
+    override fun getProducts(pageIdx: Int, pageSize: Int): Flux<ProductDTO> {
         val page = getPageable(pageIdx, pageSize)
-        return productRepository.findAll(page).toList().map { it.toDTO() }
+        return productRepository.findAll(page).map { it.toDTO() }
     }
 
-    override fun getProductById(productId: String): ProductDTO {
-        return getProductByIdOrThrowException(productId).toDTO()
-    }
-
-    @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
-    override fun addProduct(productRequest: ProductRequestDTO, productId: String?): ProductDTO {
-        val newProduct = Product(
-            productId,
-            productRequest.name!!,
-            productRequest.description!!,
-            productRequest.category!!,
-            productRequest.price!!,
-            0,
-            0
-        )
-        return productRepository.save(newProduct).toDTO()
+    override fun getProductById(productId: String): Mono<ProductDTO> {
+        return getProductByIdOrThrowException(productId).map { it.toDTO()}
     }
 
     @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
-    override fun updateOrCreateProduct(productId: String, productRequest: ProductRequestDTO): ProductDTO {
-        return if (isProductPresent(productId)) {
-            val product: Product = productRepository.findById(productId).get()
-            product.name = productRequest.name!!
-            product.description = productRequest.description!!
-            product.category = productRequest.category!!
-            product.price = productRequest.price!!
-
-            productRepository.save(product).toDTO()
-        } else addProduct(productRequest, productId)
-    }
-
-    @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
-    override fun updateProductFields(productId: String, productRequest: ProductRequestDTO): ProductDTO {
-        val product = getProductByIdOrThrowException(productId)
-        productRequest.price?.also {
-            if (it < BigDecimal("0.00"))
-                throw BadRequestException("Negative price update not allowed")
+    override fun addProduct(productRequest: Mono<ProductRequestDTO>, productId: String?): Mono<ProductDTO> {
+        val newProduct = productRequest.map {
+            Product(
+                productId,
+                it.name!!,
+                it.description!!,
+                it.category!!,
+                it.price!!,
+                0,
+                0
+            )
         }
+        return productRepository.insert(newProduct).map { it.toDTO()}.toMono()
+    }
 
-        productRequest.name?.also { product.name = it }
-        productRequest.description?.also { product.description = it }
-        productRequest.category?.also { product.category = it }
-        productRequest.price?.also { product.price = it }
+    @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
+    override fun updateOrCreateProduct(productId: String, productRequest: Mono<ProductRequestDTO>): Mono<ProductDTO> {
 
-        return productRepository.save(product).toDTO()
+        return productRepository.findById(productId)
+            .switchIfEmpty(Mono.just(Product(null, "", "", Category.OTHER, BigDecimal("0.00"), 0,0)))
+            .zipWith(productRequest)
+            .flatMap {
+                val req = it.t2
+                val product = it.t1
+                if (product.id == null)
+                    addProduct(productRequest, productId)
+                else{
+                    product.name = req.name!!
+                    product.description = req.description!!
+                    product.category = req.category!!
+                    product.price = req.price!!
+                    productRepository.save(product).map{a -> a.toDTO()}
+                }
+            }
+    }
+
+    @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
+    override fun updateProductFields(productId: String, productRequest: Mono<ProductRequestDTO>): Mono<ProductDTO> {
+        val product = getProductByIdOrThrowException(productId)
+            .zipWith(
+                productRequest
+            ).map {
+                val req = it.t2
+                val product = it.t1
+
+                req.price?.let { price ->
+                    if (price < BigDecimal("0.00"))
+                        Mono.error<BadRequestException>(BadRequestException("Negative price update not allowed"))
+                }
+
+                req.name?.also {x -> product.name = x }
+                req.description?.also { x -> product.description = x }
+                req.category?.also { x -> product.category = x }
+                req.price?.also { x -> product.price = x }
+
+                product
+            }
+
+        return productRepository.insert(product).map { it.toDTO()}.toMono()
     }
 
     @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     override fun deleteProduct(productId: String) {
-        val product = getProductByIdOrThrowException(productId)
-        productRepository.delete(product)
+        getProductByIdOrThrowException(productId).map {
+            productRepository.delete(it)
+        }
     }
 
-    override fun getProductByIdOrThrowException(productId: String): Product {
-        val product = productRepository.findById(productId)
-        if (product.isPresent)
-            return product.get()
-        else
-            throw ProductNotFoundException(productId)
+    override fun getProductByIdOrThrowException(productId: String): Mono<Product> {
+        return productRepository
+            .findById(productId)
+            .switchIfEmpty(Mono.error(ProductNotFoundException(productId)))
     }
 
-    override fun isProductPresent(productId: String): Boolean {
-        return productRepository.findById(productId).isPresent
-    }
-
-    override fun getWarehousesContainingProduct(productId: String): Mono<out List<String>> {
+    override fun getWarehousesContainingProduct(productId: String): Flux<String> {
         getProductByIdOrThrowException(productId)
-
-        return request.doGetReactive("http://warehouse-service/warehouses?productID=$productId", (emptyList<String>())::class.java)
-
+        return request.doGetReactive("http://warehouse-service/warehouses?productID=$productId", String::class.java).toFlux()
     }
 
 }
