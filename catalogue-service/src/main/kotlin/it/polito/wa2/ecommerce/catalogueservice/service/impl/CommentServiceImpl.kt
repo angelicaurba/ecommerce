@@ -47,8 +47,9 @@ class CommentServiceImpl: CommentService {
             val p = it.t2
             p.numStars += c.stars
             p.numRatings++
-            commentRepository.save(c)
-            productRepository.save(p).map{ x -> x.toDTO() }
+            commentRepository.save(c).flatMap {
+                productRepository.save(p).map{ x -> x.toDTO() }
+                }
             }
         }
 

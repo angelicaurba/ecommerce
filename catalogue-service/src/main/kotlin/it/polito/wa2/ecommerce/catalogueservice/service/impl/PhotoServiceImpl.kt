@@ -43,15 +43,15 @@ class PhotoServiceImpl : PhotoService{
     @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     override fun updatePictureByProductId(productId: String, format: String, file: Mono<Binary>) : Mono<Void>{
         return productService.getProductByIdOrThrowException(productId)
-            .doOnNext {
-                file.map {
+            .flatMap {
+                file.flatMap {
                     val newPhoto = Photo(
                         null, format,
                         it,
                         productId
                     )
-                    photoRepository.save(newPhoto)
+                    photoRepository.save(newPhoto).then()
                 }
-            }.then()
+            }
     }
 }
