@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
+import reactor.core.publisher.switchIfEmpty
 
 @Component
 class Request {
@@ -29,6 +30,26 @@ class Request {
         }
 
         return returnValue ?: throw ServiceUnavailable("No response from other server")
+    }
+
+    fun <T> doGetReactive(uri: String, className: Class<T>): Mono<T>{
+        val returnValue: Mono<T>
+
+        try {
+            returnValue = webClientBuilder.build()
+                .get()
+                .uri(uri)
+                .retrieve()
+                .bodyToMono(className)
+        }
+        catch (e: Exception){
+            println(e.message)
+            return Mono.error(ServiceUnavailable("Error during connection with other server"))
+        }
+
+        return returnValue.switchIfEmpty (
+                Mono.error(ServiceUnavailable("No response from other server"))
+        )
     }
 
     fun <T: Any> doPost(uri: String, requestBody: T, className: Class<T>){
