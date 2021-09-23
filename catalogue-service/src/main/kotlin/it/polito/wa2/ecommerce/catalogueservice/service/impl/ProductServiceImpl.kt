@@ -40,7 +40,7 @@ class ProductServiceImpl : ProductService {
 
     override fun getProducts(pageIdx: Int, pageSize: Int): Flux<ProductDTO> {
         val page = getPageable(pageIdx, pageSize)
-        return productRepository.findAll(page).map { it.toDTO() }
+        return productRepository.findByIdNotNull(page).map { it.toDTO() }
     }
 
     override fun getProductById(productId: String): Mono<ProductDTO> {

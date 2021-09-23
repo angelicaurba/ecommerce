@@ -15,5 +15,5 @@ interface ProductRepository : ReactiveMongoRepository<Product, String>{
     fun findByCategory(category: Category, page: Pageable): Flux<Product>
 
     @Transactional(readOnly = true)
-    fun findAll(page: Pageable): Flux<Product>
+    fun findByIdNotNull(page: Pageable): Flux<Product>
 }
