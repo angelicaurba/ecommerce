@@ -94,7 +94,7 @@ class CatalogueController {
     @ResponseStatus(HttpStatus.OK)
     fun updatePictureByProductId(
         @PathVariable("productId") productId: String,
-        @RequestHeader format: String,
+        @RequestHeader("Content-Type") format: String,
         @RequestBody file: MultipartFile
     ) {
         photoService.updatePictureByProductId(productId, format, file)
