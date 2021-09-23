@@ -14,6 +14,8 @@ import org.springframework.boot.runApplication
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 import org.springframework.context.annotation.Bean
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.math.BigDecimal
@@ -29,7 +31,8 @@ import java.util.*
     ]
 )
 @EnableEurekaClient
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableReactiveMethodSecurity
+@EnableWebFluxSecurity
 class CatalogueServiceApplication {
 
     @Bean
