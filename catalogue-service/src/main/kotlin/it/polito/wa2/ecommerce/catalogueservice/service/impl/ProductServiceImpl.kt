@@ -11,6 +11,7 @@ import it.polito.wa2.ecommerce.common.connection.Request
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.common.getPageable
+import it.polito.wa2.ecommerce.warehouseservice.client.WarehouseDTO
 import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.access.prepost.PreAuthorize
@@ -122,10 +123,10 @@ class ProductServiceImpl : ProductService {
             .switchIfEmpty(Mono.error(ProductNotFoundException(productId)))
     }
 
-    override fun getWarehousesContainingProduct(productId: String): Flux<String> {
+    override fun getWarehousesContainingProduct(productId: String): Flux<WarehouseDTO> {
         return getProductByIdOrThrowException(productId)
             .flatMapMany {
-                request.doGetReactive("http://warehouse-service/warehouses/?productID=$productId", String::class.java).toFlux()
+                request.doGetReactive("http://warehouse-service/warehouses/?productID=$productId", WarehouseDTO::class.java).toFlux()
             }
     }
 }

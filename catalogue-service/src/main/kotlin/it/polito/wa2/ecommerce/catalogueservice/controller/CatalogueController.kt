@@ -9,6 +9,7 @@ import it.polito.wa2.ecommerce.catalogueservice.service.CommentService
 import it.polito.wa2.ecommerce.catalogueservice.service.PhotoService
 import it.polito.wa2.ecommerce.catalogueservice.service.ProductService
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
+import it.polito.wa2.ecommerce.warehouseservice.client.WarehouseDTO
 import org.bson.types.Binary
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -105,7 +106,7 @@ class CatalogueController {
 
     @GetMapping("/{productId}/warehouses")
     @ResponseStatus(HttpStatus.OK)
-    fun getWarehousesContainingProduct(@PathVariable("productId") productId:String): Flux<String>{
+    fun getWarehousesContainingProduct(@PathVariable("productId") productId:String): Flux<WarehouseDTO>{
         return productService.getWarehousesContainingProduct(productId)
     }
 

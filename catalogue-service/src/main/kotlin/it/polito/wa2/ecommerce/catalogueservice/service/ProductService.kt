@@ -5,6 +5,7 @@ import it.polito.wa2.ecommerce.catalogueservice.domain.Product
 import it.polito.wa2.ecommerce.catalogueservice.dto.CommentDTO
 import it.polito.wa2.ecommerce.catalogueservice.dto.ProductDTO
 import it.polito.wa2.ecommerce.catalogueservice.dto.ProductRequestDTO
+import it.polito.wa2.ecommerce.warehouseservice.client.WarehouseDTO
 import org.springframework.http.ResponseEntity
 import org.springframework.web.multipart.MultipartFile
 import reactor.core.publisher.Flux
@@ -20,5 +21,5 @@ interface ProductService {
     fun updateProductFields(productId: String, productRequest: Mono<ProductRequestDTO>): Mono<ProductDTO>
     fun deleteProduct(productId: String): Mono<Void>
     fun getProductByIdOrThrowException(productId: String): Mono<Product>
-    fun getWarehousesContainingProduct(productId: String): Flux<String>
+    fun getWarehousesContainingProduct(productId: String): Flux<WarehouseDTO>
 }
