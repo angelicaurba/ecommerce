@@ -1,5 +1,6 @@
 package it.polito.wa2.ecommerce.catalogueservice
 
+import com.mongodb.MongoClientSettings
 import com.mongodb.reactivestreams.client.MongoClient
 import com.mongodb.reactivestreams.client.MongoClients
 import it.polito.wa2.ecommerce.catalogueservice.domain.Category
@@ -174,12 +175,18 @@ class MongoConfig : AbstractReactiveMongoConfiguration() {
     @Value("\${spring.data.mongodb.database}")
     lateinit var dbname : String
 
+    @Value("\${spring.data.mongodb.host}")
+    lateinit var host : String
+
+    @Value("\${spring.data.mongodb.port}")
+    var port : Int = 0
+
     override fun getDatabaseName() = dbname
 
     override fun reactiveMongoClient() = mongoClient()
 
     @Bean
-    fun mongoClient(): MongoClient = MongoClients.create()
+    fun mongoClient(): MongoClient = MongoClients.create("mongodb://$host:$port")
 
     @Bean
     override fun reactiveMongoTemplate(
