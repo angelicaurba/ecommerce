@@ -70,6 +70,10 @@ class WebfluxSecurityConfig {
                 // warehouse
             .and()
             .authorizeExchange()
+            .pathMatchers(HttpMethod.GET,"/warehouses/**")
+            .permitAll()
+            .and()
+            .authorizeExchange()
             .pathMatchers("/warehouses/**")
             .authenticated()
 
