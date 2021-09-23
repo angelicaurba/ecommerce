@@ -13,4 +13,7 @@ interface PhotoRepository : ReactiveMongoRepository<Photo, String>{
 
     @Transactional(readOnly = true)
     fun findPhotoByProductId(productId: String): Mono<Photo>
+
+    @Transactional(readOnly = false)
+    fun deletePhotoByProductId(productId: String): Mono<Void>
 }

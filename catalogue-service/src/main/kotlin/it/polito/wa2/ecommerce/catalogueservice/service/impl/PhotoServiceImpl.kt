@@ -44,14 +44,17 @@ class PhotoServiceImpl : PhotoService{
     override fun updatePictureByProductId(productId: String, format: String, file: Mono<Binary>) : Mono<Void>{
         return productService.getProductByIdOrThrowException(productId)
             .flatMap {
-                file.flatMap {
-                    val newPhoto = Photo(
-                        null, format,
-                        it,
-                        productId
-                    )
-                    photoRepository.save(newPhoto).then()
-                }
+                photoRepository.deletePhotoByProductId(productId)
+                    .flatMap {
+                        file.flatMap {
+                            val newPhoto = Photo(
+                                null, format,
+                                it,
+                                productId
+                            )
+                            photoRepository.save(newPhoto).then()
+                        }
+                    }
             }
     }
 }
