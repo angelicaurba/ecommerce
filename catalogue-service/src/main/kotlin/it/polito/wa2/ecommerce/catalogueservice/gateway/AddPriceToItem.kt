@@ -10,6 +10,7 @@ import org.springframework.cloud.gateway.filter.factory.rewrite.RewriteFunction
 import org.springframework.stereotype.Component
 import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
+import reactor.kotlin.core.publisher.toFlux
 
 @Component
 class AddPriceToItem : RewriteFunction<OrderRequestDTO<ItemDTO>, OrderRequestDTO<PurchaseItemDTO>> {
@@ -18,22 +19,25 @@ class AddPriceToItem : RewriteFunction<OrderRequestDTO<ItemDTO>, OrderRequestDTO
     lateinit var productService: ProductService
 
     override fun apply(t: ServerWebExchange?, u: OrderRequestDTO<ItemDTO>): Publisher<OrderRequestDTO<PurchaseItemDTO>> {
-        val newOrderRequest = OrderRequestDTO<PurchaseItemDTO>(
-            u.buyerId,
-            u.buyerWalletId,
-            u.address,
-            u.deliveryItems
-                .map { item ->
+        return u.deliveryItems
+            .toFlux()
+            .flatMap {item ->
+                productService.getProductById(item.productId).map {
                     PurchaseItemDTO(
                         item.productId,
                         item.amount,
-                        productService.getProductById(item.productId).price
-                    )
+                        it.price
+                        )
                 }
-        )
-
-        return Mono.just(newOrderRequest)
-
+            }.collectList()
+            .map {
+                OrderRequestDTO(
+                    u.buyerId,
+                    u.buyerWalletId,
+                    u.address,
+                    it
+                )
+            }
     }
 
 }
