@@ -1,5 +1,7 @@
 package it.polito.wa2.ecommerce.catalogueservice
 
+import com.mongodb.reactivestreams.client.MongoClient
+import com.mongodb.reactivestreams.client.MongoClients
 import it.polito.wa2.ecommerce.catalogueservice.domain.Category
 import it.polito.wa2.ecommerce.catalogueservice.domain.Comment
 import it.polito.wa2.ecommerce.catalogueservice.domain.Photo
@@ -8,13 +10,18 @@ import it.polito.wa2.ecommerce.catalogueservice.repository.CommentRepository
 import it.polito.wa2.ecommerce.catalogueservice.repository.PhotoRepository
 import it.polito.wa2.ecommerce.catalogueservice.repository.ProductRepository
 import org.bson.types.Binary
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.data.mongodb.ReactiveMongoDatabaseFactory
+import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguration
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate
+import org.springframework.data.mongodb.core.convert.MappingMongoConverter
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
 import java.io.ByteArrayOutputStream
@@ -160,6 +167,25 @@ class CatalogueServiceApplication {
 
         }
     }
+}
+
+@Configuration
+class MongoConfig : AbstractReactiveMongoConfiguration() {
+    @Value("\${spring.data.mongodb.database}")
+    lateinit var dbname : String
+
+    override fun getDatabaseName() = dbname
+
+    override fun reactiveMongoClient() = mongoClient()
+
+    @Bean
+    fun mongoClient(): MongoClient = MongoClients.create()
+
+    @Bean
+    override fun reactiveMongoTemplate(
+        databaseFactory: ReactiveMongoDatabaseFactory,
+        mongoConverter: MappingMongoConverter
+    ): ReactiveMongoTemplate = ReactiveMongoTemplate(mongoClient(), databaseName)
 }
 
 fun main(args: Array<String>) {
