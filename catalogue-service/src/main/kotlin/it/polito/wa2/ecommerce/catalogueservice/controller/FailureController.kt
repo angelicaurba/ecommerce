@@ -9,31 +9,32 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ServerWebExchange
+import reactor.core.publisher.Mono
 
 @RestController
 class FailureController{
 
     @GetMapping("/failure")
     @ResponseStatus(HttpStatus.GATEWAY_TIMEOUT)
-    fun reactToFailureGET(exchange: ServerWebExchange): ErrorMessageDTO {
+    fun reactToFailureGET(exchange: ServerWebExchange): Mono<ErrorMessageDTO> {
         val e: java.lang.Exception? =
             exchange.getAttribute(ServerWebExchangeUtils.CIRCUITBREAKER_EXECUTION_EXCEPTION_ATTR)
 
         if (e != null && e is ProductNotFoundException)
             throw e
 
-        return ErrorMessageDTO(Exception("Unable to connect"), HttpStatus.GATEWAY_TIMEOUT, "")
+        return Mono.just(ErrorMessageDTO(Exception("Unable to connect"), HttpStatus.GATEWAY_TIMEOUT, ""))
     }
 
     @PostMapping("/failure")
     @ResponseStatus(HttpStatus.BAD_GATEWAY)
-    fun reactToFailurePOST(exchange: ServerWebExchange): ErrorMessageDTO {
+    fun reactToFailurePOST(exchange: ServerWebExchange): Mono<ErrorMessageDTO> {
         val e: java.lang.Exception? =
             exchange.getAttribute(ServerWebExchangeUtils.CIRCUITBREAKER_EXECUTION_EXCEPTION_ATTR)
 
         if (e != null && e is ProductNotFoundException)
             throw e
 
-        return ErrorMessageDTO(Exception("Unable to connect"), HttpStatus.BAD_GATEWAY, "")
+        return Mono.just(ErrorMessageDTO(Exception("Unable to connect"), HttpStatus.BAD_GATEWAY, ""))
     }
 }
