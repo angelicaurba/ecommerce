@@ -143,7 +143,8 @@ class WarehouseController {
         @PathVariable("productID") productID: String,
         @RequestBody @NotNull stockRequestDTO: StockRequestDTO
     ) : StockDTO {
-        if ( warehouseId != stockRequestDTO.warehouseID || productID != stockRequestDTO.productID )
+        if ( (stockRequestDTO.warehouseID != null && warehouseId != stockRequestDTO.warehouseID)  ||
+             (stockRequestDTO.productID != null && productID != stockRequestDTO.productID)  )
             throw BadRequestException("WarehouseId or productId contains error")
         return stockService.updateStockFields(warehouseId, productID, stockRequestDTO)
     }

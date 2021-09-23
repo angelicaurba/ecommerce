@@ -67,7 +67,8 @@ class StockServiceImpl: StockService {
     @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     override fun updateStockFields(warehouseId: String, productID: String, stockRequestDTO: StockRequestDTO): StockDTO {
 
-        if ( warehouseId != stockRequestDTO.warehouseID || productID != stockRequestDTO.productID )
+        if ( (stockRequestDTO.warehouseID != null && warehouseId != stockRequestDTO.warehouseID)  ||
+             (stockRequestDTO.productID != null && productID != stockRequestDTO.productID)  )
             throw BadRequestException("WarehouseId or productId contains error")
 
         var stock = getStockOrThrowException(warehouseId,productID)
