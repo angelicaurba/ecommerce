@@ -27,26 +27,27 @@ class PhotoServiceImpl : PhotoService{
         productService.getProductByIdOrThrowException(productId)
         val result = photoRepository.findPhotoByProductId(productId)
 
-        result.switchIfEmpty (
-            Mono.error(NotFoundException("There is no photo for product $productId"))
-                )
-        
-        val format = "image/" + result.get().format
-        val image = result.get().image
+        return result
+            .switchIfEmpty (Mono.error(NotFoundException("There is no photo for product $productId")))
+            .map {
+                val format = "image/" + it.format
+                val image = it.image
 
-        return ResponseEntity.ok()
-            .contentType(MediaType.parseMediaType(format))
-            .body(image.data)
+                ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(format))
+                    .body(image.data)
+        }
     }
 
     @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     override fun updatePictureByProductId(productId: String, format: String, file: Mono<Binary>) {
         productService.getProductByIdOrThrowException(productId)
-        val newPhoto = Photo(null, format,
-            file,
-            productId
-        )
-
-        photoRepository.save(newPhoto)
+       file.map {
+           val newPhoto = Photo(null, format,
+                it,
+                productId
+            )
+            photoRepository.save(newPhoto)
+        }
     }
 }
