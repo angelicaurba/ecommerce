@@ -388,7 +388,7 @@
 			"response": []
 		},
 		{
-			"name": "warehouse (change name)",
+			"name": "warehouse fields (change name)",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -569,7 +569,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "",
+					"raw": "{\r\n    \"warehouseID\": \"2\",\r\n    \"productID\": \"2\",\r\n    \"quantity\": 1,\r\n    \"alarm\": 4\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -577,7 +577,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/warehouses/2/products",
+					"raw": "localhost:8080/warehouses/2/products/",
 					"host": [
 						"localhost"
 					],
@@ -585,7 +585,133 @@
 					"path": [
 						"warehouses",
 						"2",
-						"products"
+						"products",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "stock of a product in a warehouse",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token3}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"warehouseID\": \"2\",\r\n    \"productID\": \"4\",\r\n    \"quantity\": 10,\r\n    \"alarm\": 40\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/warehouses/2/products/4",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"warehouses",
+						"2",
+						"products",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "stock of a product in a warehouse (cambio alarm)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token3}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"alarm\": 32\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/warehouses/2/products/4",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"warehouses",
+						"2",
+						"products",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "stock of a product in a warehouse",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token3}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/warehouses/2/products/2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"warehouses",
+						"2",
+						"products",
+						"2"
 					]
 				}
 			},
