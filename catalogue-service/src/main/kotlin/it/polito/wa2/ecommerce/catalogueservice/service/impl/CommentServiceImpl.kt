@@ -40,17 +40,16 @@ class CommentServiceImpl: CommentService {
             c.toEntity(p.username)
         }
 
-        val newProduct = newComment.zipWith(
+        return newComment.zipWith(
             productService.getProductByIdOrThrowException(productId)
-        ).map {
+        ).flatMap {
             val c = it.t1
             val p = it.t2
             p.numStars += c.stars
             p.numRatings++
             commentRepository.save(c)
-            p
+            productRepository.save(p).map{ x -> x.toDTO() }
             }
-        return productRepository.insert(newProduct).map{ it.toDTO() }.toMono()
         }
 
     override fun getCommentsByProductId(productId: String): Flux<CommentDTO> {

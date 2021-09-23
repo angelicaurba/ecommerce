@@ -87,10 +87,10 @@ class ProductServiceImpl : ProductService {
 
     @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     override fun updateProductFields(productId: String, productRequest: Mono<ProductRequestDTO>): Mono<ProductDTO> {
-        val product = getProductByIdOrThrowException(productId)
+        return getProductByIdOrThrowException(productId)
             .zipWith(
                 productRequest
-            ).map {
+            ).flatMap {
                 val req = it.t2
                 val product = it.t1
 
@@ -104,10 +104,8 @@ class ProductServiceImpl : ProductService {
                 req.category?.also { x -> product.category = x }
                 req.price?.also { x -> product.price = x }
 
-                product
+                productRepository.save(product).map { x -> x.toDTO()}
             }
-
-        return productRepository.insert(product).map { it.toDTO()}.toMono()
     }
 
     @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
