@@ -14,6 +14,8 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import reactor.core.publisher.Mono
+import reactor.kotlin.core.publisher.switchIfEmpty
 
 @Service
 @Transactional
@@ -21,14 +23,14 @@ class PhotoServiceImpl : PhotoService{
     @Autowired lateinit var photoRepository: PhotoRepository
     @Autowired lateinit var productService: ProductService
 
-    override fun getPictureByProductId(productId: String): ResponseEntity<Any> {
+    override fun getPictureByProductId(productId: String): Mono<ResponseEntity<Any>> {
         productService.getProductByIdOrThrowException(productId)
         val result = photoRepository.findPhotoByProductId(productId)
 
-        if(!result.isPresent){
-            throw NotFoundException("There is no photo for product $productId")
-        }
-
+        result.switchIfEmpty (
+            Mono.error(NotFoundException("There is no photo for product $productId"))
+                )
+        
         val format = "image/" + result.get().format
         val image = result.get().image
 
@@ -38,7 +40,7 @@ class PhotoServiceImpl : PhotoService{
     }
 
     @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
-    override fun updatePictureByProductId(productId: String, format: String, file: Binary) {
+    override fun updatePictureByProductId(productId: String, format: String, file: Mono<Binary>) {
         productService.getProductByIdOrThrowException(productId)
         val newPhoto = Photo(null, format,
             file,
