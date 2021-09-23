@@ -1,11 +1,13 @@
 package it.polito.wa2.ecommerce.common.connection
 
 import it.polito.wa2.ecommerce.common.exceptions.ServiceUnavailable
+import org.reactivestreams.Publisher
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import reactor.core.publisher.switchIfEmpty
+
 
 @Component
 class Request {
@@ -32,15 +34,15 @@ class Request {
         return returnValue ?: throw ServiceUnavailable("No response from other server")
     }
 
-    fun <T> doGetReactive(uri: String, className: Class<T>): Mono<T>{
-        val returnValue: Mono<T>
+    fun <T> doGetReactive(uri: String, className: Class<T>): Publisher<T> {
+        val returnValue: Flux<T>
 
         try {
             returnValue = webClientBuilder.build()
                 .get()
                 .uri(uri)
                 .retrieve()
-                .bodyToMono(className)
+                .bodyToFlux(className)
         }
         catch (e: Exception){
             println(e.message)
