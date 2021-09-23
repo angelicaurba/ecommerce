@@ -7,6 +7,7 @@ import it.polito.wa2.ecommerce.catalogueservice.dto.ProductDTO
 import it.polito.wa2.ecommerce.catalogueservice.dto.ProductRequestDTO
 import org.springframework.http.ResponseEntity
 import org.springframework.web.multipart.MultipartFile
+import reactor.core.publisher.Mono
 
 interface ProductService {
 
@@ -19,5 +20,5 @@ interface ProductService {
     fun deleteProduct(productId: String)
     fun getProductByIdOrThrowException(productId: String): Product
     fun isProductPresent(productId: String): Boolean
-    fun getWarehousesContainingProduct(productId: String): List<String>
+    fun getWarehousesContainingProduct(productId: String): Mono<out List<String>>
 }

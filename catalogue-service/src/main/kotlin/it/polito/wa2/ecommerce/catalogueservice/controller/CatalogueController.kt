@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import reactor.core.publisher.Mono
 import javax.validation.Valid
 import javax.validation.constraints.Min
 
@@ -102,7 +103,7 @@ class CatalogueController {
 
     @GetMapping("/{productId}/warehouses")
     @ResponseStatus(HttpStatus.OK)
-    fun getWarehousesContainingProduct(@PathVariable("productId") productId:String): List<String>{
+    fun getWarehousesContainingProduct(@PathVariable("productId") productId:String): Mono<out List<String>>{
         return productService.getWarehousesContainingProduct(productId)
     }
 
@@ -110,7 +111,7 @@ class CatalogueController {
     @ResponseStatus(HttpStatus.CREATED)
     fun addComment(@PathVariable("productId") productId: String,
                    @RequestBody @Valid comment: AddCommentDTO
-    ): ProductDTO{
+    ): Mono<ProductDTO> {
         return commentService.addComment(productId, comment)
     }
 

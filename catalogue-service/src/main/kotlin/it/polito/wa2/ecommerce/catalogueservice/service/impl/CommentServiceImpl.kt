@@ -15,6 +15,7 @@ import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import reactor.core.publisher.Mono
 
 @Service
 @Transactional
@@ -23,15 +24,19 @@ class CommentServiceImpl: CommentService {
     @Autowired lateinit var productService: ProductService
     @Autowired lateinit var productRepository: ProductRepository
 
-    override fun addComment(productId: String, comment: AddCommentDTO): ProductDTO {
-        val principal = SecurityContextHolder.getContext().authentication.principal as JwtTokenDetails
+    override fun addComment(productId: String, comment: AddCommentDTO): Mono<ProductDTO> {
+        val principal =  ReactiveSecurityContextHolder.getContext().map{
+            it.authentication.principal  as JwtTokenDetails
+        }
         if(productId != comment.productId)
             throw BadRequestException("Product id of request url and request body should match")
         val product = productService.getProductByIdOrThrowException(productId)
-        val addedComment = commentRepository.save(comment.toEntity(principal.username))
-        product.numStars += addedComment.stars
-        product.numRatings++
-        return productRepository.save(product).toDTO()
+        return principal.map {
+            val addedComment = commentRepository.save(comment.toEntity(it.username))
+            product.numStars += addedComment.stars
+            product.numRatings++
+            productRepository.save(product).toDTO()
+        }
     }
 
     override fun getCommentsByProductId(productId: String): List<CommentDTO> {

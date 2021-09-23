@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import reactor.core.publisher.Mono
 import java.math.BigDecimal
 
 
@@ -104,11 +105,11 @@ class ProductServiceImpl : ProductService {
         return productRepository.findById(productId).isPresent
     }
 
-    override fun getWarehousesContainingProduct(productId: String): List<String> {
-        return runBlocking {
-            getProductByIdOrThrowException(productId)
-            request.doGet("http://warehouse-service/warehouses?productID=$productId", (emptyList<String>())::class.java)
-        }
+    override fun getWarehousesContainingProduct(productId: String): Mono<out List<String>> {
+        getProductByIdOrThrowException(productId)
+
+        return request.doGetReactive("http://warehouse-service/warehouses?productID=$productId", (emptyList<String>())::class.java)
+
     }
 
 }
