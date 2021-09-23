@@ -4,6 +4,7 @@ import it.polito.wa2.ecommerce.catalogueservice.dto.ProductDTO
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.util.*
 import javax.validation.constraints.DecimalMin
 import javax.validation.constraints.Digits
@@ -35,7 +36,7 @@ data class Product(
     var creationDate: Date = Date()
 ) {
     fun toDTO(): ProductDTO {
-        val rating = if(numRatings == 0L) BigDecimal.valueOf(0).setScale(2) else BigDecimal.valueOf(numStars.toDouble()/numRatings.toDouble()).setScale(2)
+        val rating = if(numRatings == 0L) BigDecimal.valueOf(0).setScale(2, RoundingMode.HALF_EVEN) else BigDecimal.valueOf(numStars.toDouble()/numRatings.toDouble()).setScale(2, RoundingMode.HALF_EVEN)
         return ProductDTO(
             id!!,
             name,
