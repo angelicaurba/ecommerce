@@ -76,13 +76,18 @@ class StockServiceImpl: StockService {
         warehouseService.isAuthorized(warehouseService.getWarehouseOrThrowException(warehouseId).adminID)
 
         var stock = getStockOrThrowException(warehouseId,productID)
-
+/*
         stockRequestDTO.warehouseID?.also {
             val warehouse = warehouseService.getWarehouseOrThrowException(stockRequestDTO.warehouseID!!)
             stock.warehouse = warehouse }
         stockRequestDTO.productID?.also { stock.product = it }
+*/
+
         stockRequestDTO.alarm?.also { stock.alarm = it }
-        stockRequestDTO.quantity?.also { it ->  stock = updateStockQuantity(stock,it) }
+        stockRequestDTO.quantity?.also { stock.quantity = it }
+
+        if (stock.quantity <= stock.alarm)
+            sendNotification(stock)
 
         return stockRepository.save(stock).toDTO()
     }
