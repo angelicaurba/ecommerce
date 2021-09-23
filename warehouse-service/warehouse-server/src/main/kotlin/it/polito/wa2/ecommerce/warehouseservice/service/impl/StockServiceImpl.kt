@@ -3,6 +3,7 @@ package it.polito.wa2.ecommerce.warehouseservice.service.impl
 import it.polito.wa2.ecommerce.common.constants.mailTopic
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.common.getPageable
+import it.polito.wa2.ecommerce.common.parseID
 import it.polito.wa2.ecommerce.common.saga.service.MessageService
 import it.polito.wa2.ecommerce.mailservice.client.MailDTO
 import it.polito.wa2.ecommerce.orderservice.client.item.ItemDTO
@@ -18,6 +19,7 @@ import it.polito.wa2.ecommerce.warehouseservice.exception.ItemsNotAvailable
 import it.polito.wa2.ecommerce.warehouseservice.exception.StockNotFound
 import it.polito.wa2.ecommerce.warehouseservice.repository.StockRepository
 import it.polito.wa2.ecommerce.warehouseservice.service.StockService
+import it.polito.wa2.ecommerce.warehouseservice.service.WarehouseService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
@@ -31,7 +33,7 @@ class StockServiceImpl: StockService {
 
     @Autowired lateinit var stockRepository: StockRepository
 
-    @Autowired lateinit var warehouseService: WarehouseServiceImpl
+    @Autowired lateinit var warehouseService: WarehouseService
 
     @Autowired lateinit var messageService: MessageService
 
@@ -71,6 +73,8 @@ class StockServiceImpl: StockService {
              (stockRequestDTO.productID != null && productID != stockRequestDTO.productID)  )
             throw BadRequestException("WarehouseId or productId contains error")
 
+        warehouseService.isAuthorized(warehouseService.getWarehouseOrThrowException(warehouseId).adminID)
+
         var stock = getStockOrThrowException(warehouseId,productID)
 
         stockRequestDTO.warehouseID?.also {
@@ -93,6 +97,9 @@ class StockServiceImpl: StockService {
             throw BadRequestException("WarehouseId or productId contains error")
 
         var warehouse = warehouseService.getWarehouseOrThrowException(warehouseId)
+
+        warehouseService.isAuthorized(warehouse.adminID)
+
         var stock = stockRepository.findByWarehouseAndProduct(warehouse,productID)
 
         if ( stock != null ){
@@ -115,7 +122,10 @@ class StockServiceImpl: StockService {
 
     @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     override fun addStock(warehouseID: String, stockRequest: StockRequestDTO): StockDTO {
+
+
         val warehouse = warehouseService.getWarehouseOrThrowException(stockRequest.warehouseID!!)
+        warehouseService.isAuthorized(warehouse.adminID)
 
         if ( warehouseID != stockRequest.warehouseID )
             throw BadRequestException("WarehouseId contains error")
@@ -148,6 +158,7 @@ class StockServiceImpl: StockService {
 
     @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     override fun deleteStockByWarehouseIdAndProductId(warehouseId: String, productID: String) {
+        warehouseService.isAuthorized(warehouseService.getWarehouseOrThrowException(warehouseId).adminID)
         val stock = getStockOrThrowException(warehouseId,productID)
         stockRepository.delete(stock)
     }
@@ -197,8 +208,21 @@ class StockServiceImpl: StockService {
 
         productList.forEach{ itemsInWarehouse ->
             itemsInWarehouse.purchaseItems.forEach{ item ->
-                val stock = getStockOrThrowException(itemsInWarehouse.warehouseId!!, item.productId)
-                updateStockQuantity(stock, stock.quantity + item.amount)
+
+                val warehouse = warehouseService.getWarehouseOrThrowException(itemsInWarehouse.warehouseId!!)
+                val stock =  stockRepository.findByWarehouseAndProduct(warehouse,item.productId)
+                if (  stock == null ) {
+                    val newStock = Stock(
+                        warehouse,
+                        item.productId,
+                        item.amount.toLong(),
+                        item.amount.toLong(),
+                    )
+
+                    stockRepository.save(newStock)
+                } else {
+                    updateStockQuantity(stock, stock.quantity + item.amount)
+                }
             }
         }
     }
