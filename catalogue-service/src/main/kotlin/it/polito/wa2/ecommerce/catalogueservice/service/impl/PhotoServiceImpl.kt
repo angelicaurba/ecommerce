@@ -24,8 +24,9 @@ class PhotoServiceImpl : PhotoService{
     @Autowired lateinit var productService: ProductService
 
     override fun getPictureByProductId(productId: String): Mono<ResponseEntity<Any>> {
-        productService.getProductByIdOrThrowException(productId)
-        val result = photoRepository.findPhotoByProductId(productId)
+        val result = productService.getProductByIdOrThrowException(productId).flatMap {
+            photoRepository.findPhotoByProductId(productId)
+        }
 
         return result
             .switchIfEmpty (Mono.error(NotFoundException("There is no photo for product $productId")))
@@ -40,14 +41,17 @@ class PhotoServiceImpl : PhotoService{
     }
 
     @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
-    override fun updatePictureByProductId(productId: String, format: String, file: Mono<Binary>) {
-        productService.getProductByIdOrThrowException(productId)
-       file.map {
-           val newPhoto = Photo(null, format,
-                it,
-                productId
-            )
-            photoRepository.save(newPhoto)
-        }
+    override fun updatePictureByProductId(productId: String, format: String, file: Mono<Binary>) : Mono<Void>{
+        return productService.getProductByIdOrThrowException(productId)
+            .doOnNext {
+                file.map {
+                    val newPhoto = Photo(
+                        null, format,
+                        it,
+                        productId
+                    )
+                    photoRepository.save(newPhoto)
+                }
+            }.then()
     }
 }

@@ -110,8 +110,8 @@ class ProductServiceImpl : ProductService {
     }
 
     @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
-    override fun deleteProduct(productId: String) {
-        getProductByIdOrThrowException(productId).map {
+    override fun deleteProduct(productId: String) : Mono<Void> {
+        return getProductByIdOrThrowException(productId).flatMap {
             productRepository.delete(it)
         }
     }
@@ -123,8 +123,9 @@ class ProductServiceImpl : ProductService {
     }
 
     override fun getWarehousesContainingProduct(productId: String): Flux<String> {
-        getProductByIdOrThrowException(productId)
-        return request.doGetReactive("http://warehouse-service/warehouses?productID=$productId", String::class.java).toFlux()
+        return getProductByIdOrThrowException(productId)
+            .flatMapMany {
+                request.doGetReactive("http://warehouse-service/warehouses/?productID=$productId", String::class.java).toFlux()
+            }
     }
-
 }

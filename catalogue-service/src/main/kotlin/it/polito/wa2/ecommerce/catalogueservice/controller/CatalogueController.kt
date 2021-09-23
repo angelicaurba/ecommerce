@@ -83,8 +83,8 @@ class CatalogueController {
     @ResponseStatus(HttpStatus.OK)
     fun deleteProduct(
         @PathVariable("productId") productId: String
-    ) {
-        productService.deleteProduct(productId)
+    ) : Mono<Void>{
+        return productService.deleteProduct(productId)
     }
 
     @GetMapping("/{productId}/picture")
@@ -99,8 +99,8 @@ class CatalogueController {
         @PathVariable("productId") productId: String,
         @RequestHeader("Content-Type") format: String,
         @RequestBody file: Mono<Binary>
-    ) {
-        photoService.updatePictureByProductId(productId, format, file)
+    ) : Mono<Void>{
+        return photoService.updatePictureByProductId(productId, format, file)
     }
 
     @GetMapping("/{productId}/warehouses")

@@ -20,8 +20,7 @@ class CheckProductId : RewriteFunction<StockRequestDTO, StockRequestDTO> {
         if (u.productID == null)
             return Mono.error(BadRequestException("Stock productID can not be null"))
 
-        productService.getProductByIdOrThrowException(u.productID!!)
-        return Mono.just(u)
+        return productService.getProductByIdOrThrowException(u.productID!!).map { u }
     }
 
 }

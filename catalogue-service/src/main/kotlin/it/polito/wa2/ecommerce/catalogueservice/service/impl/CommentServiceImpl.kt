@@ -54,7 +54,9 @@ class CommentServiceImpl: CommentService {
         }
 
     override fun getCommentsByProductId(productId: String): Flux<CommentDTO> {
-        productService.getProductByIdOrThrowException(productId)
-        return commentRepository.findByProductId(productId).map { it.toDTO() }
+        return productService.getProductByIdOrThrowException(productId)
+            .flatMapMany{
+                commentRepository.findByProductId(productId).map { it.toDTO() }
+            }
     }
 }

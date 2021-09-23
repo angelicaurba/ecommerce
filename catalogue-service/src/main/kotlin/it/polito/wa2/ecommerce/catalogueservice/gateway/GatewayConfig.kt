@@ -83,7 +83,9 @@ class GatewayConfig {
                         f.circuitBreaker { c -> c.setFallbackUri("forward:/failure") }
                         f.filter { exchange, chain ->
                             productService.getProductByIdOrThrowException(exchange.request.path.elements().last().value())
-                            chain.filter(exchange)
+                                .flatMap {
+                                    chain.filter(exchange)
+                                }
                         }
                     }
                     .uri("lb://warehouse-service")

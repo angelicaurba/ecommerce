@@ -18,7 +18,7 @@ interface ProductService {
     fun addProduct(productRequest: Mono<ProductRequestDTO>, productId: String? = null): Mono<ProductDTO>
     fun updateOrCreateProduct(productId: String, productRequest: Mono<ProductRequestDTO>): Mono<ProductDTO>
     fun updateProductFields(productId: String, productRequest: Mono<ProductRequestDTO>): Mono<ProductDTO>
-    fun deleteProduct(productId: String)
+    fun deleteProduct(productId: String): Mono<Void>
     fun getProductByIdOrThrowException(productId: String): Mono<Product>
     fun getWarehousesContainingProduct(productId: String): Flux<String>
 }
