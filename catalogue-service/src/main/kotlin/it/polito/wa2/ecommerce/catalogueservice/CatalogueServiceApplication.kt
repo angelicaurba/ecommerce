@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 import org.springframework.context.annotation.Bean
+import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
@@ -33,6 +34,7 @@ import java.util.*
 @EnableEurekaClient
 @EnableReactiveMethodSecurity
 @EnableWebFluxSecurity
+@EnableReactiveMongoRepositories
 class CatalogueServiceApplication {
 
     @Bean
