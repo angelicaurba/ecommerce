@@ -185,6 +185,8 @@ class MongoConfig : AbstractReactiveMongoConfiguration() {
 
     override fun reactiveMongoClient() = mongoClient()
 
+    override fun autoIndexCreation() = true
+
     @Bean
     fun mongoClient(): MongoClient = MongoClients.create("mongodb://$host:$port")
 
