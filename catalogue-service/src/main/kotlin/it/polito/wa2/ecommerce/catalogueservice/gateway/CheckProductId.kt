@@ -18,10 +18,9 @@ class CheckProductId : RewriteFunction<StockRequestDTO, StockRequestDTO> {
 
     override fun apply(t: ServerWebExchange?, u: StockRequestDTO): Publisher<StockRequestDTO> {
         if (u.productID == null)
-            throw BadRequestException("Stock productID can not be null")
+            return Mono.error(BadRequestException("Stock productID can not be null"))
 
         productService.getProductByIdOrThrowException(u.productID!!)
-
         return Mono.just(u)
     }
 
