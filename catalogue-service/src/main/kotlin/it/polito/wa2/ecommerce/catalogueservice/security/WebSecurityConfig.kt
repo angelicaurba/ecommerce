@@ -93,8 +93,10 @@ class WebfluxSecurityConfig {
 }
 
 private val handler = {
-        swe: ServerWebExchange, e : Exception ->
-    val body = ErrorMessageDTO(e, HttpStatus.UNAUTHORIZED, swe.request.path.toString())
+    swe: ServerWebExchange, e : Exception ->
+        println(e)
+        println(e.message)
+        val body = ErrorMessageDTO(e, HttpStatus.UNAUTHORIZED, swe.request.path.toString())
         swe.response.statusCode = HttpStatus.UNAUTHORIZED
         swe.response.headers.contentType = MediaType.APPLICATION_JSON
         swe.response.writeWith(
