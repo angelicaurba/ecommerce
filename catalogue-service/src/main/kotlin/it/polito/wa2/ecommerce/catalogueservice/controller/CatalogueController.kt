@@ -9,8 +9,10 @@ import it.polito.wa2.ecommerce.catalogueservice.service.CommentService
 import it.polito.wa2.ecommerce.catalogueservice.service.PhotoService
 import it.polito.wa2.ecommerce.catalogueservice.service.ProductService
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
+import org.bson.types.Binary
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -91,12 +93,12 @@ class CatalogueController {
         return photoService.getPictureByProductId(productId)
     }
 
-    @PostMapping("/{productId}/picture")
+    @PostMapping("/{productId}/picture", consumes = [MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE])
     @ResponseStatus(HttpStatus.OK)
     fun updatePictureByProductId(
         @PathVariable("productId") productId: String,
         @RequestHeader("Content-Type") format: String,
-        @RequestBody file: MultipartFile
+        @RequestBody file: Binary
     ) {
         photoService.updatePictureByProductId(productId, format, file)
     }

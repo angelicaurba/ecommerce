@@ -38,10 +38,10 @@ class PhotoServiceImpl : PhotoService{
     }
 
     @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
-    override fun updatePictureByProductId(productId: String, format: String, file: MultipartFile) {
+    override fun updatePictureByProductId(productId: String, format: String, file: Binary) {
         productService.getProductByIdOrThrowException(productId)
         val newPhoto = Photo(null, format,
-            Binary(BsonBinarySubType.BINARY, file.bytes),
+            file,
             productId
         )
 
