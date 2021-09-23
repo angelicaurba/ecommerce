@@ -19,6 +19,7 @@ import it.polito.wa2.ecommerce.warehouseservice.exception.StockNotFound
 import it.polito.wa2.ecommerce.warehouseservice.repository.StockRepository
 import it.polito.wa2.ecommerce.warehouseservice.service.StockService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -63,6 +64,7 @@ class StockServiceImpl: StockService {
         return stock
     }
 
+    @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     override fun updateStockFields(warehouseId: String, productID: String, stockRequestDTO: StockRequestDTO): StockDTO {
 
         if ( warehouseId != stockRequestDTO.warehouseID || productID != stockRequestDTO.productID )
@@ -80,6 +82,7 @@ class StockServiceImpl: StockService {
         return stockRepository.save(stock).toDTO()
     }
 
+    @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     override fun updateOrCreateStock(
         warehouseId: String,
         productID: String,
@@ -109,7 +112,7 @@ class StockServiceImpl: StockService {
             return addStock(warehouseId, stockRequestDTO)
     }
 
-
+    @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     override fun addStock(warehouseID: String, stockRequest: StockRequestDTO): StockDTO {
         val warehouse = warehouseService.getWarehouseOrThrowException(stockRequest.warehouseID!!)
 
@@ -142,6 +145,7 @@ class StockServiceImpl: StockService {
         return stockRepository.findAllByWarehouse(warehouse,page).toList().map { it.toDTO() }
     }
 
+    @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     override fun deleteStockByWarehouseIdAndProductId(warehouseId: String, productID: String) {
         val stock = getStockOrThrowException(warehouseId,productID)
         stockRepository.delete(stock)

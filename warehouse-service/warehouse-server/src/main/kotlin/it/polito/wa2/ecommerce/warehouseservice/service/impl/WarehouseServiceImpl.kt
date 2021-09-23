@@ -10,6 +10,7 @@ import it.polito.wa2.ecommerce.warehouseservice.repository.WarehouseRepository
 import it.polito.wa2.ecommerce.warehouseservice.service.WarehouseService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional
 
@@ -23,11 +24,13 @@ class WarehouseServiceImpl : WarehouseService {
         return warehouseRepository.findByIdOrNull(warehouseId.parseID()) ?: throw WarehouseNotFound(warehouseId)
     }
 
+    @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     override fun deleteWarehouseById(warehouseId: String) {
         val warehouse = getWarehouseOrThrowException(warehouseId)
         warehouseRepository.delete(warehouse)
     }
 
+    @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     override fun updateWarehouseFields(warehouseId: String, warehouseRequest: WarehouseRequestDTO): WarehouseDTO {
         val warehouse = getWarehouseOrThrowException(warehouseId)
 
@@ -38,6 +41,7 @@ class WarehouseServiceImpl : WarehouseService {
         return warehouseRepository.save(warehouse).toDTO()
     }
 
+    @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     override fun updateOrCreateWarehouse(warehouseId: String, warehouseRequest: WarehouseRequestDTO): WarehouseDTO {
 
         if ( warehouseRepository.findById(warehouseId.parseID()).isPresent ){
@@ -51,8 +55,8 @@ class WarehouseServiceImpl : WarehouseService {
             return addWarehouse(warehouseRequest, warehouseId)
     }
 
+    @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     override fun addWarehouse(warehouseRequest: WarehouseRequestDTO, warehouseId: String?): WarehouseDTO {
-        // TODO handle warehouseId : save + query custom to update id
         val newWarehouse = Warehouse(
             warehouseRequest.name!!,
             warehouseRequest.address!!,
