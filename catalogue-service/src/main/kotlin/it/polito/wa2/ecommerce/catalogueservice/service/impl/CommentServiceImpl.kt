@@ -15,7 +15,9 @@ import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import reactor.kotlin.core.publisher.toMono
 
 @Service
 @Transactional
@@ -24,22 +26,34 @@ class CommentServiceImpl: CommentService {
     @Autowired lateinit var productService: ProductService
     @Autowired lateinit var productRepository: ProductRepository
 
-    override fun addComment(productId: String, comment: AddCommentDTO): Mono<ProductDTO> {
-        val principal =  ReactiveSecurityContextHolder.getContext().map{
+    override fun addComment(productId: String, comment: Mono<AddCommentDTO>): Mono<ProductDTO> {
+        val newComment = ReactiveSecurityContextHolder.getContext().map{
             it.authentication.principal  as JwtTokenDetails
-        }
-        if(productId != comment.productId)
-            throw BadRequestException("Product id of request url and request body should match")
-        val product = productService.getProductByIdOrThrowException(productId)
-        return principal.map {
-            val addedComment = commentRepository.save(comment.toEntity(it.username))
-            product.numStars += addedComment.stars
-            product.numRatings++
-            productRepository.save(product).toDTO()
-        }
-    }
+        }.zipWith(
+            comment
+        ).map {
+            val c = it.t2
+            val p = it.t1
+            if (productId != c.productId)
+                Mono.error<BadRequestException>(BadRequestException("Product id of request url and request body should match"))
 
-    override fun getCommentsByProductId(productId: String): List<CommentDTO> {
+            c.toEntity(p.username)
+        }
+
+        val newProduct = newComment.zipWith(
+            productService.getProductByIdOrThrowException(productId)
+        ).map {
+            val c = it.t1
+            val p = it.t2
+            p.numStars += c.stars
+            p.numRatings++
+            commentRepository.save(c)
+            p
+            }
+        return productRepository.insert(newProduct).map{ it.toDTO() }.toMono()
+        }
+
+    override fun getCommentsByProductId(productId: String): Flux<CommentDTO> {
         productService.getProductByIdOrThrowException(productId)
         return commentRepository.findByProductId(productId).map { it.toDTO() }
     }
