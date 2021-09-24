@@ -11,6 +11,7 @@ import it.polito.wa2.ecommerce.catalogueservice.repository.PhotoRepository
 import it.polito.wa2.ecommerce.catalogueservice.repository.ProductRepository
 import org.bson.Document
 import org.bson.types.Binary
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -48,6 +49,9 @@ import java.util.*
 @EnableWebFluxSecurity
 @EnableReactiveMongoRepositories
 class CatalogueServiceApplication {
+
+    @Autowired
+    lateinit var mongoTemplate: ReactiveMongoTemplate
 
     @Bean
     fun populateDB(
@@ -156,9 +160,18 @@ class CatalogueServiceApplication {
                 "4"
             )
 
+            val index: IndexDefinition = CompoundIndexDefinition(
+                Document()
+                    .append("productId", 1)
+                    .append("authorUsername", 1)
+            )
+                .unique()
+                .named("productId_authorUsername")
+
             commentRepository.deleteAll()
                 .then(photoRepository.deleteAll())
                 .then(productRepository.deleteAll())
+                .then(mongoTemplate.indexOps(Comment::class.java).ensureIndex(index))
                 .then(productRepository.save(p1))
                 .then(productRepository.save(p2))
                 .then(productRepository.save(p3))
@@ -199,18 +212,6 @@ class MongoConfig : AbstractReactiveMongoConfiguration() {
         mongoConverter: MappingMongoConverter
     ): ReactiveMongoTemplate = ReactiveMongoTemplate(mongoClient(), databaseName)
 
-    @Bean
-    fun initIndexes(mongoTemplate: ReactiveMongoTemplate) {
-
-        val index: IndexDefinition = CompoundIndexDefinition(
-                Document()
-                .append("productId", 1)
-                .append("authorUsername", 1)
-        )
-            .unique()
-            .named("productId_authorUsername")
-        mongoTemplate.indexOps(Comment::class.java).ensureIndex(index)
-    }
 }
 
 fun main(args: Array<String>) {
