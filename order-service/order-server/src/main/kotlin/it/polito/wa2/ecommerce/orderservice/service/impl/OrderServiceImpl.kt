@@ -4,6 +4,7 @@ import it.polito.wa2.ecommerce.common.Rolename
 import it.polito.wa2.ecommerce.common.constants.mailTopic
 import it.polito.wa2.ecommerce.common.constants.orderRequestTopic
 import it.polito.wa2.ecommerce.common.constants.paymentTopic
+import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.common.parseID
 import it.polito.wa2.ecommerce.common.saga.service.MessageService
 import it.polito.wa2.ecommerce.common.saga.service.ProcessingLogService
@@ -86,6 +87,8 @@ class OrderServiceImpl: OrderService {
         )
 
         val addedOrder = orderRepository.save(newOrder)
+        if(orderRequest.deliveryItems.size == 3)
+            throw BadRequestException("prova di eccezione")
 
         orderRequest.deliveryItems.map { it.toEntity() }.forEach {
             it.order = addedOrder
