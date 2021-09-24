@@ -45,9 +45,4 @@ class ControllerAdvisor {
         return Mono.just(ErrorMessageDTO(e, HttpStatus.SERVICE_UNAVAILABLE, serverWebExchange.request.path.toString()))
     }
 
-    @ResponseStatus(value= HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler( value=[Exception::class] )
-    fun genericExceptionHandler(serverWebExchange: ServerWebExchange, e: Exception): Mono<ErrorMessageDTO> {
-        return Mono.just(ErrorMessageDTO(e, HttpStatus.INTERNAL_SERVER_ERROR, serverWebExchange.request.path.toString()))
-    }
 }

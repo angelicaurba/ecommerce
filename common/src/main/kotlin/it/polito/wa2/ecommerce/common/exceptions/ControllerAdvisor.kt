@@ -41,10 +41,4 @@ class ControllerAdvisor {
         return ErrorMessageDTO(e, HttpStatus.SERVICE_UNAVAILABLE, req.requestURI)
     }
 
-//    @ResponseStatus(value= HttpStatus.INTERNAL_SERVER_ERROR)
-//    @ExceptionHandler( value=[Exception::class] )
-//    fun genericExceptionHandler(req: HttpServletRequest, e: Exception): ErrorMessageDTO {
-//        return ErrorMessageDTO(e, HttpStatus.INTERNAL_SERVER_ERROR, req.requestURI)
-//    }
-
 }
