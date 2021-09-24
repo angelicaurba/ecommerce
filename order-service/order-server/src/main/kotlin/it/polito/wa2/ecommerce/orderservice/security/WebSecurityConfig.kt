@@ -29,7 +29,11 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
 
        http
            .authorizeRequests()
-           .anyRequest()
+           .antMatchers("/purchases/**")
+           .permitAll()
+           .and()
+           .authorizeRequests()
+           .antMatchers("/orders/**")
            .authenticated()
 
        http
