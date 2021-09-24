@@ -35,6 +35,16 @@ data class Product(
     @field:NotNull
     var creationDate: Date = Date()
 ) {
+
+    init {
+        price.setScale(2, RoundingMode.HALF_EVEN)
+    }
+
+    @JvmName("setPrice")
+    fun setPrice(newPrice: BigDecimal){
+        price = newPrice.setScale(2, RoundingMode.HALF_EVEN)
+    }
+
     fun toDTO(): ProductDTO {
         val rating = if(numRatings == 0L) BigDecimal.valueOf(0).setScale(2, RoundingMode.HALF_EVEN) else BigDecimal.valueOf(numStars.toDouble()/numRatings.toDouble()).setScale(2, RoundingMode.HALF_EVEN)
         return ProductDTO(
