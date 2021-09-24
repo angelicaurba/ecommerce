@@ -32,7 +32,7 @@ class PhotoServiceImpl : PhotoService {
         return result
             .switchIfEmpty(Mono.error(NotFoundException("There is no photo for product $productId")))
             .map {
-                val format = "image/" + it.format
+                val format = it.format
                 val image = it.image
 
                 ResponseEntity.ok()

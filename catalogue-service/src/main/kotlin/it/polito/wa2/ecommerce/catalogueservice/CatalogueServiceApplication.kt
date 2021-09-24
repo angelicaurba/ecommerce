@@ -155,7 +155,7 @@ class CatalogueServiceApplication {
 
             val photo1 = Photo(
                 "1",
-                "jpg",
+                "image/jpg",
                 image,
                 "4"
             )
