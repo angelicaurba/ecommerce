@@ -12,6 +12,7 @@ import org.springframework.boot.runApplication
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 import org.springframework.context.annotation.Bean
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
+import org.springframework.transaction.annotation.EnableTransactionManagement
 import java.math.BigDecimal
 
 @SpringBootApplication(scanBasePackages = [
@@ -24,6 +25,7 @@ import java.math.BigDecimal
         CommonApplication::class
     ])
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableTransactionManagement
 class OrderServerApplication {
 
     @Bean
