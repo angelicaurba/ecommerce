@@ -99,7 +99,7 @@ class CatalogueController {
     @ResponseStatus(HttpStatus.OK)
     fun updatePictureByProductId(
         @PathVariable("productId") productId: String,
-        @RequestParam("image") file: Mono<MultipartFile>
+        @RequestParam("image") file: MultipartFile
     ) : Mono<Void>{
         return photoService.updatePictureByProductId(productId, file)
     }
