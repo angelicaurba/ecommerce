@@ -115,6 +115,14 @@ class OrderServiceImpl: OrderService {
 
         val order = getOrderOrThrowException(orderId)
         order.updateStatus(updateOrderRequest.status)
+
+        val mail = MailDTO(
+            order.buyerId, null,
+            "Your order's status has been correctly updated: $orderId",
+            "The order's status has been correctly updated to ${order.status}"
+        )
+        messageService.publish(mail, "OrderStatusUpdated", mailTopic)
+
         return orderRepository.save(order).toDTO()
     }
 
@@ -126,7 +134,7 @@ class OrderServiceImpl: OrderService {
         order.updateStatus(Status.CANCELED)
         orderRepository.save(order)
 
-        val mail: MailDTO = MailDTO(
+        val mail = MailDTO(
             order.buyerId, null,
             "Your order has been correctly canceled: $orderId",
             "The order has been correctly canceled"
