@@ -43,7 +43,7 @@ import java.sql.SQLIntegrityConstraintViolationException
 import java.util.*
 
 @Service
-@Transactional(rollbackFor = [Exception::class, java.lang.Exception::class])
+@Transactional
 class OrderServiceImpl: OrderService {
 
     @Autowired
