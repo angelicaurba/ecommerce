@@ -74,7 +74,7 @@ class ProductServiceImpl : ProductService {
                 val req = it.t2
                 val product = it.t1
                 if (product.id == null)
-                    addProduct(productRequest, productId)
+                    addProduct(Mono.just(req), productId)
                 else{
                     product.name = req.name!!
                     product.description = req.description!!

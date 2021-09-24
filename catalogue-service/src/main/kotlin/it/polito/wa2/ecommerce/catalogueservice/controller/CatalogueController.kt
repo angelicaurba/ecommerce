@@ -66,7 +66,7 @@ class CatalogueController {
     @ResponseStatus(HttpStatus.OK)
     fun updateOrCreateProduct(
         @PathVariable("productId") productId: String,
-        @RequestBody @Valid  productRequest: Mono<ProductRequestDTO>
+        @RequestBody @Valid productRequest: Mono<ProductRequestDTO>
     ): Mono<ProductDTO> {
         return productService.updateOrCreateProduct(productId, productRequest)
     }
