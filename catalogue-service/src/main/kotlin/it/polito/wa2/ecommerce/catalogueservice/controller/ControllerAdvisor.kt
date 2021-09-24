@@ -6,6 +6,7 @@ import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.common.exceptions.NotFoundException
 import it.polito.wa2.ecommerce.common.exceptions.ServiceUnavailable
+import org.springframework.dao.DuplicateKeyException
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -21,7 +22,7 @@ class ControllerAdvisor {
 
     @ResponseStatus(value= HttpStatus.BAD_REQUEST)
     @ExceptionHandler( value=[BadRequestException::class, ConstraintViolationException::class,
-        WebExchangeBindException::class, ServerWebInputException::class] )
+        WebExchangeBindException::class, ServerWebInputException::class, DuplicateKeyException::class] )
     fun badRequestExceptionHandler( e: Exception, serverWebExchange: ServerWebExchange): Mono<ErrorMessageDTO> {
         return Mono.just(ErrorMessageDTO(e, HttpStatus.BAD_REQUEST, serverWebExchange.request.path.toString()))
     }
