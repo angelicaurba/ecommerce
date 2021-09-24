@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.http.codec.multipart.FilePart
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import reactor.core.publisher.Flux
@@ -96,15 +97,13 @@ class CatalogueController {
         return photoService.getPictureByProductId(productId)
     }
 
-    @PostMapping("/{productId}/picture")
+    @PostMapping("/{productId}/picture", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     @ResponseStatus(HttpStatus.OK)
-    @Consumes(MediaType.MULTIPART_FORM_DATA_VALUE)
     fun updatePictureByProductId(
         @PathVariable("productId") productId: String,
-        @RequestHeader("Content-Type") format:String,
-        @RequestBody file: MultipartFile
+        @RequestPart("image") file: FilePart
     ) : Mono<Void>{
-        return photoService.updatePictureByProductId(productId, format, file)
+        return photoService.updatePictureByProductId(productId, file)
     }
 
     @GetMapping("/{productId}/warehouses")

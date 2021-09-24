@@ -5,17 +5,16 @@ import it.polito.wa2.ecommerce.catalogueservice.repository.PhotoRepository
 import it.polito.wa2.ecommerce.catalogueservice.service.PhotoService
 import it.polito.wa2.ecommerce.catalogueservice.service.ProductService
 import it.polito.wa2.ecommerce.common.exceptions.NotFoundException
-import org.bson.BsonBinarySubType
 import org.bson.types.Binary
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.core.io.buffer.DataBufferUtils
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.http.codec.multipart.FilePart
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.multipart.MultipartFile
 import reactor.core.publisher.Mono
-import reactor.kotlin.core.publisher.switchIfEmpty
 
 @Service
 @Transactional
@@ -41,18 +40,27 @@ class PhotoServiceImpl : PhotoService{
     }
 
     @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
-    override fun updatePictureByProductId(productId: String, format:String, file: MultipartFile) : Mono<Void>{
+    override fun updatePictureByProductId(productId: String, file: FilePart) : Mono<Void>{
         return productService.getProductByIdOrThrowException(productId)
             .flatMap {
                 photoRepository.deletePhotoByProductId(productId)
                     .flatMap {
-                        val newPhoto = Photo(
-                            null, format,
-                            Binary(file.bytes),
-                            productId
-                        )
-                        photoRepository.save(newPhoto).then()
+                        val contentType = file.headers().contentType
+                        DataBufferUtils.join (file.content())
+                            .flatMap {
+
+                                val bytes = ByteArray(it.readableByteCount())
+                                it.read(bytes)
+                                DataBufferUtils.release(it)
+
+                                val newPhoto = Photo(
+                                    null, contentType.toString(),
+                                    Binary(bytes),
+                                    productId
+                                )
+                                photoRepository.save(newPhoto).then()
+                            }
+                            }
                         }
             }
     }
-}
