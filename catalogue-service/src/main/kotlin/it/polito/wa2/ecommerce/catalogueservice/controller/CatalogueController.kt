@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import javax.validation.Valid
@@ -94,14 +95,13 @@ class CatalogueController {
         return photoService.getPictureByProductId(productId)
     }
 
-    @PostMapping("/{productId}/picture", consumes = [MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE])
+    @PostMapping("/{productId}/picture")
     @ResponseStatus(HttpStatus.OK)
     fun updatePictureByProductId(
         @PathVariable("productId") productId: String,
-        @RequestHeader("Content-Type") format: String,
-        @RequestBody file: Mono<Binary>
+        @RequestParam("image") file: Mono<MultipartFile>
     ) : Mono<Void>{
-        return photoService.updatePictureByProductId(productId, format, file)
+        return photoService.updatePictureByProductId(productId, file)
     }
 
     @GetMapping("/{productId}/warehouses")
