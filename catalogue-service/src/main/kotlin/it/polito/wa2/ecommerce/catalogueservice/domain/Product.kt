@@ -12,7 +12,7 @@ import javax.validation.constraints.Min
 import javax.validation.constraints.NotNull
 
 @Document(collection = "products")
-data class Product(
+class Product(
     @Id
     @field:NotNull
     val id: String? = null,
@@ -22,10 +22,7 @@ data class Product(
     var description: String,
     @field:NotNull
     var category: Category,
-    @field:NotNull
-    @field:DecimalMin("0.00", inclusive = true)
-    @field:Digits(fraction = 2, integer = 10)
-    var price: BigDecimal,
+    price: BigDecimal,
     @field:NotNull
     @field:Min(0)
     var numStars: Long,
@@ -35,15 +32,14 @@ data class Product(
     @field:NotNull
     var creationDate: Date = Date()
 ) {
-
-    init {
-        price.setScale(2, RoundingMode.HALF_EVEN)
+    @field:NotNull
+    @field:DecimalMin("0.00", inclusive = true)
+    @field:Digits(fraction = 2, integer = 10)
+    var price: BigDecimal = price.setScale(2, RoundingMode.HALF_EVEN)
+    set(value) {
+        field = value.setScale(2, RoundingMode.HALF_EVEN)
     }
 
-    @JvmName("setPrice")
-    fun setPrice(newPrice: BigDecimal){
-        price = newPrice.setScale(2, RoundingMode.HALF_EVEN)
-    }
 
     fun toDTO(): ProductDTO {
         val rating = if(numRatings == 0L) BigDecimal.valueOf(0).setScale(2, RoundingMode.HALF_EVEN) else BigDecimal.valueOf(numStars.toDouble()/numRatings.toDouble()).setScale(2, RoundingMode.HALF_EVEN)
