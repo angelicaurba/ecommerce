@@ -52,7 +52,7 @@ abstract class BaseKafkaConsumerConfig<T>(private val myClass: Class<T>) : Kafka
         val factory: ConcurrentKafkaListenerContainerFactory<String, T> =
             ConcurrentKafkaListenerContainerFactory<String, T>()
         factory.consumerFactory = consumerFactory()
-        factory.setErrorHandler(KafkaErrorHandler())
+//        factory.setErrorHandler(KafkaErrorHandler())
         return factory
     }
 

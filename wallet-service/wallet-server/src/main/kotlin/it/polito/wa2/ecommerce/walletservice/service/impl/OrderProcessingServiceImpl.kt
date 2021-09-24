@@ -1,6 +1,7 @@
 package it.polito.wa2.ecommerce.walletservice.service.impl
 
 import it.polito.wa2.ecommerce.common.constants.orderStatusTopic
+import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.common.parseID
 import it.polito.wa2.ecommerce.common.saga.service.MessageService
 import it.polito.wa2.ecommerce.common.saga.service.ProcessingLogService
@@ -116,7 +117,21 @@ class OrderProcessingServiceImpl: OrderProcessingService {
             //REFUND
             val previousTransactions =
                 transactionRepository.findByFromWalletAndOperationReferenceAndType(userWallet, orderId)
+
+            println("########################### num transactions ${previousTransactions.size}")
             for (previousTransaction in previousTransactions) {
+
+
+                if(previousTransaction.toWallet == null)
+                    throw BadRequestException("è null toWallet della previousTransaction")
+
+                println("########################### toWallet.id ${previousTransaction.toWallet!!.getId()}")
+
+                if(previousTransaction.toWallet!!.getId() == null)
+                    throw BadRequestException("è null toWallet.id della previousTransaction")
+
+
+
 
                 val transaction = Transaction(
                     walletService.getWalletOrThrowException(previousTransaction.toWallet!!.getId()!!),
