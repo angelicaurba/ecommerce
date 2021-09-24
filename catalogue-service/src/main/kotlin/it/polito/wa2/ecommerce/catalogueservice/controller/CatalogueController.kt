@@ -1,6 +1,7 @@
 package it.polito.wa2.ecommerce.catalogueservice.controller
 
 import it.polito.wa2.ecommerce.catalogueservice.domain.Category
+import it.polito.wa2.ecommerce.catalogueservice.domain.Photo
 import it.polito.wa2.ecommerce.catalogueservice.dto.AddCommentDTO
 import it.polito.wa2.ecommerce.catalogueservice.dto.CommentDTO
 import it.polito.wa2.ecommerce.catalogueservice.dto.ProductDTO
@@ -102,7 +103,7 @@ class CatalogueController {
     fun updatePictureByProductId(
         @PathVariable("productId") productId: String,
         @RequestPart("image") file: FilePart
-    ) : Mono<Void>{
+    ) : Mono<Photo>{
         return photoService.updatePictureByProductId(productId, file)
     }
 

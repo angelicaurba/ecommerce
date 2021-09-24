@@ -40,7 +40,7 @@ class PhotoServiceImpl : PhotoService{
     }
 
     @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
-    override fun updatePictureByProductId(productId: String, file: FilePart) : Mono<Void>{
+    override fun updatePictureByProductId(productId: String, file: FilePart) : Mono<Photo>{
         return productService.getProductByIdOrThrowException(productId)
             .flatMap {
                 photoRepository.deletePhotoByProductId(productId)
@@ -58,7 +58,7 @@ class PhotoServiceImpl : PhotoService{
                                     Binary(bytes),
                                     productId
                                 )
-                                photoRepository.save(newPhoto).then()
+                                photoRepository.save(newPhoto)
                             }
                             }
                         }
