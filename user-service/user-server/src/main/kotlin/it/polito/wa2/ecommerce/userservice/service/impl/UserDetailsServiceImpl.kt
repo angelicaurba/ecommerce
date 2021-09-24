@@ -3,6 +3,7 @@ package it.polito.wa2.ecommerce.userservice.service.impl
 import it.polito.wa2.ecommerce.common.security.utils.JwtUtils
 import it.polito.wa2.ecommerce.common.Rolename
 import it.polito.wa2.ecommerce.common.constants.mailTopic
+import it.polito.wa2.ecommerce.common.constants.walletCreationTopic
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.common.parseID
@@ -209,10 +210,10 @@ class UserDetailsServiceImpl: UserDetailsService {
         val customerWalletRequest = CustomerWalletCreationRequestDTO(
             verificationToken.user!!.getId().toString()
         )
-//        messageService.publish(
-//            customerWalletRequest,
-//            "Customer wallet creation",
-//            walletCreationTopic
-//        )
+        messageService.publish(
+            customerWalletRequest,
+            "CustomerWalletCreation",
+            walletCreationTopic
+        )
     }
 }
