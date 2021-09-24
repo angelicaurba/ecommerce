@@ -56,17 +56,17 @@ class OrderProcessingServiceImpl: OrderProcessingService {
             return
 
         var status: OrderStatusDTO? = null
-        try {
+//        try {
             status = self.processOrderRequest(orderRequestDTO)
-        }
-        catch (e:Exception){
-            status = OrderStatusDTO(
-                orderRequestDTO.orderId,
-                ResponseStatus.FAILED,
-                e.message)
-            println("###################### $e")
-        }
-        finally {
+//        }
+//        catch (e:Exception){
+//            status = OrderStatusDTO(
+//                orderRequestDTO.orderId,
+//                ResponseStatus.FAILED,
+//                e.message)
+//            println("###################### $e")
+//        }
+//        finally {
             processingLogService.process(uuid)
             status?.also {
                 messageService.publish(it,
@@ -74,7 +74,7 @@ class OrderProcessingServiceImpl: OrderProcessingService {
                         EventTypeOrderStatus.OrderOk.toString()
                     else EventTypeOrderStatus.OrderPaymentFailed.toString(),
                     orderStatusTopic)
-            }
+//            }
         }
     }
 
