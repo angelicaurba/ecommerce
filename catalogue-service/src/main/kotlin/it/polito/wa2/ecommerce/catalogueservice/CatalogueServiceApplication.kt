@@ -53,11 +53,7 @@ class CatalogueServiceApplication {
     )
             : CommandLineRunner {
         return CommandLineRunner {
-
-            commentRepository.deleteAll()
-            photoRepository.deleteAll()
-            productRepository.deleteAll()
-
+            
             val now = Date()
             val nowMinusOne = Date(now.time - 1000 * 60 * 60)
             val nowMinusTwo = Date(now.time - 1000 * 60 * 60 * 2)
@@ -108,10 +104,6 @@ class CatalogueServiceApplication {
                 nowMinusFive
             )
 
-            productRepository.save(p1)
-            productRepository.save(p2)
-            productRepository.save(p3)
-            productRepository.save(p4)
 
             val c1 = Comment(
                 "1",
@@ -140,10 +132,6 @@ class CatalogueServiceApplication {
                 "customer1"
             )
 
-            commentRepository.save(c1)
-            commentRepository.save(c2)
-            commentRepository.save(c3)
-
             val imageUrl = "https://i.pinimg.com/736x/1b/2b/fa/1b2bfa193ec0b2e72af49991ea0aff1a.jpg"
             val url = URL(imageUrl)
             val stream: InputStream = url.openStream()
@@ -164,7 +152,18 @@ class CatalogueServiceApplication {
                 "4"
             )
 
-            photoRepository.save(photo1)
+            commentRepository.deleteAll()
+                .then(photoRepository.deleteAll())
+                .then(productRepository.deleteAll())
+                .then(productRepository.save(p1))
+                .then(productRepository.save(p2))
+                .then(productRepository.save(p3))
+                .then(productRepository.save(p4))
+                .then(commentRepository.save(c1))
+                .then(commentRepository.save(c2))
+                .then(commentRepository.save(c3))
+                .then(photoRepository.save(photo1))
+                .subscribe()
 
         }
     }
