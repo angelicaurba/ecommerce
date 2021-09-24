@@ -21,6 +21,7 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import javax.validation.Valid
 import javax.validation.constraints.Min
+import javax.ws.rs.Consumes
 
 
 const val DEFAULT_PAGE_SIZE = "10"
@@ -95,8 +96,9 @@ class CatalogueController {
         return photoService.getPictureByProductId(productId)
     }
 
-    @PostMapping("/{productId}/picture", consumes = [MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE])
+    @PostMapping("/{productId}/picture")
     @ResponseStatus(HttpStatus.OK)
+    @Consumes(MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE)
     fun updatePictureByProductId(
         @PathVariable("productId") productId: String,
         @RequestHeader("Content-Type") format:String,
