@@ -109,7 +109,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{token2}}",
+							"value": "{{token3}}",
 							"type": "string"
 						}
 					]
@@ -169,6 +169,44 @@
 			"response": []
 		},
 		{
+			"name": "Add order, using someone else wallet",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"buyerId\": \"2\",\r\n    \"buyerWalletId\": \"1\",\r\n    \"address\": \"Somewhere\",\r\n    \"deliveryItems\": [\r\n        {\r\n            \"productId\": \"3\",\r\n            \"amount\": 1\r\n        },\r\n        {\r\n            \"productId\": \"4\",\r\n            \"amount\": 2\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/orders/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"orders",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Add order OK",
 			"request": {
 				"method": "POST",
@@ -176,6 +214,62 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\r\n    \"buyerId\": \"1\",\r\n    \"buyerWalletId\": \"1\",\r\n    \"address\": \"Somewhere\",\r\n    \"deliveryItems\": [\r\n        {\r\n            \"productId\": \"3\",\r\n            \"amount\": 1\r\n        },\r\n        {\r\n            \"productId\": \"4\",\r\n            \"amount\": 2\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/orders/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"orders",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add order not found product",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"buyerId\": \"1\",\r\n    \"buyerWalletId\": \"1\",\r\n    \"address\": \"Somewhere\",\r\n    \"deliveryItems\": [\r\n        {\r\n            \"productId\": \"3\",\r\n            \"amount\": 1\r\n        },\r\n        {\r\n            \"productId\": \"5\",\r\n            \"amount\": 2\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/orders/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"orders",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add order Duplicated stock",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"buyerId\": \"1\",\r\n    \"buyerWalletId\": \"1\",\r\n    \"address\": \"Somewhere\",\r\n    \"deliveryItems\": [\r\n        {\r\n            \"productId\": \"3\",\r\n            \"amount\": 1\r\n        },\r\n        {\r\n            \"productId\": \"4\",\r\n            \"amount\": 2\r\n        },\r\n         {\r\n            \"productId\": \"4\",\r\n            \"amount\": 2\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -225,7 +319,7 @@
 			"response": []
 		},
 		{
-			"name": "Add order Not enough money Copy",
+			"name": "Add order Not enough money",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -452,6 +546,25 @@
 			"response": []
 		},
 		{
+			"name": "Cancel order in delivering",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/orders/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"orders",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Cancel order, already delivered",
 			"request": {
 				"auth": {
@@ -568,7 +681,25 @@
 					"function (err, response) { ",
 					"    pm.collectionVariables.set(\"token3\", response.headers.get(\"Authorization\").split(\" \")[1]);",
 					"    } ",
-					");"
+					");",
+					"",
+					"// for admin",
+					"/*pm.sendRequest({",
+					"url: 'http://localhost:8080/auth/signin',",
+					"method: 'POST',",
+					"header: {\"Content-Type\": \"application/json\"},",
+					"body: { ",
+					"    mode: 'raw',",
+					"    raw:JSON.stringify({",
+					"        \"username\":\"newCustomer\",",
+					"        \"password\":\"password\"",
+					"        })",
+					"    }  ",
+					"}, ",
+					"function (err, response) { ",
+					"    pm.collectionVariables.set(\"token4\", response.headers.get(\"Authorization\").split(\" \")[1]);",
+					"    } ",
+					");*/"
 				]
 			}
 		},
@@ -580,6 +711,24 @@
 					""
 				]
 			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token1",
+			"value": ""
+		},
+		{
+			"key": "token2",
+			"value": ""
+		},
+		{
+			"key": "token3",
+			"value": ""
+		},
+		{
+			"key": "token4",
+			"value": ""
 		}
 	]
 }
