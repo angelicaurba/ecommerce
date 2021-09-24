@@ -9,5 +9,5 @@ import reactor.core.publisher.Mono
 
 interface PhotoService {
     fun getPictureByProductId(productId: String): Mono<ResponseEntity<Any>>
-    fun updatePictureByProductId(productId: String, file: FilePart): Mono<Photo>
+    fun updatePictureByProductId(productId: String, file: FilePart): Mono<Void>
 }

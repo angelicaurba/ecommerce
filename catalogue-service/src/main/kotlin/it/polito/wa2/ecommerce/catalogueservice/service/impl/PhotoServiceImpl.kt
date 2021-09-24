@@ -18,9 +18,11 @@ import reactor.core.publisher.Mono
 
 @Service
 @Transactional
-class PhotoServiceImpl : PhotoService{
-    @Autowired lateinit var photoRepository: PhotoRepository
-    @Autowired lateinit var productService: ProductService
+class PhotoServiceImpl : PhotoService {
+    @Autowired
+    lateinit var photoRepository: PhotoRepository
+    @Autowired
+    lateinit var productService: ProductService
 
     override fun getPictureByProductId(productId: String): Mono<ResponseEntity<Any>> {
         val result = productService.getProductByIdOrThrowException(productId).flatMap {
@@ -28,7 +30,7 @@ class PhotoServiceImpl : PhotoService{
         }
 
         return result
-            .switchIfEmpty (Mono.error(NotFoundException("There is no photo for product $productId")))
+            .switchIfEmpty(Mono.error(NotFoundException("There is no photo for product $productId")))
             .map {
                 val format = "image/" + it.format
                 val image = it.image
@@ -36,31 +38,32 @@ class PhotoServiceImpl : PhotoService{
                 ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(format))
                     .body(image.data)
-        }
+            }
     }
 
     @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
-    override fun updatePictureByProductId(productId: String, file: FilePart) : Mono<Photo>{
+    override fun updatePictureByProductId(productId: String, file: FilePart): Mono<Void> {
+
+        val contentType = file.headers().contentType
+        val result = DataBufferUtils.join(file.content())
+            .flatMap {
+
+                val bytes = ByteArray(it.readableByteCount())
+                it.read(bytes)
+                DataBufferUtils.release(it)
+
+                val newPhoto = Photo(
+                    null, contentType.toString(),
+                    Binary(bytes),
+                    productId
+                )
+                photoRepository.save(newPhoto)
+            }
+
         return productService.getProductByIdOrThrowException(productId)
             .flatMap {
                 photoRepository.deletePhotoByProductId(productId)
-                    .flatMap {
-                        val contentType = file.headers().contentType
-                        DataBufferUtils.join (file.content())
-                            .flatMap {
-
-                                val bytes = ByteArray(it.readableByteCount())
-                                it.read(bytes)
-                                DataBufferUtils.release(it)
-
-                                val newPhoto = Photo(
-                                    null, contentType.toString(),
-                                    Binary(bytes),
-                                    productId
-                                )
-                                photoRepository.save(newPhoto)
-                            }
-                            }
-                        }
-            }
+                    .then(result)
+            }.then()
     }
+}

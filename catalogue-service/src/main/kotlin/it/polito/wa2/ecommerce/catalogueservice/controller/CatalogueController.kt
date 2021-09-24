@@ -103,7 +103,7 @@ class CatalogueController {
     fun updatePictureByProductId(
         @PathVariable("productId") productId: String,
         @RequestPart("image") file: FilePart
-    ) : Mono<Photo>{
+    ) : Mono<Void>{
         return photoService.updatePictureByProductId(productId, file)
     }
 
