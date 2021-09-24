@@ -1,6 +1,5 @@
 package it.polito.wa2.ecommerce.catalogueservice
 
-import com.mongodb.MongoClientSettings
 import com.mongodb.reactivestreams.client.MongoClient
 import com.mongodb.reactivestreams.client.MongoClients
 import it.polito.wa2.ecommerce.catalogueservice.domain.Category
@@ -10,6 +9,7 @@ import it.polito.wa2.ecommerce.catalogueservice.domain.Product
 import it.polito.wa2.ecommerce.catalogueservice.repository.CommentRepository
 import it.polito.wa2.ecommerce.catalogueservice.repository.PhotoRepository
 import it.polito.wa2.ecommerce.catalogueservice.repository.ProductRepository
+import org.bson.Document
 import org.bson.types.Binary
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.CommandLineRunner
@@ -18,10 +18,14 @@ import org.springframework.boot.runApplication
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.data.domain.Sort
 import org.springframework.data.mongodb.ReactiveMongoDatabaseFactory
 import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguration
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter
+import org.springframework.data.mongodb.core.index.CompoundIndexDefinition
+import org.springframework.data.mongodb.core.index.Index
+import org.springframework.data.mongodb.core.index.IndexDefinition
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
@@ -53,7 +57,7 @@ class CatalogueServiceApplication {
     )
             : CommandLineRunner {
         return CommandLineRunner {
-            
+
             val now = Date()
             val nowMinusOne = Date(now.time - 1000 * 60 * 60)
             val nowMinusTwo = Date(now.time - 1000 * 60 * 60 * 2)
@@ -194,6 +198,19 @@ class MongoConfig : AbstractReactiveMongoConfiguration() {
         databaseFactory: ReactiveMongoDatabaseFactory,
         mongoConverter: MappingMongoConverter
     ): ReactiveMongoTemplate = ReactiveMongoTemplate(mongoClient(), databaseName)
+
+    @Bean
+    fun initIndexes(mongoTemplate: ReactiveMongoTemplate) {
+
+        val index: IndexDefinition = CompoundIndexDefinition(
+                Document()
+                .append("productId", 1)
+                .append("authorUsername", 1)
+        )
+            .unique()
+            .named("productId_authorUsername")
+        mongoTemplate.indexOps(Comment::class.java).ensureIndex(index)
+    }
 }
 
 fun main(args: Array<String>) {
