@@ -560,8 +560,18 @@
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "image",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
 				"url": {
-					"raw": "localhost:8080/products/3/",
+					"raw": "localhost:8080/products/3/picture/",
 					"host": [
 						"localhost"
 					],
@@ -569,6 +579,7 @@
 					"path": [
 						"products",
 						"3",
+						"picture",
 						""
 					]
 				}
@@ -580,6 +591,16 @@
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "image",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
 				"url": {
 					"raw": "localhost:8080/products/4/picture",
 					"host": [
@@ -599,7 +620,24 @@
 			"name": "update picture of not existing product",
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "image",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
 				"url": {
 					"raw": "localhost:8080/products/5/picture",
 					"host": [
@@ -680,7 +718,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"title\":\"great product\",\r\n    \"body\":\"fantastic\",\r\n    \"stars\":4.5,\r\n    \"productId\":3\r\n}",
+					"raw": "{\r\n    \"title\":\"great product\",\r\n    \"body\":\"fantastic\",\r\n    \"stars\":4.5,\r\n    \"productId\":2\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -797,7 +835,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "{{token1}}",
+				"value": "{{token3}}",
 				"type": "string"
 			}
 		]
