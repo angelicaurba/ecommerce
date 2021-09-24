@@ -39,10 +39,11 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.sql.SQLIntegrityConstraintViolationException
 import java.util.*
 
 @Service
-@Transactional(rollbackFor = [Exception::class])
+@Transactional(rollbackFor = [Exception::class, java.lang.Exception::class])
 class OrderServiceImpl: OrderService {
 
     @Autowired
@@ -87,8 +88,6 @@ class OrderServiceImpl: OrderService {
         )
 
         val addedOrder = orderRepository.save(newOrder)
-        if(orderRequest.deliveryItems.size == 3)
-            throw BadRequestException("prova di eccezione")
 
         orderRequest.deliveryItems.map { it.toEntity() }.forEach {
             it.order = addedOrder
