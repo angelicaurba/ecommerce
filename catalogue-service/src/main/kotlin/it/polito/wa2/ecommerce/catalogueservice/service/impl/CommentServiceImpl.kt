@@ -31,13 +31,13 @@ class CommentServiceImpl: CommentService {
             it.authentication.principal  as JwtTokenDetails
         }.zipWith(
             comment
-        ).map {
+        ).flatMap {
             val c = it.t2
             val p = it.t1
             if (productId != c.productId)
-                Mono.error<BadRequestException>(BadRequestException("Product id of request url and request body should match"))
-
-            c.toEntity(p.username)
+                Mono.error(BadRequestException("Product id of request url and request body should match"))
+            else
+                Mono.just(c.toEntity(p.username))
         }
 
         return newComment.zipWith(

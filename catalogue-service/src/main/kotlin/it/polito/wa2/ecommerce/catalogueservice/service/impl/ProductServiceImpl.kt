@@ -93,7 +93,7 @@ class ProductServiceImpl : ProductService {
             ).flatMap {
                 val req = it.t2
                 val product = it.t1
-                
+
                 if (req.price != null && req.price < BigDecimal("0.00"))
                     Mono.error(BadRequestException("Negative price update not allowed"))
                 else{
