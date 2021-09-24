@@ -53,9 +53,10 @@ class WalletServiceImpl : WalletService {
     }
 
 
-    override fun getWalletOrThrowException(walletId: Long): Wallet {
+    override fun getWalletOrThrowException(walletId: Long, verifySecurity: Boolean): Wallet {
         val wallet = walletRepository.findByIdOrNull(walletId) ?: throw WalletNotFound(walletId)
-        identityVerifier.verifyUserIdentityOrIsAdmin(wallet.owner.parseID())
+        if (verifySecurity)
+            identityVerifier.verifyUserIdentityOrIsAdmin(wallet.owner.parseID())
         return wallet
     }
 

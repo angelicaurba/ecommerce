@@ -8,5 +8,5 @@ interface WalletService {
 
     fun getWalletById(id:String): WalletDTO
     fun addWallet(walletCreationRequest: WalletCreationRequestDTO, verifySecurity:Boolean = true): WalletDTO
-    fun getWalletOrThrowException(walletId: Long): Wallet
+    fun getWalletOrThrowException(walletId: Long, verifySecurity: Boolean = true): Wallet
 }

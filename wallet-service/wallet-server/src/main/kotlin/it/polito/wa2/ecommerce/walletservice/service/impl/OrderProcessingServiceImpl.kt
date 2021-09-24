@@ -57,17 +57,16 @@ class OrderProcessingServiceImpl: OrderProcessingService {
             return
 
         var status: OrderStatusDTO? = null
-//        try {
+        try {
             status = self.processOrderRequest(orderRequestDTO)
-//        }
-//        catch (e:Exception){
-//            status = OrderStatusDTO(
-//                orderRequestDTO.orderId,
-//                ResponseStatus.FAILED,
-//                e.message)
-//            println("###################### $e")
-//        }
-//        finally {
+        }
+        catch (e:Exception){
+            status = OrderStatusDTO(
+                orderRequestDTO.orderId,
+                ResponseStatus.FAILED,
+                e.message)
+        }
+        finally {
             processingLogService.process(uuid)
             status?.also {
                 messageService.publish(it,
@@ -75,7 +74,7 @@ class OrderProcessingServiceImpl: OrderProcessingService {
                         EventTypeOrderStatus.OrderOk.toString()
                     else EventTypeOrderStatus.OrderPaymentFailed.toString(),
                     orderStatusTopic)
-//            }
+            }
         }
     }
 
@@ -117,31 +116,15 @@ class OrderProcessingServiceImpl: OrderProcessingService {
             //REFUND
             val previousTransactions =
                 transactionRepository.findByFromWalletAndOperationReferenceAndType(userWallet, orderId)
-
-            println("########################### num transactions ${previousTransactions.size}")
             for (previousTransaction in previousTransactions) {
 
-
-                if(previousTransaction.toWallet == null)
-                    throw BadRequestException("è null toWallet della previousTransaction")
-
-                println("########################### toWallet.id ${previousTransaction.toWallet!!.getId()}")
-
-                if(previousTransaction.toWallet!!.getId() == null)
-                    throw BadRequestException("è null toWallet.id della previousTransaction")
-
-
-
-
                 val transaction = Transaction(
-                    walletService.getWalletOrThrowException(previousTransaction.toWallet!!.getId()!!),
+                    walletService.getWalletOrThrowException(previousTransaction.toWallet!!.getId()!!, false),
                     userWallet,
                     TransactionType.ORDER_REFUND,
                     previousTransaction.amount,
                     orderId
-
                 )
-
                 transactionService.processTransaction(transaction)
 
             }

@@ -106,12 +106,6 @@ class TransactionServiceImpl : TransactionService {
             }
             TransactionType.ORDER_REFUND -> {
 
-                if(transaction.toWallet == null)
-                    throw BadRequestException("è null toWallet")
-
-                if(transaction.fromWallet == null)
-                    throw BadRequestException("è null fromWallet")
-
                 if (transaction.fromWallet!!.walletType != WalletType.WAREHOUSE) {
                     throw BadRequestException("Refund must have a wallet from belonging to a warehouse")
                 }
