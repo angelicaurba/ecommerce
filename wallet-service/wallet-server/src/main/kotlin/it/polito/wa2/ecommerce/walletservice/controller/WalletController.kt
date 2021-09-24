@@ -1,14 +1,10 @@
 package it.polito.wa2.ecommerce.walletservice.controller
 
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
-import it.polito.wa2.ecommerce.common.saga.service.MessageServiceImpl
-import it.polito.wa2.ecommerce.walletservice.client.order.request.WalletOrderPaymentRequestDTO
-import it.polito.wa2.ecommerce.walletservice.client.order.request.WalletOrderRefundRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.transaction.request.RechargeRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.transaction.TransactionDTO
 import it.polito.wa2.ecommerce.walletservice.client.wallet.request.WalletCreationRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.wallet.WalletDTO
-import it.polito.wa2.ecommerce.walletservice.client.wallet.request.CustomerWalletCreationRequestDTO
 import it.polito.wa2.ecommerce.walletservice.service.TransactionService
 import it.polito.wa2.ecommerce.walletservice.service.WalletService
 import org.springframework.beans.factory.annotation.Autowired
@@ -33,6 +29,14 @@ class WalletController {
 
     private fun errorMapper (bindingResult: BindingResult): String {
         return bindingResult.allErrors.joinToString { it.toString() }
+    }
+
+    @GetMapping("/")
+    fun getAllWallets(@RequestParam("ownerId", required=false) ownerId: String?,
+                      @RequestParam("walletType", required=false) walletType: String?,
+                      @RequestParam("pageIndex", defaultValue = "1") @Min(1) pageIdx: Int,
+                      @RequestParam("pageSize", defaultValue = DEFAULT_PAGE_SIZE) @Min(1) pageSize: Int):List<WalletDTO>{
+        return walletService.getAllWallets(ownerId, walletType, pageIdx, pageSize)
     }
 
     @GetMapping("/{walletId}")

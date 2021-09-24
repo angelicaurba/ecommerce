@@ -1,8 +1,12 @@
 package it.polito.wa2.ecommerce.walletservice.service.impl
 
+import it.polito.wa2.ecommerce.common.Rolename
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
+import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
+import it.polito.wa2.ecommerce.common.getPageable
 import it.polito.wa2.ecommerce.common.parseID
 import it.polito.wa2.ecommerce.common.security.IdentityVerifier
+import it.polito.wa2.ecommerce.common.security.JwtTokenDetails
 import it.polito.wa2.ecommerce.walletservice.client.wallet.WalletDTO
 import it.polito.wa2.ecommerce.walletservice.client.wallet.request.CustomerWalletCreationRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.wallet.request.WalletCreationRequestDTO
@@ -14,6 +18,7 @@ import it.polito.wa2.ecommerce.walletservice.repository.WalletRepository
 import it.polito.wa2.ecommerce.walletservice.service.WalletService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional
 
@@ -58,6 +63,29 @@ class WalletServiceImpl : WalletService {
         if (verifySecurity)
             identityVerifier.verifyUserIdentityOrIsAdmin(wallet.owner.parseID())
         return wallet
+    }
+
+    override fun getAllWallets(ownerId: String?, walletType: String?, pageIdx: Int, pageSize: Int): List<WalletDTO> {
+        val page = getPageable(pageIdx, pageSize)
+        val principal = SecurityContextHolder.getContext().authentication.principal as JwtTokenDetails
+        if(principal.roles.contains(Rolename.ADMIN)){
+            var type :WalletType? = null
+            walletType?.let{
+                try {
+                    type =  WalletType.valueOf(it)
+                }catch (i:IllegalArgumentException){
+                    throw BadRequestException("Invalid wallet type $walletType")
+                }
+            }
+
+            return walletRepository.findByOwnerAndWalletType(ownerId, type, page).map{it.toDTO()}.toList()
+
+        }else{
+            if(walletType!=null || ownerId!=null){
+                throw ForbiddenException("Cannot access other wallets")
+            }
+            return walletRepository.findAll(page).map { it.toDTO() }.toList()
+        }
     }
 
 
