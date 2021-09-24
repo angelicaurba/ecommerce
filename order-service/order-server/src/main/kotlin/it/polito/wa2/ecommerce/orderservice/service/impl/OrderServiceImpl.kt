@@ -24,7 +24,6 @@ import it.polito.wa2.ecommerce.orderservice.client.order.messages.ResponseStatus
 import it.polito.wa2.ecommerce.orderservice.client.order.response.OrderDTO
 import it.polito.wa2.ecommerce.orderservice.client.order.response.Status
 import it.polito.wa2.ecommerce.orderservice.domain.Order
-import it.polito.wa2.ecommerce.orderservice.domain.PurchaseItem
 import it.polito.wa2.ecommerce.orderservice.domain.toEntity
 import it.polito.wa2.ecommerce.orderservice.exception.OrderNotFoundException
 import it.polito.wa2.ecommerce.orderservice.repository.OrderRepository

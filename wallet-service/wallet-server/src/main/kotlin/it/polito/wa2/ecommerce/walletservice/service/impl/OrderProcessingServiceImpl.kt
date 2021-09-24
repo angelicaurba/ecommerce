@@ -64,6 +64,7 @@ class OrderProcessingServiceImpl: OrderProcessingService {
                 orderRequestDTO.orderId,
                 ResponseStatus.FAILED,
                 e.message)
+            println("###################### $e")
         }
         finally {
             processingLogService.process(uuid)
