@@ -95,13 +95,14 @@ class CatalogueController {
         return photoService.getPictureByProductId(productId)
     }
 
-    @PostMapping("/{productId}/picture")
+    @PostMapping("/{productId}/picture", consumes = [MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE])
     @ResponseStatus(HttpStatus.OK)
     fun updatePictureByProductId(
         @PathVariable("productId") productId: String,
-        @RequestPart("image") file: MultipartFile
+        @RequestHeader("Content-Type") format:String,
+        @RequestBody file: Binary
     ) : Mono<Void>{
-        return photoService.updatePictureByProductId(productId, file)
+        return photoService.updatePictureByProductId(productId, format, file)
     }
 
     @GetMapping("/{productId}/warehouses")
