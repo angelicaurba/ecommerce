@@ -93,18 +93,17 @@ class ProductServiceImpl : ProductService {
             ).flatMap {
                 val req = it.t2
                 val product = it.t1
+                
+                if (req.price != null && req.price < BigDecimal("0.00"))
+                    Mono.error(BadRequestException("Negative price update not allowed"))
+                else{
+                    req.name?.also {x -> product.name = x }
+                    req.description?.also { x -> product.description = x }
+                    req.category?.also { x -> product.category = x }
+                    req.price?.also { x -> product.price = x }
 
-                req.price?.let { price ->
-                    if (price < BigDecimal("0.00"))
-                        Mono.error<BadRequestException>(BadRequestException("Negative price update not allowed"))
+                    productRepository.save(product).map { x -> x.toDTO()}
                 }
-
-                req.name?.also {x -> product.name = x }
-                req.description?.also { x -> product.description = x }
-                req.category?.also { x -> product.category = x }
-                req.price?.also { x -> product.price = x }
-
-                productRepository.save(product).map { x -> x.toDTO()}
             }
     }
 
