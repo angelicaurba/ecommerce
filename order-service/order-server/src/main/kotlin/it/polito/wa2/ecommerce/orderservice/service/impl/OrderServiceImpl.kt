@@ -3,6 +3,7 @@ package it.polito.wa2.ecommerce.orderservice.service.impl
 import it.polito.wa2.ecommerce.common.Rolename
 import it.polito.wa2.ecommerce.common.constants.mailTopic
 import it.polito.wa2.ecommerce.common.constants.orderRequestTopic
+import it.polito.wa2.ecommerce.common.constants.paymentTopic
 import it.polito.wa2.ecommerce.common.parseID
 import it.polito.wa2.ecommerce.common.saga.service.MessageService
 import it.polito.wa2.ecommerce.common.saga.service.ProcessingLogService
@@ -30,6 +31,7 @@ import it.polito.wa2.ecommerce.orderservice.repository.OrderRepository
 import it.polito.wa2.ecommerce.orderservice.service.OrderService
 import it.polito.wa2.ecommerce.orderservice.repository.PurchaseItemRepository
 import it.polito.wa2.ecommerce.orderservice.utils.extractProductInWarehouse
+import it.polito.wa2.ecommerce.walletservice.client.order.request.WalletOrderRefundRequestDTO
 import it.polito.wa2.ecommerce.warehouseservice.client.order.request.WarehouseOrderRequestCancelDTO
 import it.polito.wa2.ecommerce.warehouseservice.client.order.request.WarehouseOrderRequestNewDTO
 import org.springframework.beans.factory.annotation.Autowired
@@ -124,11 +126,21 @@ class OrderServiceImpl: OrderService {
         order.updateStatus(Status.CANCELED)
         orderRepository.save(order)
 
+        val mail: MailDTO = MailDTO(
+            order.buyerId, null,
+            "Your order has been correctly canceled: $orderId",
+            "The order has been correctly canceled"
+        )
+        messageService.publish(mail, "OrderCanceled", mailTopic)
+
         val cancelMessage = WarehouseOrderRequestCancelDTO(
             orderId,
             order.deliveryItems.extractProductInWarehouse { ItemDTO(it.productId, it.amount) }
         )
         messageService.publish(cancelMessage, "OrderCancel", orderRequestTopic)
+
+        val orderRefundRequest = WalletOrderRefundRequestDTO(order.buyerWalletId, order.buyerId, orderId)
+        messageService.publish(orderRefundRequest, "OrderCancel", paymentTopic)
     }
 
     override fun processOrderCompletion(orderStatusDTO: OrderStatusDTO, id: String, eventType: EventTypeOrderStatus) {
