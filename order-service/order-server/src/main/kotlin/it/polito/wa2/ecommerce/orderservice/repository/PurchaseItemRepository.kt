@@ -22,8 +22,8 @@ interface PurchaseItemRepository : PagingAndSortingRepository<PurchaseItem, Long
 
     @Transactional(readOnly = true)
     @Query("""
-        select case when count(PurchaseItem) > 0 then true else false end from PurchaseItem
-        where productId = :product_id and order.buyerId = :buyer_id
+        select case when count(p) > 0 then true else false end from PurchaseItem as p
+        where p.productId = :product_id and p.order.buyerId = :buyer_id and p.order.status = it.polito.wa2.ecommerce.orderservice.client.order.response.Status.DELIVERED
     """)
     fun haveBuyerIdBoughtProduct(
         @Param("product_id") productId: String,
