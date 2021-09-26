@@ -515,6 +515,81 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Get all wallets filters",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/wallets/?walletType=WAREHOUSE&ownerId=2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wallets",
+						""
+					],
+					"query": [
+						{
+							"key": "walletType",
+							"value": "WAREHOUSE"
+						},
+						{
+							"key": "ownerId",
+							"value": "2"
+						},
+						{
+							"key": "pageIndex",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "pageSize",
+							"value": "1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all wallets no filters",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/wallets/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wallets",
+						""
+					],
+					"query": [
+						{
+							"key": "ownerId",
+							"value": "2",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"auth": {
