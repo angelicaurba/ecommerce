@@ -33,11 +33,11 @@ class User(
 
     @field:NotNull(message = "name must be present")
     @Column(nullable=false)
-    val name: String,
+    var name: String,
 
     @field:NotNull(message = "surname must be present")
     @Column(nullable=false)
-    val surname: String,
+    var surname: String,
 
     @Column(nullable=true)
     var deliveryAddress: String?,

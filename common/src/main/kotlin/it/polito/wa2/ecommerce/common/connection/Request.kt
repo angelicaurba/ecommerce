@@ -34,24 +34,33 @@ class Request {
         return returnValue ?: throw ServiceUnavailable("No response from other server")
     }
 
-    fun <T> doGetReactive(uri: String, className: Class<T>): Publisher<T> {
-        val returnValue: Flux<T>
+    fun <T> doGetReactive(uri: String, className: Class<T>, single: Boolean = false): Publisher<T> {
+        val returnValue: Publisher<T>
 
         try {
-            returnValue = webClientBuilder.build()
-                .get()
-                .uri(uri)
-                .retrieve()
-                .bodyToFlux(className)
+            returnValue = if (single)
+                webClientBuilder.build()
+                    .get()
+                    .uri(uri)
+                    .retrieve()
+                    .bodyToMono(className)
+            else
+                webClientBuilder.build()
+                    .get()
+                    .uri(uri)
+                    .retrieve()
+                    .bodyToFlux(className)
         }
         catch (e: Exception){
-            println(e.message)
             return Mono.error(ServiceUnavailable("Error during connection with other server"))
         }
 
-        return returnValue.switchIfEmpty (
-                Mono.error(ServiceUnavailable("No response from other server"))
-        )
+
+        return if (returnValue is Mono)
+            returnValue.switchIfEmpty (
+                Mono.error(ServiceUnavailable("No response from other server")))
+        else
+            returnValue
     }
 
     fun <T: Any> doPost(uri: String, requestBody: T, className: Class<T>){

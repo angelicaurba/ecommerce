@@ -7,6 +7,7 @@ import it.polito.wa2.ecommerce.common.parseID
 import it.polito.wa2.ecommerce.userservice.client.AddRolesRequestDTO
 import it.polito.wa2.ecommerce.userservice.client.PasswordChangeRequestDTO
 import it.polito.wa2.ecommerce.common.security.UserDetailsDTO
+import it.polito.wa2.ecommerce.userservice.client.UserUpdateRequestDTO
 import it.polito.wa2.ecommerce.userservice.service.impl.UserDetailsServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -14,6 +15,7 @@ import org.springframework.validation.BindingResult
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
+import javax.validation.constraints.NotNull
 
 @RestController
 @RequestMapping("/users")
@@ -43,6 +45,15 @@ class UserController {
     @ResponseStatus(HttpStatus.OK)
     fun getRoles(@PathVariable userId: String): Set<Rolename>{
         return userDetailsService.loadUserRolesById(userId.parseID())
+    }
+
+    @PatchMapping("/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    fun updateUserFields(
+        @PathVariable("userId") userId: String,
+        @RequestBody @NotNull updateRequest: UserUpdateRequestDTO
+    ): UserDetailsDTO{
+        return userDetailsService.updateUserFields(userId.parseID(), updateRequest).copy(password = null)
     }
 
     @PutMapping("/{userId}/password")
