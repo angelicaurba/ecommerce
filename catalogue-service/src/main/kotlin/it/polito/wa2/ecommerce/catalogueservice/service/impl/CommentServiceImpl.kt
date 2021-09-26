@@ -42,7 +42,7 @@ class CommentServiceImpl: CommentService {
             if (productId != c.productId)
                 Mono.error(BadRequestException("Product id of request url and request body should match"))
             else {
-                request.doGetReactive("http://order-service/purchases/?productId=$productId&userId=${p.id}", Boolean::class.java).toMono()
+                request.doGetReactive("http://order-service/purchases/?productId=$productId&userId=${p.id}", Boolean::class.java, true).toMono()
                     .filter {
                         a -> a
                     }.switchIfEmpty(Mono.error(ForbiddenException("User ${p.id} can not add comment for product $productId")))
