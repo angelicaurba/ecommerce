@@ -84,7 +84,7 @@ class WalletServiceImpl : WalletService {
             if(walletType!=null || ownerId!=null){
                 throw ForbiddenException("Cannot access other wallets")
             }
-            return walletRepository.findAll(page).map { it.toDTO() }.toList()
+            return walletRepository.findByOwnerAndWalletType(principal.id,WalletType.CUSTOMER, page).map { it.toDTO() }.toList()
         }
     }
 
