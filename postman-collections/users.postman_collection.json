@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "1f1b4f0a-0f07-40b7-8e85-6cf0d27c40b6",
+		"_postman_id": "4fd3f3bf-606f-4350-b364-f76ce7e62c95",
 		"name": "users",
 		"description": "user-service, \"users\" route: presents and modifies user information\r\n\r\nRoutes:\r\n- GET /users/{userId}\r\n- GET /users/{userId}/email\r\n- GET /users/{userId}/roles\r\n- PATCH /users/{userId}/roles\r\n- PUT /users/{userId}/password\r\n\r\nVariables:\r\n- JwtUser1: JWT token for user 1\r\n- JwtUser2: JWT token for user 2\r\n- JwtUser3: JWT token for user 3\r\n- JwtUser1_b: JWT token for user 1 when the password is changed",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -1194,14 +1194,14 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/users/-1/roles",
+							"raw": "localhost:8080/users/42/roles",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
 								"users",
-								"-1",
+								"42",
 								"roles"
 							]
 						}
@@ -1420,7 +1420,7 @@
 					"body: { ",
 					"    mode: 'raw',",
 					"    raw:JSON.stringify({",
-					"        \"username\":\"customer11\",",
+					"        \"username\":\"customer1\",",
 					"        \"password\":\"customer11\"",
 					"        })",
 					"    }  ",

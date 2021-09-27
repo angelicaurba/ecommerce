@@ -283,21 +283,9 @@
 		},
 		{
 			"name": "Get all transcations small page SECOND",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"walletType\": \"CUSTOMER\",\r\n    \"customerID\": \"2\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
 				"url": {
 					"raw": "localhost:8080/wallets/1/transactions?pageSize=1&pageIndex=2",
 					"host": [
@@ -398,7 +386,7 @@
 					"listen": "prerequest",
 					"script": {
 						"exec": [
-							" pm.collectionVariables.set(\"time\", (new Date().valueOf())  - 20000);\r",
+							" pm.collectionVariables.set(\"time\", (new Date().valueOf())  - 120000);\r",
 							""
 						],
 						"type": "text/javascript"
@@ -519,6 +507,16 @@
 		{
 			"name": "Get all wallets filters",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token3}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
@@ -563,7 +561,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{token2}}",
+							"value": "{{token3}}",
 							"type": "string"
 						}
 					]
@@ -571,7 +569,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/wallets/",
+					"raw": "localhost:8080/wallets/?pageSize=4",
 					"host": [
 						"localhost"
 					],
@@ -585,6 +583,10 @@
 							"key": "ownerId",
 							"value": "2",
 							"disabled": true
+						},
+						{
+							"key": "pageSize",
+							"value": "4"
 						}
 					]
 				}

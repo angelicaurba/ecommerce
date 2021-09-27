@@ -11,26 +11,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/warehouses/",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"warehouses",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "all warehouse with productID",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/warehouses/?productID=2",
+					"raw": "localhost:8080/warehouses/?pageSize=1&pageIndex=2",
 					"host": [
 						"localhost"
 					],
@@ -41,33 +22,12 @@
 					],
 					"query": [
 						{
-							"key": "productID",
+							"key": "pageSize",
+							"value": "1"
+						},
+						{
+							"key": "pageIndex",
 							"value": "2"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "all warehouse with productID (con productID inesistente)",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/warehouses/?productID=10",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"warehouses",
-						""
-					],
-					"query": [
-						{
-							"key": "productID",
-							"value": "10"
 						}
 					]
 				}
@@ -204,14 +164,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/warehouses/10",
+					"raw": "localhost:8080/warehouses/9",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"warehouses",
-						"10"
+						"9"
 					]
 				}
 			},
@@ -290,6 +250,16 @@
 		{
 			"name": "warehouse fields (change name)",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token3}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "PATCH",
 				"header": [
 					{
@@ -325,17 +295,27 @@
 		{
 			"name": "warehouse with known id",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token3}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/warehouses/1",
+					"raw": "localhost:8080/warehouses/9",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"warehouses",
-						"1"
+						"9"
 					]
 				}
 			},
@@ -347,7 +327,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/warehouses/2/products",
+					"raw": "localhost:8080/warehouses/2/products?pageSize=1",
 					"host": [
 						"localhost"
 					],
@@ -356,6 +336,12 @@
 						"warehouses",
 						"2",
 						"products"
+					],
+					"query": [
+						{
+							"key": "pageSize",
+							"value": "1"
+						}
 					]
 				}
 			},
@@ -533,7 +519,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "{{token4}}",
+				"value": "{{token3}}",
 				"type": "string"
 			}
 		]

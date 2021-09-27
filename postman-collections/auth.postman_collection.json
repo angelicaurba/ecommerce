@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "18df0218-7c15-4f92-9721-92f6d74bc0db",
+		"_postman_id": "21e7e105-9167-4c19-aedb-083bf677e1d5",
 		"name": "auth",
 		"description": "user-service, \"auth\" route: User creation and authentication\r\n\r\nRoutes:\r\n- POST /auth/register\r\n- GET /auth/registrationConfirm\r\n- POST /auth/signin\r\n\r\nVariables:\r\n- email: valid email address that can be used to recieve the confirmation email\r\n- registrationToken: used to dynamically change the token that confirms the registration",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -100,7 +100,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"newCustomer\",\r\n    \"email\": \"mail@mail.mail\",\r\n    \"name\": \"New\",\r\n    \"surname\": \"Customer\",\r\n    \"deliveryAddress\": \"Seconda stella a destra\",\r\n    \"password\": \"password\",\r\n    \"confirmPassword\": \"password\"\r\n}",
+							"raw": "{\r\n    \"username\": \"newCustomer\",\r\n    \"email\": \"xp1wt682b@relay.firefox.com\",\r\n    \"name\": \"New\",\r\n    \"surname\": \"Customer\",\r\n    \"deliveryAddress\": \"Seconda stella a destra\",\r\n    \"password\": \"password\",\r\n    \"confirmPassword\": \"password\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

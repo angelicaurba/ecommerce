@@ -11,7 +11,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/orders/",
+					"raw": "localhost:8080/orders/?pageSize=2",
 					"host": [
 						"localhost"
 					],
@@ -19,35 +19,12 @@
 					"path": [
 						"orders",
 						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get orders no order",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
+					],
+					"query": [
 						{
-							"key": "token",
-							"value": "{{token4}}",
-							"type": "string"
+							"key": "pageSize",
+							"value": "2"
 						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/orders/",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"orders",
-						""
 					]
 				}
 			},
@@ -349,6 +326,16 @@
 		{
 			"name": "Update status, forbidden for users",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token1}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "PATCH",
 				"header": [],
 				"body": {
@@ -599,14 +586,14 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/orders/1",
+					"raw": "localhost:8080/orders/21",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"orders",
-						"1"
+						"21"
 					]
 				}
 			},
@@ -684,22 +671,22 @@
 					");",
 					"",
 					"// for admin",
-					"/*pm.sendRequest({",
+					"pm.sendRequest({",
 					"url: 'http://localhost:8080/auth/signin',",
 					"method: 'POST',",
 					"header: {\"Content-Type\": \"application/json\"},",
 					"body: { ",
 					"    mode: 'raw',",
 					"    raw:JSON.stringify({",
-					"        \"username\":\"newCustomer\",",
-					"        \"password\":\"password\"",
+					"        \"username\":\"adminAccount2\",",
+					"        \"password\":\"adminAccount\"",
 					"        })",
 					"    }  ",
 					"}, ",
 					"function (err, response) { ",
 					"    pm.collectionVariables.set(\"token4\", response.headers.get(\"Authorization\").split(\" \")[1]);",
 					"    } ",
-					");*/"
+					");"
 				]
 			}
 		},
