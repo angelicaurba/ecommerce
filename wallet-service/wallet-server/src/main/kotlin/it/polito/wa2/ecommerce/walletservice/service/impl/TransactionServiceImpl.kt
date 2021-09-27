@@ -94,7 +94,7 @@ class TransactionServiceImpl : TransactionService {
         when (transaction.type) {
             TransactionType.ORDER_PAYMENT -> {
                 if (transaction.fromWallet!!.amount < amount) {
-                    throw  OutOfMoneyException("Order cannot be processed")
+                    throw  OutOfMoneyException("Payment cannot be processed")
                 }
                 if (transaction.toWallet!!.walletType != WalletType.WAREHOUSE) {
                     throw BadRequestException("Wallet to must belong to a warehouse for orders")

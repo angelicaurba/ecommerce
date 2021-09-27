@@ -74,7 +74,7 @@ class OrderServiceImpl: OrderService {
         }.distinct().forEach {
             val mailAdmin = MailDTO(
                 it, null,
-                "Order's status has been updated: ${order.getId()}",
+                "Admin ${it}, Order's status has been updated: ${order.getId()}",
                 "The order's status has been correctly updated to ${order.status}"
             )
             messageService.publish(mailAdmin, "OrderStatusUpdated", mailTopic)
@@ -218,7 +218,7 @@ class OrderServiceImpl: OrderService {
                 // - send email
                 val mail: MailDTO = MailDTO(
                     order.buyerId, null,
-                    "Your order has failed issued: $orderId",
+                    "Your order has failed: $orderId",
                     "The order was not issued.\nError message: ${orderStatusDTO.errorMessage}"
                 )
                 messageService.publish(mail, "OrderIssued", mailTopic)
