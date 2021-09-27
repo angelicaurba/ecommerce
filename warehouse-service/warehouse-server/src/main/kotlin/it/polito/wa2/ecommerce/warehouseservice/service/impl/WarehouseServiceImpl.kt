@@ -1,9 +1,14 @@
 package it.polito.wa2.ecommerce.warehouseservice.service.impl
 
+import it.polito.wa2.ecommerce.common.constants.orderStatusTopic
+import it.polito.wa2.ecommerce.common.constants.walletCreationTopic
 import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.common.getPageable
 import it.polito.wa2.ecommerce.common.parseID
+import it.polito.wa2.ecommerce.common.saga.service.MessageService
 import it.polito.wa2.ecommerce.common.security.JwtTokenDetails
+import it.polito.wa2.ecommerce.orderservice.client.order.messages.EventTypeOrderStatus
+import it.polito.wa2.ecommerce.walletservice.client.wallet.request.WarehouseWalletCreationRequestDTO
 import it.polito.wa2.ecommerce.warehouseservice.client.WarehouseDTO
 import it.polito.wa2.ecommerce.warehouseservice.client.WarehouseRequestDTO
 import it.polito.wa2.ecommerce.warehouseservice.domain.Warehouse
@@ -22,6 +27,8 @@ import javax.transaction.Transactional
 class WarehouseServiceImpl : WarehouseService {
 
     @Autowired lateinit var warehouseRepository: WarehouseRepository
+
+    @Autowired lateinit var messageService: MessageService
 
     override fun getWarehouseOrThrowException(warehouseId: String) : Warehouse {
         return warehouseRepository.findByIdOrNull(warehouseId.parseID()) ?: throw WarehouseNotFound(warehouseId)
@@ -73,7 +80,7 @@ class WarehouseServiceImpl : WarehouseService {
     @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     override fun addWarehouse(warehouseRequest: WarehouseRequestDTO, warehouseId: String?): WarehouseDTO {
 
-        val newWarehouse = Warehouse(
+        var newWarehouse = Warehouse(
             warehouseRequest.name!!,
             warehouseRequest.address!!,
             warehouseRequest.adminID!!
@@ -82,9 +89,18 @@ class WarehouseServiceImpl : WarehouseService {
         if (warehouseId != null) {
             val oldID = warehouseRepository.save(newWarehouse).getId()
             warehouseRepository.updateID(warehouseId.parseID(),oldID!!)
-            return getWarehouseOrThrowException(warehouseId).toDTO()
+            newWarehouse = getWarehouseOrThrowException(warehouseId)
         } else
-            return warehouseRepository.save(newWarehouse).toDTO()
+            newWarehouse = warehouseRepository.save(newWarehouse)
+
+        val request = WarehouseWalletCreationRequestDTO(newWarehouse.getId().toString())
+
+        messageService.publish(request,
+            "WalletCreation",
+            walletCreationTopic
+        )
+
+        return newWarehouse.toDTO()
     }
 
     override fun getWarehouseById(warehouseId: String): WarehouseDTO {
