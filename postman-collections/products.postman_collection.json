@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "bd3fe6f6-beea-43c5-b33a-0d160f3c0a99",
+		"_postman_id": "f936cf88-57f1-42a2-a31a-3411e0daeaea",
 		"name": "products",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -11,7 +11,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/products/",
+					"raw": "localhost:8080/products/?pageSize=1",
 					"host": [
 						"localhost"
 					],
@@ -19,6 +19,12 @@
 					"path": [
 						"products",
 						""
+					],
+					"query": [
+						{
+							"key": "pageSize",
+							"value": "1"
+						}
 					]
 				}
 			},
@@ -566,7 +572,7 @@
 						{
 							"key": "image",
 							"type": "file",
-							"src": []
+							"src": "/C:/Users/rober/Desktop/AAA_caffe.jpg"
 						}
 					]
 				},
@@ -597,7 +603,7 @@
 						{
 							"key": "image",
 							"type": "file",
-							"src": []
+							"src": "/C:/Users/rober/Desktop/AAA_caffe.jpg"
 						}
 					]
 				},
@@ -634,7 +640,7 @@
 						{
 							"key": "image",
 							"type": "file",
-							"src": []
+							"src": "/C:/Users/rober/Desktop/AAA_caffe.jpg"
 						}
 					]
 				},
@@ -844,14 +850,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/products/2/comments",
+					"raw": "localhost:8080/products/3/comments",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"products",
-						"2",
+						"3",
 						"comments"
 					]
 				}

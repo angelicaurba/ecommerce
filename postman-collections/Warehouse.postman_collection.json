@@ -143,7 +143,7 @@
 			"response": []
 		},
 		{
-			"name": "warehouse",
+			"name": "warehouse (verify existing id)",
 			"request": {
 				"method": "PUT",
 				"header": [
@@ -156,7 +156,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"wh3\",\r\n    \"address\": \"via 3\",\r\n    \"adminID\": \"3\"\r\n}",
+					"raw": "{\r\n    \"name\": \"wh4\",\r\n    \"address\": \"via 4\",\r\n    \"adminID\": \"3\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -164,14 +164,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/warehouses/9",
+					"raw": "localhost:8080/warehouses/19",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"warehouses",
-						"9"
+						"19"
 					]
 				}
 			},
@@ -248,7 +248,7 @@
 			"response": []
 		},
 		{
-			"name": "warehouse fields (change name)",
+			"name": "warehouse fields (change name) (verify ID)",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -279,14 +279,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/warehouses/9",
+					"raw": "localhost:8080/warehouses/19",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"warehouses",
-						"9"
+						"19"
 					]
 				}
 			},
@@ -308,14 +308,14 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/warehouses/9",
+					"raw": "localhost:8080/warehouses/19",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"warehouses",
-						"9"
+						"19"
 					]
 				}
 			},
@@ -396,6 +396,46 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\r\n    \"warehouseID\": \"2\",\r\n    \"productID\": \"2\",\r\n    \"quantity\": 1,\r\n    \"alarm\": 4\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/warehouses/2/products/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"warehouses",
+						"2",
+						"products",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "stock of a product in a warehouse already existing",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token4}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"warehouseID\": \"2\",\r\n    \"productID\": \"1\",\r\n    \"quantity\": 1,\r\n    \"alarm\": 4\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
