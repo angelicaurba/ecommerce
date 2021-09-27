@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull
 class Product(
     @Id
     @field:NotNull
-    val id: String? = null,
+    var id: String? = null,
     @field:NotNull
     var name: String,
     @field:NotNull
