@@ -6,6 +6,7 @@ import it.polito.wa2.ecommerce.common.constants.mailTopic
 import it.polito.wa2.ecommerce.common.constants.walletCreationTopic
 import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
+import it.polito.wa2.ecommerce.common.exceptions.NotFoundException
 import it.polito.wa2.ecommerce.common.parseID
 import it.polito.wa2.ecommerce.common.saga.service.MessageService
 import it.polito.wa2.ecommerce.common.security.JwtTokenDetails
@@ -206,7 +207,7 @@ class UserDetailsServiceImpl: UserDetailsService {
     }
 
     private fun findUserById(userId: Long): User {
-        return userRepository.findByIdOrNull(userId) ?: throw UsernameNotFoundException("User ID not found")
+        return userRepository.findByIdOrNull(userId) ?: throw NotFoundException("User ID not found")
     }
 
     fun verifyToken(token: String) {
