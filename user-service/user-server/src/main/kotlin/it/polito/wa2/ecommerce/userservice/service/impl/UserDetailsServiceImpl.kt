@@ -15,6 +15,7 @@ import it.polito.wa2.ecommerce.userservice.domain.User
 import it.polito.wa2.ecommerce.userservice.repository.UserRepository
 import it.polito.wa2.ecommerce.userservice.service.NotificationService
 import it.polito.wa2.ecommerce.userservice.client.RegistrationRequestDTO
+import it.polito.wa2.ecommerce.userservice.client.UserUpdateRequestDTO
 import it.polito.wa2.ecommerce.walletservice.client.wallet.request.CustomerWalletCreationRequestDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
@@ -145,6 +146,18 @@ class UserDetailsServiceImpl: UserDetailsService {
 
         val user = findUserById(userId).toDTO()
         return user.authorities
+    }
+
+    fun updateUserFields(userId: Long, updateRequest: UserUpdateRequestDTO): UserDetailsDTO{
+        val user = findUserById(userId)
+
+        verifyIfAdminOrSameUser(userId)
+
+        updateRequest.name?.also { user.name = it }
+        updateRequest.surname?.also { user.surname = it }
+        updateRequest.deliveryAddress?.also { user.deliveryAddress = it }
+
+        return userRepository.save(user).toDTO()
     }
 
     fun setPassword(userId: Long, oldPassword: String, newPassword: String) {
