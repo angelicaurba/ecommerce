@@ -1,6 +1,7 @@
 package it.polito.wa2.ecommerce.orderservice.service.impl
 
 import it.polito.wa2.ecommerce.common.Rolename
+import it.polito.wa2.ecommerce.common.connection.Request
 import it.polito.wa2.ecommerce.common.constants.mailTopic
 import it.polito.wa2.ecommerce.common.constants.orderRequestTopic
 import it.polito.wa2.ecommerce.common.constants.paymentTopic
@@ -32,6 +33,7 @@ import it.polito.wa2.ecommerce.orderservice.service.OrderService
 import it.polito.wa2.ecommerce.orderservice.repository.PurchaseItemRepository
 import it.polito.wa2.ecommerce.orderservice.utils.extractProductInWarehouse
 import it.polito.wa2.ecommerce.walletservice.client.order.request.WalletOrderRefundRequestDTO
+import it.polito.wa2.ecommerce.warehouseservice.client.WarehouseDTO
 import it.polito.wa2.ecommerce.warehouseservice.client.order.request.WarehouseOrderRequestCancelDTO
 import it.polito.wa2.ecommerce.warehouseservice.client.order.request.WarehouseOrderRequestNewDTO
 import org.springframework.beans.factory.annotation.Autowired
@@ -60,6 +62,25 @@ class OrderServiceImpl: OrderService {
 
     @Autowired
     lateinit var identityVerifier: IdentityVerifier
+
+    @Autowired
+    lateinit var request: Request
+
+    private fun notifyAdmin(order: Order) {
+        order.deliveryItems.map { it.warehouseId }.distinct().map {
+            val uri = "http://warehouse-service/warehouses/$it"
+            val response = request.doGet(uri, WarehouseDTO::class.java)
+            response.adminID
+        }.distinct().forEach {
+            val mailAdmin = MailDTO(
+                it, null,
+                "Order's status has been updated: ${order.getId()}",
+                "The order's status has been correctly updated to ${order.status}"
+            )
+            messageService.publish(mailAdmin, "OrderStatusUpdated", mailTopic)
+        }
+    }
+
 
     override fun getAllOrders(pageIdx: Int, pageSize: Int): List<OrderDTO> {
         val principal = SecurityContextHolder.getContext().authentication.principal as JwtTokenDetails
@@ -124,6 +145,8 @@ class OrderServiceImpl: OrderService {
         )
         messageService.publish(mail, "OrderStatusUpdated", mailTopic)
 
+        notifyAdmin(order)
+
         return orderRepository.save(order).toDTO()
     }
 
@@ -141,6 +164,8 @@ class OrderServiceImpl: OrderService {
             "The order has been correctly canceled"
         )
         messageService.publish(mail, "OrderCanceled", mailTopic)
+
+        notifyAdmin(order)
 
         val cancelMessage = WarehouseOrderRequestCancelDTO(
             orderId,
@@ -172,6 +197,9 @@ class OrderServiceImpl: OrderService {
                     "The order has been correctly issued"
                 )
                 messageService.publish(mail, "OrderIssued", mailTopic)
+
+                notifyAdmin(order)
+
                 orderRepository.save(order)
 
             }
