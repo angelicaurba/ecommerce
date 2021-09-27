@@ -226,7 +226,8 @@ class StockServiceImpl: StockService {
 
                     stockRepository.save(newStock)
                 } else {
-                    updateStockQuantity(stock, stock.quantity + item.amount)
+                   //  updateStockQuantity(stock, stock.quantity + item.amount) // questo invia la mail
+                    stock.quantity +=  item.amount
                 }
             }
         }
