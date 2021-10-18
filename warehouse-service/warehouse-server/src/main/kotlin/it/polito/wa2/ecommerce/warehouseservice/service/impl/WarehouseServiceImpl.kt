@@ -2,6 +2,7 @@ package it.polito.wa2.ecommerce.warehouseservice.service.impl
 
 import it.polito.wa2.ecommerce.common.constants.orderStatusTopic
 import it.polito.wa2.ecommerce.common.constants.walletCreationTopic
+import it.polito.wa2.ecommerce.common.exceptions.BadRequestException
 import it.polito.wa2.ecommerce.common.exceptions.ForbiddenException
 import it.polito.wa2.ecommerce.common.getPageable
 import it.polito.wa2.ecommerce.common.parseID
@@ -79,6 +80,9 @@ class WarehouseServiceImpl : WarehouseService {
 
     @PreAuthorize("hasAuthority(T(it.polito.wa2.ecommerce.common.Rolename).ADMIN)")
     override fun addWarehouse(warehouseRequest: WarehouseRequestDTO, warehouseId: String?): WarehouseDTO {
+        val principal = SecurityContextHolder.getContext().authentication.principal as JwtTokenDetails
+        if (warehouseRequest.adminID != principal.id)
+            throw BadRequestException("UserId does not match with AdminId in request")
 
         var newWarehouse = Warehouse(
             warehouseRequest.name!!,
