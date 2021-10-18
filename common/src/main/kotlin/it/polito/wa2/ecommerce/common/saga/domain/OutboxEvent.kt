@@ -11,7 +11,7 @@ import javax.persistence.Id
 import javax.persistence.Table
 
 @Entity
-@Table(name = "outbox", schema = "public")
+@Table(name = "outbox")
 //@TypeDef(name = "jsonb", typeClass = JsonBinaryType::class)
 class OutboxEvent(
     val timestamp: Instant = now(),
